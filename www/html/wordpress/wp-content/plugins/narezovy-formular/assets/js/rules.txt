@@ -1,0 +1,46 @@
+
+seznam pravidel platných pro zadávání dílu v NF
+
+- INP Deska
+    - při změně:
+        -nová data do SB Hrany-rozměr ale:
+            - pokud SB Hrana = odlišná a pokud INP Hrana má vybraný dekor pak neaktualizovat 
+        -pokud se jedna o PDK zneaktivnit SB Tupl a ze SB Hrana odstranit možnost "Odlišná"
+        -reset SB Lepidlo
+        -pokud se jedna o prvni dil noveho formulare, jeste zde neni zadna hodnota, INP Hrana je proto zneaktivněn. Po vložení hodnoty zaktivnit INP Hrana
+    - je ovlivněno:
+
+- SB Hrana
+    - při změně:
+        - zobrazit/schovat INP Hrana
+        - při vybrane možnosti "Žádná" - zneaktivnit SB Lepidlo + zneaktivnit SB Hrany-rozmer
+        - při vybraných možnostech "Přivzorovaná" a "Odlišná" nová data do SB Hrany-rozměr (Přivzorovaná podle INP deska - Odlišná podle INP Hrana)
+    - je ovlivněno: 
+        - změnou INP Deska (isPDK)
+        
+- INP Hrana
+    - při změně:
+        - nová data do SB Hrany-rozměr
+    - je ovlivněno:
+        - zobrazit/schovat při změně SB Hrana
+
+- SB Lepidlo
+    - při změně:
+    - je ovlivněno:
+        - při změně hodnoty v INP Deska resetovat
+        - SB Hrana
+        - SB Hrany-rozměr
+
+- SB Tupl
+    - při změně:
+        - nová data do SB Hrany-rozměr
+    - je ovlivněno:
+
+- SB Hrany-rozměr
+    - při změně:
+        - SB Lepidlo - pokud k desce uzivatel nevybere žásnou hranu, pak odstranit param povinné
+    - je ovlivněno:
+        - INP Deska
+        - SB Hrana
+        - INP Hrana
+        - SB Tupl

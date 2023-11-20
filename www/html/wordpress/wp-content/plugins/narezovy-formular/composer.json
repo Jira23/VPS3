@@ -1,0 +1,20 @@
+{
+    "name": "rss/narezovy-formular",
+    "type": "project",
+    "license": "GPL",
+    "autoload": {
+        "psr-4": {
+            "Rss\\NarezovyFormular\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "rss"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {"Inc\\": "./inc"}
+    }
+}

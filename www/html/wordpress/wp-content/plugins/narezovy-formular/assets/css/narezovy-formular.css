@@ -1,0 +1,184 @@
+.button-sm {
+    padding: 5px !important;
+}
+
+.lamino-list tbody tr:hover{
+    border: 3px solid #000 !important;
+}
+
+.icon-lamino {
+    display: inline-block;
+    max-width: 60px;
+    margin-left: 20px;
+}
+
+.form-section{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.nf tr td {
+    text-align: left;
+}
+
+.navtab-button {
+    background-color: white;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 0px;
+    font-size: large;
+    color: black;
+}
+
+.navtab-button-active {
+    background-color: #d9d9d9;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-width: 0px;
+    font-size: large;
+    color: black;
+}
+
+.editor-table{
+    margin-bottom: 0px;
+}
+
+.editor-table tr td{
+    border-width: 0px;
+}
+
+.register-form{
+    text-align: center;
+}
+
+.register-form .form-section{
+    text-align: center;
+}
+
+
+input[type="text"], input[type="email"], input[type="number"], textarea, select {
+  background-color: #00000014 !important;
+}
+
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus {
+  background-color: #ff8989 !important;
+  /*border-color: #e9322d !important;*/
+}
+
+select:focus {
+   background-color: #ff8989 !important;
+}
+
+button:focus {
+  background-color: #ff8989;
+}
+
+.button-alert {
+    background-color: #fffb01 !important;
+    color: red;
+    border-width: 3px;
+    border-style: solid;
+    margin-left: 20px;
+    cursor: default;
+    display: none;
+}
+.button-alert:hover {
+    color: red !important;
+}
+
+.th-middle th{
+    text-align: center;
+}
+
+table th,
+table td {
+ vertical-align:middle !important;
+}
+
+
+.button-main{
+    margin-bottom: 5px !important;
+}
+
+/*--- TOOLTIPS ---*/
+    /* Tooltip container */
+    @media screen and (max-width: 900px) {
+        .tooltip {
+          visibility: hidden;
+        }
+    }
+    
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }    
+    
+    /* Tooltip text */
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 400px;
+      background-color: #3e80fd;
+      color: #fff;
+      text-align: left;
+      padding: 5px;
+      border-radius: 6px;
+
+      /* Position the tooltip text*/
+      position: absolute;
+      z-index: 1;
+      top: -5px;
+      left: 105%;
+    }
+
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+    }
+    
+    .tooltip img{
+        max-width: 30px;
+    } 
+
+    .linear-loading-icon{
+        filter: grayscale(100%); 
+    }
+    
+    .linear-loading-icon img {
+        max-width: 60%;
+    }
+    
+    /* --- import --- */
+#file-drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border 0.3s;
+    margin-top: 20px;
+}
+
+#file-drop-area:hover {
+    border: 2px dashed #007bff;
+    background-color: #f0f0f0;
+}
+
+#file-drop-area i {
+    font-size: 48px;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+#file-drop-area p {
+    font-size: 18px;
+    color: #333;
+}
+
+#results {
+    text-align: center;    
+}
+
+#optimized-results-table {
+    text-align: center;
+}
