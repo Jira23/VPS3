@@ -108,11 +108,11 @@ jQuery(document).ready(function($) {
         });
     });
     
-    // jen testovaci kod, pak smazat
-    $('#test').on('click', function () {
-        var formData = new FormData($('#file-upload-form')[0]);
-        formData.append('action', 'import_upload');
-        ajaxRequest (formData, $('#results'));
-    });
+// jen testovaci kod, pak smazat
+$('#test').on('click', function () {
+    var formData = new FormData($('#file-upload-form')[0]);
+    formData.append('action', 'import_upload');
+    ajaxRequest (formData, $('#results'));
+});
     
 });

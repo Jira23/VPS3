@@ -13,7 +13,9 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "mpdf/mpdf": "*"
+    },
     "autoload": {
         "psr-4": {"Inc\\": "./inc"}
     }

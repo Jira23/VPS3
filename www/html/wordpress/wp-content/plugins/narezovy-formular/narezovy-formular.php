@@ -80,7 +80,6 @@ function deactivate_narezovy_formular_plugin() {
 }
 register_deactivation_hook( __FILE__, 'deactivate_narezovy_formular_plugin' );
 
-
 add_action('plugins_loaded', function(){
     if ( class_exists( 'Inc\\Init' ) ) {
         Inc\Init::register_services();

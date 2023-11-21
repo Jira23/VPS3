@@ -287,7 +287,8 @@ class RenderEditor extends PagesContoller {
     public function get_parts() {
         if(!isset($this->parts )){                                              // query will be executed only once per object init
             global $wpdb;
-            $parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` DESC");
+//$parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` DESC");
+$parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY fig_formula ASC, id DESC");
             $this->parts = $parts;
         }
         return $this->parts;        

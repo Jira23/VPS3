@@ -23,7 +23,7 @@ class UserPageEdit {
                     <td>
                         <select name="nf_import_select" id="nf_import_select">
                             <option value="0" <?php selected(get_the_author_meta('nf_import_select', $user->ID), '0'); ?>>Žádný</option>
-                            <option value="Ceska" <?php selected(get_the_author_meta('nf_import_select', $user->ID), 'Ceska'); ?>>Češka</option>
+                            <option value="Pro100" <?php selected(get_the_author_meta('nf_import_select', $user->ID), 'Pro100'); ?>>Pro 100</option>
                         </select>
                     </td>
                 </tr>

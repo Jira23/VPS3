@@ -5,7 +5,7 @@
 namespace Inc\Import;
 
 
-class ImportCeska {
+class ImportPro100 {
 
     public function __construct() {
         set_error_handler(array($this, 'errorHandler'));                        // import can trigger unexpected PHP errors and warnings
@@ -23,15 +23,6 @@ class ImportCeska {
             foreach ($lines as $line) {
                 $errors[] = $this->check_item_params(explode(';', $line));
             }
-         
-
-
-/*        
- !!!! dodelat fci na nastaveni toho co bude v selectoru #hrana nebo nechat vzdy ""privzorovana" nebo dat dalsi option "import"?
- !!!! dodelat fci ktera prozene hranu filtrem jako v metode "filter_hrany"? Slo by ale jen o "is_PDK"
- !!!! jake dat lepidlo? standartne transparentni?
- !!!! zeptat se Pavlase jak pojmenovat import, pak zmenit z Ceska na to co rekne
-*/      
         
             $converted_data = $this->convert_data($lines);
 
@@ -50,14 +41,7 @@ class ImportCeska {
             $columns = explode(';', $line);
             $converted[$key]['lamino_id'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[0]));
             $converted[$key]['nazev_dilce'] = sanitize_text_field($columns[1]);
-
-
-
-
-
-$converted[$key]['hrana_id'] = 0;
-$converted[$key]['lepidlo'] = 0;
-            
+            $converted[$key]['lepidlo'] = 0;
             $converted[$key]['delka_dilu'] = (int)$columns[2];
             $converted[$key]['sirka_dilu'] = (int)$columns[3];
             $converted[$key]['ks'] = (int)$columns[4];
@@ -66,16 +50,41 @@ $converted[$key]['lepidlo'] = 0;
             $converted[$key]['hrana_prava'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[7]));
             $converted[$key]['hrana_leva'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[8]));
             
-$converted[$key]['hrana'] = $this->get_hrana_option($converted[$key]['lamino_id'], [$converted[$key]['hrana_dolni'], $converted[$key]['hrana_horni'], $converted[$key]['hrana_prava'], $converted[$key]['hrana_leva']]);
-            
+            $converted[$key]['hrana'] = $this->get_hrana_option($converted[$key]['lamino_id'], [$converted[$key]['hrana_dolni'], $converted[$key]['hrana_horni'], $converted[$key]['hrana_prava'], $converted[$key]['hrana_leva']]);
+            $converted[$key]['hrana_id'] = $this->get_hrana_id([$converted[$key]['hrana_dolni'], $converted[$key]['hrana_horni'], $converted[$key]['hrana_prava'], $converted[$key]['hrana_leva']]);
         }
         
         return $converted;
 
     }
-   
-   private function get_hrana_option($lamino_id, $hrany){
-       
+    
+    private function filter_hrana($sku, $product_id){
+        
+        $product = wc_get_product(wc_get_product_id_by_sku($product_id));
+        if(!$product) return true;                                                                  // if there is no product for deska id, $is_PDK trigger PHP error and filter_hrany() method cant be used. I dont want to return edge error (beacouse it not edge error but actually deska error) so I return true.
+        
+        $hrana_id = wc_get_product_id_by_sku($this->sanitizeSKU($sku));                             // prepare data
+        $hrana = wc_get_products(['include' => [$hrana_id]]);
+        $is_PDK = in_array(PDK_CATEGORY_ID, $product->category_ids);
+        $filtered_edge = (new \Inc\AJAX\HranyDimensions())->filter_hrany($hrana, $is_PDK, 'NE');      // call fitering function
+        
+        return empty($filtered_edge) ? false : $hrana_id;
+    }
+
+    // if there is any edge set, return its id as "hrana_id"
+    private function get_hrana_id($hrany){
+        foreach ($hrany as $hrana) {
+            if($hrana !== 0) return $hrana;
+        }
+        
+        return 0;
+    }
+
+    // set option for hrana selectbox
+    private function get_hrana_option($lamino_id, $hrany){
+
+        if (array_sum($hrany) === 0) return -1;                                                     // if there are no edges return -1
+
        /*
         * !!!!!!!!!! prekontolovat funkcnost !!!!!!!!!
         */
@@ -86,10 +95,10 @@ $converted[$key]['hrana'] = $this->get_hrana_option($converted[$key]['lamino_id'
         //var_dump($allValuesInFirstArray);
         
         return $allValuesInFirstArray ?  0: 1; 
-   }
+    }
     
     
-   private function check_item_params($params){
+    private function check_item_params($params){
 
         $errors = array();
 
@@ -104,18 +113,22 @@ $converted[$key]['hrana'] = $this->get_hrana_option($converted[$key]['lamino_id'
         
         if($params[5] !== ''){
             if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[5]))) $errors[5] = ('Nenalezeno SKU hrany přední!');
+            if(!$this->filter_hrana($this->sanitizeSKU($params[5]), $this->sanitizeSKU($params[0]))) $errors[5] = ('Hranu přední nelze použít! Neprošla filtrem.');
         }
         
         if($params[6] !== ''){
             if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[6]))) $errors[6] = ('Nenalezeno SKU hrany zadní!');
+            if(!$this->filter_hrana($this->sanitizeSKU($params[6]), $this->sanitizeSKU($params[0]))) $errors[6] = ('Hranu zadní nelze použít! Neprošla filtrem.');
         }
         
         if($params[7] !== ''){
             if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[7]))) $errors[7] = ('Nenalezeno SKU hrany pravé!');            
+            if(!$this->filter_hrana($this->sanitizeSKU($params[7]), $this->sanitizeSKU($params[0]))) $errors[7] = ('Hranu provou nelze použít! Neprošla filtrem.');
         }
         
         if($params[8] !== ''){
-            if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[8]))) $errors[8] = ('Nenalezeno SKU hrany levé!');            
+            if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[8]))) $errors[8] = ('Nenalezeno SKU hrany levé!');
+            if(!$this->filter_hrana($this->sanitizeSKU($params[8]), $this->sanitizeSKU($params[0]))) $errors[8] = ('Hranu levou nelze použít! Neprošla filtrem.');
         }
         
         if(!empty($errors)){
@@ -131,14 +144,10 @@ $converted[$key]['hrana'] = $this->get_hrana_option($converted[$key]['lamino_id'
     }
     
     private function load_data(){
-        //$file_data = file_get_contents($_FILES['file']['tmp_name']);
-//$file_data = file_get_contents('/var/www/html/wordpress/satniky_LTD.csv');
+//        $file_data = file_get_contents($_FILES['file']['tmp_name']);
 $file_data = file_get_contents('/var/www/html/wordpress/satniky_LTD_no_error.csv');
-//$file_data = file_get_contents('/var/www/html/wordpress/satniky_LTD_one_error.csv');
-//$file_data = file_get_contents('/var/www/html/wordpress/satniky_LTD_syntax_error.csv');
 
         $utf8EncodedData = iconv('Windows-1250', 'UTF-8', $file_data);
-
         return($utf8EncodedData); 
     }    
 }

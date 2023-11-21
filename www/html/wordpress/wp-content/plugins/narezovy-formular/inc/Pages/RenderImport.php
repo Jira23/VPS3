@@ -30,8 +30,8 @@ class RenderImport extends PagesContoller{
         </form>
 <button type="button" id="test">Click</button>
         <div id="results" hidden></div>
+        
     <?php
     }
-
 }
 

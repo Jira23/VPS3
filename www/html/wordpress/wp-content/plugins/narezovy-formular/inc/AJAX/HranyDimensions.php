@@ -180,7 +180,7 @@ if($_SERVER['SERVER_ADDR'] == '194.182.64.183') $related_items = array(0 => arra
             return $products;
         }
         
-        private function filter_hrany($hrany, $is_PDK, $tupl){
+        public function filter_hrany($hrany, $is_PDK, $tupl){
             foreach ($hrany as $key => $hrana ) {
 
                 if($hrana->get_attribute('pa_provedeni') == 'S lepidlem') unset($hrany[$key]);      // vyrazuju produkty, ktere maji parametr "Provedeni" = "S lepidlem"

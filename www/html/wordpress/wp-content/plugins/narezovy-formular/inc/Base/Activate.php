@@ -104,6 +104,9 @@ class Activate{
                 hrana_prava TINYTEXT NULL,
                 hrana_dolni TINYTEXT NULL,
                 tupl ENUM('NE', '30mm', '36mm', '36mm-bila'),
+                fig_name TINYTEXT NULL,
+                fig_part_code TINYTEXT NULL,
+                fig_formula TINYTEXT NULL,
                 PRIMARY KEY  (id)
             ) $charset_collate;";
 
