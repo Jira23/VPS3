@@ -21,10 +21,11 @@ class ImportPro100 {
             $lines = explode(PHP_EOL, $csv_data);
             $errors = [];
             foreach ($lines as $line) {
+                if($line == '') continue;
                 $errors[] = $this->check_item_params(explode(';', $line));
             }
-        
-            $converted_data = $this->convert_data($lines);
+
+            $converted_data = array_reverse($this->convert_data($lines));       // reversing to be in same order as in csv file
 
             $to_return = ['data' => $converted_data, 'errors' => $errors];
             return $to_return;
@@ -38,6 +39,7 @@ class ImportPro100 {
  
         $converted = [];
         foreach ($lines as $key => $line) {
+            if($line == '') continue;
             $columns = explode(';', $line);
             $converted[$key]['lamino_id'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[0]));
             $converted[$key]['nazev_dilce'] = sanitize_text_field($columns[1]);
@@ -45,10 +47,11 @@ class ImportPro100 {
             $converted[$key]['delka_dilu'] = (int)$columns[2];
             $converted[$key]['sirka_dilu'] = (int)$columns[3];
             $converted[$key]['ks'] = (int)$columns[4];
-            $converted[$key]['hrana_dolni'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[5]));
-            $converted[$key]['hrana_horni'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[6]));
-            $converted[$key]['hrana_prava'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[7]));
-            $converted[$key]['hrana_leva'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[8]));
+            $converted[$key]['orientace'] = (strtolower($columns[5]) == 'ano') ? 1 : 0;
+            $converted[$key]['hrana_dolni'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[6]));
+            $converted[$key]['hrana_horni'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[7]));
+            $converted[$key]['hrana_prava'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[8]));
+            $converted[$key]['hrana_leva'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[9]));
             
             $converted[$key]['hrana'] = $this->get_hrana_option($converted[$key]['lamino_id'], [$converted[$key]['hrana_dolni'], $converted[$key]['hrana_horni'], $converted[$key]['hrana_prava'], $converted[$key]['hrana_leva']]);
             $converted[$key]['hrana_id'] = $this->get_hrana_id([$converted[$key]['hrana_dolni'], $converted[$key]['hrana_horni'], $converted[$key]['hrana_prava'], $converted[$key]['hrana_leva']]);
@@ -101,7 +104,7 @@ class ImportPro100 {
     private function check_item_params($params){
 
         $errors = array();
-
+        
         if($params[0] == '') $errors[0] = ('Není zadáné SKU desky!');
         if($params[2] == '') $errors[2] = ('Není zadána délka desky!');
         if($params[3] == '') $errors[3] = ('Není zadána šířka desky!');
@@ -111,24 +114,24 @@ class ImportPro100 {
             if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[0]))) $errors[0] = ('Nenalezeno SKU desky!');
         }
         
-        if($params[5] !== ''){
-            if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[5]))) $errors[5] = ('Nenalezeno SKU hrany přední!');
-            if(!$this->filter_hrana($this->sanitizeSKU($params[5]), $this->sanitizeSKU($params[0]))) $errors[5] = ('Hranu přední nelze použít! Neprošla filtrem.');
+        if($this->sanitizeSKU($params[6]) !== ''){
+            if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[6]))) $errors[6] = ('Nenalezeno SKU hrany přední!');
+            if(!$this->filter_hrana($this->sanitizeSKU($params[6]), $this->sanitizeSKU($params[0]))) $errors[6] = ('Hranu přední nelze použít! Neprošla filtrem.');
         }
         
-        if($params[6] !== ''){
-            if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[6]))) $errors[6] = ('Nenalezeno SKU hrany zadní!');
-            if(!$this->filter_hrana($this->sanitizeSKU($params[6]), $this->sanitizeSKU($params[0]))) $errors[6] = ('Hranu zadní nelze použít! Neprošla filtrem.');
+        if($this->sanitizeSKU($params[7]) !== ''){
+            if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[7]))) $errors[7] = ('Nenalezeno SKU hrany zadní!');
+            if(!$this->filter_hrana($this->sanitizeSKU($params[7]), $this->sanitizeSKU($params[0]))) $errors[7] = ('Hranu zadní nelze použít! Neprošla filtrem.');
         }
         
-        if($params[7] !== ''){
-            if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[7]))) $errors[7] = ('Nenalezeno SKU hrany pravé!');            
-            if(!$this->filter_hrana($this->sanitizeSKU($params[7]), $this->sanitizeSKU($params[0]))) $errors[7] = ('Hranu provou nelze použít! Neprošla filtrem.');
+        if($this->sanitizeSKU($params[8]) !== ''){
+            if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[8]))) $errors[8] = ('Nenalezeno SKU hrany pravé!');            
+            if(!$this->filter_hrana($this->sanitizeSKU($params[8]), $this->sanitizeSKU($params[0]))) $errors[8] = ('Hranu provou nelze použít! Neprošla filtrem.');
         }
         
-        if($params[8] !== ''){
-            if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[8]))) $errors[8] = ('Nenalezeno SKU hrany levé!');
-            if(!$this->filter_hrana($this->sanitizeSKU($params[8]), $this->sanitizeSKU($params[0]))) $errors[8] = ('Hranu levou nelze použít! Neprošla filtrem.');
+        if($this->sanitizeSKU($params[9]) !== ''){
+            if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[9]))) $errors[9] = ('Nenalezeno SKU hrany levé!');
+            if(!$this->filter_hrana($this->sanitizeSKU($params[9]), $this->sanitizeSKU($params[0]))) $errors[9] = ('Hranu levou nelze použít! Neprošla filtrem.');
         }
         
         if(!empty($errors)){
@@ -138,16 +141,21 @@ class ImportPro100 {
         }
     }
     
-    // vybere z retezce pouze cisla. Nemohu pouzit (int) - nektera SKU zacinaji nulou
     private function sanitizeSKU($sku){
-        return (preg_replace('/[^0-9]/', '', $sku));
+
+        $int_sku = preg_replace('/[^0-9]/', '', $sku);
+        if($int_sku == '') return '';
+        $five_digits = str_pad(substr($int_sku, 0, 5), 5, '0', STR_PAD_LEFT);               // adds zeros in the beginning of nuber if its not 5 digits format
+        return $five_digits;
     }
     
     private function load_data(){
-//        $file_data = file_get_contents($_FILES['file']['tmp_name']);
-$file_data = file_get_contents('/var/www/html/wordpress/satniky_LTD_no_error.csv');
-
+        $file_data = file_get_contents($_FILES['file']['tmp_name']);
+//$file_data = file_get_contents('/var/www/html/wordpress/satniky_LTD_no_error.csv');
+//$file_data = file_get_contents('/var/www/html/wordpress/import_test.csv');
+        
         $utf8EncodedData = iconv('Windows-1250', 'UTF-8', $file_data);
+        
         return($utf8EncodedData); 
     }    
 }

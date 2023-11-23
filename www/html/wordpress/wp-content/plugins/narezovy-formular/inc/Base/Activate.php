@@ -99,6 +99,7 @@ class Activate{
                 ks INT(11),
                 delka_dilu INT(11),
                 sirka_dilu INT(11),
+                orientace ENUM('0', '1'),
                 hrana_horni TINYTEXT NULL,
                 hrana_leva TINYTEXT NULL,
                 hrana_prava TINYTEXT NULL,

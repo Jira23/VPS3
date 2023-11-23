@@ -28,7 +28,7 @@ class RenderImport extends PagesContoller{
         <form id="file-upload-form" method="post" enctype="multipart/form-data">
             <input name="file" type="file" id="file-input" accept=".csv" style="display: none;" />
         </form>
-<button type="button" id="test">Click</button>
+<!--button type="button" id="test">Click</button-->
         <div id="results" hidden></div>
         
     <?php

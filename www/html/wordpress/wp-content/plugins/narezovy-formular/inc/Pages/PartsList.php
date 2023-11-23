@@ -39,8 +39,9 @@ class PartsList extends RenderEditor {
             echo '<td style="width: 15%"><a href="?form_id=' .$this->form_id .'&part_id=' .$row->id .'">' .$this->get_deska_name_by_id($row->lamino_id) .'</a></td>';
             echo '<td style="width: 10%"><a href="?form_id=' .$this->form_id .'&part_id=' .$row->id .'">' .$row->nazev_dilce .'</a></td>';
             echo '<td style="width: 5%">' .$row->ks .'</td>';
-            echo '<td style="width: 10%">' .$row->delka_dilu .'</td>';
-            echo '<td style="width: 8%">' .$row->sirka_dilu .'</td>';
+            echo '<td style="width: 7%">' .$row->delka_dilu .'</td>';
+            echo '<td style="width: 7%">' .$row->sirka_dilu .'</td>';
+            echo '<td style="width: 8%">' . ($row->orientace == 1 ? 'ANO' : 'NE') . '</td>';
             echo '<td style="width: 8%">' .($row->hrana_dolni != 0 ? $this->get_hrana_name_by_id($row->hrana_dolni, true) : '') .'</td>';
             echo '<td style="width: 8%">' .($row->hrana_horni != 0 ? $this->get_hrana_name_by_id($row->hrana_horni, true) : '') .'</td>';
             echo '<td style="width: 8%">' .($row->hrana_prava != 0 ? $this->get_hrana_name_by_id($row->hrana_prava, true) : '') .'</td>';
@@ -65,8 +66,9 @@ class PartsList extends RenderEditor {
                         <th style="width: 15%">Lamino</th>
                         <th style="width: 10%">Název dílu</th>
                         <th style="width: 5%">Počet</th>
-                        <th style="width: 10%">Délka dílu</th>
-                        <th style="width: 8%">Šířka dílu</th>
+                        <th style="width: 7%">Délka</th>
+                        <th style="width: 7%">Šířka</th>
+                        <th style="width: 8%">Orien.</th>
                         <th style="width: 8%">Hrana přední</th>
                         <th style="width: 8%">Hrana zadní</th>
                         <th style="width: 8%">Hrana pravá</th>

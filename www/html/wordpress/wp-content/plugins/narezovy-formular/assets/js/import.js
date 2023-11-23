@@ -24,7 +24,7 @@ jQuery(document).ready(function($) {
             var file = files[0];
 
             if (file.name.endsWith('.csv')) {                                   // Check if the selected file has the correct extension
-                $('#file-drop-area').hide(500);
+                showWaitingIcon($('#file-drop-area'));
                 var formData = new FormData();
                 formData.append('file', file);
                 formData.append('action', 'import_upload');
@@ -48,7 +48,7 @@ jQuery(document).ready(function($) {
             var file = fileInput.files[0];
 
             if (file.name.endsWith('.csv')) {                                   // Check if the selected file has the correct extension
-                $('#file-drop-area').hide(500);
+                showWaitingIcon($('#file-drop-area'));
                 var formData = new FormData($('#file-upload-form')[0]);
                 formData.append('action', 'import_upload');
                 ajaxRequest(formData, $('#results'));                           // Perform the AJAX request with the formData
@@ -79,6 +79,7 @@ jQuery(document).ready(function($) {
             contentType: false,            
             success: function (response) {
                 if (request === latestRequest && target === latestTarget) {     // Check if this is the response for the latest request
+                    $('#file-drop-area').hide(500);
                     target.html(response);
                     target.show(500);
                 }
@@ -86,28 +87,11 @@ jQuery(document).ready(function($) {
         });
     }
     
-        $('#file-upload-form').on('submit', function (e) {
-            e.preventDefault();
-
-            var formData = new FormData(this);
-            formData.append('action', 'import_upload');                         // Set the 'action' parameter
-            var ajaxUrl = getWpUrl() + 'wp-admin/admin-ajax.php';
-
-            $.ajax({
-                url: ajaxUrl,
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    $('#results').html(response);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    $('#results').html('<h2>Náhrání souboru se nezdařilo.</h2>');
-            }
-        });
-    });
-    
+    function showWaitingIcon(target) {
+        target.html('<h3>Importuji...</h3>');
+        target.append('<img width="200" id="loadingIcon" src="' + getWpUrl() + '/wp-content/plugins/narezovy-formular/assets/img/Loading_icon.gif" />');        
+    };    
+   
 // jen testovaci kod, pak smazat
 $('#test').on('click', function () {
     var formData = new FormData($('#file-upload-form')[0]);

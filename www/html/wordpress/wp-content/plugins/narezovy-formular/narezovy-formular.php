@@ -49,6 +49,7 @@ define('NF_PAGE_IMPORT_OPTION_NAME', 'narezovy_fromular_page_import_id');
 // tables
 define('NF_FORMULARE_TABLE', $wpdb->prefix .'nf_formulare');
 define('NF_DILY_TABLE', $wpdb->prefix .'nf_dily');
+define('NF_OPT_RESULTS_TABLE', $wpdb->prefix .'nf_opt_results');
 
 define( 'DENIDED_CATEGORIES',  array(                                           // kategories, not be visible on deska selection
     'Spárovky - přířezy', 

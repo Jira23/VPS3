@@ -356,7 +356,9 @@ $parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id`
     private function get_hrana_icon(){
         $hrana_id = $this->current_part['hrana_id'] ?? $this->get_last_hrana_value();
         if($hrana_id == '' || $hrana_id == '0') return;
-        return wp_get_attachment_image_src(wc_get_product($hrana_id)->get_image_id())[0];
+        $image_id = wc_get_product($hrana_id)->get_image_id();
+        if($image_id == '') return $this->plugin_url .'assets/img/no_img_icon.png';
+        return wp_get_attachment_image_src($image_id)[0];
     }    
     
 }

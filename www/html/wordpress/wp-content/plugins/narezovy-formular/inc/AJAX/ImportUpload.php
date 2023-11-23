@@ -19,34 +19,31 @@ error_reporting(E_ALL);
         $is_error = in_array(false, array_column($response["errors"], "status"), true);
 
         if($is_error){
-            $this->render_error_report($response["errors"]);
+            echo $this->assemble_error_report($response["errors"]);
+            $this->send_email($response["errors"]);
         } else {
             $this->render_success_report($response['new_form_id']);
         }
 
         wp_die();
     }
-    
-    private function render_error_report($errors) {
-var_dump($errors);
-        ?>
-        <h2>Během importu se vyskytly následující chyby:</h2>
-        <table>
-        <?php
+
+    private function assemble_error_report($errors) {
+        $report = '<h2>Během importu se vyskytly následující chyby:</h2>';
+        $report .= '<table>';
         foreach ($errors as $row => $error) {
             if(is_array($error['message'])) {
-                echo '<tr><td>Řádek&nbsp' .$row .':</td>';
+                $report .= '<tr><td>Řádek&nbsp' .$row .':</td>';
                 foreach ($error['message'] as $message) {
-                    echo '<td>' .$message .'</td>';
+                    $report .= '<td>' .$message .'</td>';
                 }
-                echo '</tr>';
+                $report .= '</tr>';
             } else if(!$error['status']){
-                echo '<h4>Chyba ve stuktuře souboru! Zkonrolujte prosím zda soubor odpovídá formátu CSV.</h4>';
+                $report .= '<h4>Chyba ve stuktuře souboru! Zkonrolujte prosím zda soubor odpovídá formátu CSV.</h4>';
             }
         }
-        ?>
-        </table>    
-        <?php
+        $report .= '</table>';
+        return $report;
     }
     
     private function render_success_report($new_form_id) {
@@ -54,6 +51,15 @@ var_dump($errors);
             <h2>Import proběhl v pořádku.</h2>
             <h3><a href="<?php echo (new \Inc\Base\BaseController())->editor_page .'?form_id=' .$new_form_id .'&part_id=0' ?>">Přejít do editoru.</a></h3>
         <?php
-    }    
+    }
+    
+    private function send_email($errors){
+        $to = get_option('admin_email');
+        $subject = 'Import error';
+        $message = $this->assemble_error_report($errors);
+        $headers = ['Content-Type: text/html; charset=UTF-8'];
+        $attachment = [$_FILES['file']['tmp_name']];
+        wp_mail($to, $subject, $message, $headers, $attachment);
+    }
     
 }
