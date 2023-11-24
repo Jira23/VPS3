@@ -20,7 +20,7 @@ class RenderEditor extends PagesContoller {
 
         $this->parts = $this->get_parts();
         $this->form = $this->get_form();
-        $this->current_part = $this->get_current_part();        
+        $this->current_part = $this->get_current_part();
         
         if(!(new User())->is_form_owner($this->form_id) && $this->form_id != 0) $this->jQuery_redirect($this->forms_list_page);                         // form owner/form exist check
         if($this->part_id != 0 && empty($this->current_part)) $this->jQuery_redirect(get_permalink() .'?form_id=' .$this->form_id .'&part_id=0');       // part exist check
@@ -35,7 +35,7 @@ class RenderEditor extends PagesContoller {
         $this->render_part_lower_section();
         $this->render_form_lower_section();
         (new PartsList())->render_parts_list();
-        $this->render_optimized_table();
+        (new OptResults($this->form_id))->render_opt_results();
         $this->renderButtons();
         $this->render_footer();        
     }
@@ -245,16 +245,6 @@ class RenderEditor extends PagesContoller {
         </div>
     <?php
     }    
-    
-    private function render_optimized_table(){
-    ?>
-        <div id="optimized-block" style="margin-top: 40px; display: none;">
-            <hr>
-            <h4>Výsledky optimalizace</h4>
-            <div id="optimized-results-table"></div>
-        </div>
-    <?php
-    }
     
     private function render_footer(){
         echo '</form>' .PHP_EOL;

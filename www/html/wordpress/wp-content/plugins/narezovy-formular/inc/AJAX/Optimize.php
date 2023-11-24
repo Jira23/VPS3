@@ -9,6 +9,7 @@ namespace Inc\AJAX;
 class Optimize {
     
     const ARDIS_SERVER_URL = 'https://ardis.drevoobchoddolezal.cz/';
+    const ARDIS_SERVER_IMG_PATH = self::ARDIS_SERVER_URL .'img/';
     
     public function optimize() {
 
@@ -21,7 +22,7 @@ error_reporting(E_ALL);
         $this->form_id = (int)$_POST['form_id'];
         $parts = $parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` DESC");
         $form = $wpdb->get_results("SELECT * FROM `" .NF_FORMULARE_TABLE ."` WHERE `id` LIKE '" .$this->form_id ."'")[0];
-        $plotny = $this->getPlotny($parts);
+        $plotny = $this->get_plotny($parts);
 
         $response = $this->send_request(['form' => $form, 'parts' => $parts, 'plotny' => $plotny]);
 
@@ -56,10 +57,10 @@ error_reporting(E_ALL);
     }
     
     private function response_handler($response_body){
-        echo '<pre>';
-        var_dump($response_body['ItemsList']);
-        echo '</pre>';
-        //$response_body = ''
+        $converted_response = $this->convert_response($response_body);
+        $this->save_response($converted_response);
+        (new \Inc\Pages\OptResults($this->form_id))->render_table();
+        wp_die();
     }
     
     private function report_error($error){
@@ -67,11 +68,11 @@ error_reporting(E_ALL);
         $to = get_option('admin_email');
         $subject = 'Optimization error';
         $message = 'Při optimalizaci formluláře id:' .$this->form_id .' se vyskytla následující chyba:' .PHP_EOL .$error;
-//        wp_mail($to, $subject, $message);
-        die();
+        wp_mail($to, $subject, $message);
+        wp_die();
     }
 
-    private function getPlotny($parts){
+    private function get_plotny($parts){
         
         foreach ($parts as $part) {
             $parts_ids[] = $part->lamino_id;
@@ -95,6 +96,36 @@ error_reporting(E_ALL);
         }
        
        return $plotny;
+    }
+    
+    private function convert_response($response_body){
+       
+        foreach ($response_body['Layouts'] as $key => $item) {
+            $layouts[] = self::ARDIS_SERVER_IMG_PATH .$item['OrderId'] .'/' .basename($item['ImgPath']);
+        }
+        
+        foreach ($response_body['ItemsList'] as $key => $item) {
+            $converted[$key]['form_id'] = $this->form_id;
+            $converted[$key]['order_id'] = $item['MpsId'];
+            $converted[$key]['item_id'] = $item['ItemCode'];
+            $converted[$key]['quantity'] = $item['Quantity'];
+            $converted[$key]['price'] = $item['Price'];
+            $converted[$key]['layouts'] = json_encode($layouts);
+        }
+        return $converted;
+    }
+    
+    private function save_response($response){
+        global $wpdb;
+        $order_exists = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " .NF_OPT_RESULTS_TABLE ." WHERE form_id = %d", $this->form_id ));
+        
+        if($order_exists != 0){                                                 // there is no order with this form_id in db, remove it so it can be "updated"
+            $wpdb->delete(NF_OPT_RESULTS_TABLE, ['form_id' => $this->form_id]);
+        }
+        
+        foreach ($response as $item) {
+            $wpdb->insert(NF_OPT_RESULTS_TABLE,  $item);
+        }        
     }
     
 }

@@ -13,6 +13,7 @@ class Activate{
         $activator->insert_posts();                                             // add posts (pages)
         $activator->create_formulare_table();                                   // add tables
         $activator->create_dily_table();
+        $activator->create_opt_results_table();
     }
 
     private function insert_posts() {
@@ -57,7 +58,7 @@ class Activate{
     
     public function create_formulare_table() {
         global $wpdb;
-        $table_name = $wpdb->prefix .NF_FORMULARE_TABLE;
+        $table_name = NF_FORMULARE_TABLE;
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
             $charset_collate = $wpdb->get_charset_collate();
@@ -83,7 +84,7 @@ class Activate{
     
     private function create_dily_table() {
         global $wpdb;
-        $table_name = $wpdb->prefix .NF_DILY_TABLE;
+        $table_name = NF_DILY_TABLE;
 
         if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
             $charset_collate = $wpdb->get_charset_collate();
@@ -114,6 +115,31 @@ class Activate{
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
-    }    
+    }
+
+    private function create_opt_results_table() {
+
+        global $wpdb;
+        $table_name = NF_OPT_RESULTS_TABLE;
+
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+            $charset_collate = $wpdb->get_charset_collate();
+
+            $sql = "CREATE TABLE $table_name (
+                id mediumint(9) NOT NULL AUTO_INCREMENT,
+                form_id INT(11),
+                order_id TINYTEXT,
+                item_id TINYTEXT,
+                quantity INT(11),
+                price FLOAT,
+                layouts TEXT,
+                modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY  (id)
+            ) $charset_collate;";
+
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
+    }     
     
 }
