@@ -31,6 +31,7 @@ error_reporting(E_ALL);
         if(isset($response_data['state']) && $response_data['state'] === 'success'){
             $this->response_handler($response_data['body']);
         } else {
+var_dump($response);            
             $this->report_error('Ardis error at ' .date('d.m.Y H:i'));
         }
         

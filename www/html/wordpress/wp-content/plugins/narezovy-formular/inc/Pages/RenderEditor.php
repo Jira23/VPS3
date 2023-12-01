@@ -216,6 +216,16 @@ class RenderEditor extends PagesContoller {
                 'select-hrana-dolni' => $this->current_part['hrana_dolni'] ?? null
                  ]) ?></div>
             </div>
+
+            <div class="form-section">    
+                <?php $this->checkbox->render_checkbox('orientace'); ?>
+            </div>
+            <div class="form-section" style="display: inline-block; margin-bottom: 0px; margin-right: 50px;">
+                <?php $this->input->render_input('fig_name', $this->current_part['fig_name'] ?? null);?>
+                <?php $this->input->render_input('fig_part_code', $this->current_part['fig_part_code'] ?? null);?>
+                <?php $this->input->render_input('fig_formula', $this->current_part['fig_formula'] ?? null);?>
+            </div>        
+        
         </div>         
         <div style="text-align: left;">    
             <?php 

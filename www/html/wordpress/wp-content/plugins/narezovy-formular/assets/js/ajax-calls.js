@@ -43,6 +43,7 @@ jQuery(document).ready(function($) {
     // AJAX dotaz, nacte vysledek optimalizace
     $("button[name='btn_poptat']").click(function() {
         $('#optimized-block').show();
+        $('#optimized-results-table').html('');
         showWaitingIcon($('#optimized-results-table'), true);
         $('#optimized-results-table').append('<h5>Probíhá optimalizace. Při velkém počtu dílů může trvat i několik minut.</h5>');
         

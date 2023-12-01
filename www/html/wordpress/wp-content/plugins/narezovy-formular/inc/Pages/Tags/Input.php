@@ -122,6 +122,36 @@ class Input {
                     'tabindex' => '11',
                     'required' => ''                    
                 ]
+            ],
+            'fig_name' => [
+                'name'   => 'dil[fig_name]',
+                'label' => 'Figura:',
+                'value' => null,
+                'attrs' => [
+                    'type' => 'text',
+                    'style' => 'width:150px;',
+                    'tabindex' => '13',
+                ]
+            ],
+            'fig_part_code' => [
+                'name'   => 'dil[fig_part_code]',
+                'label' => 'Dílec:',
+                'value' => null,
+                'attrs' => [
+                    'type' => 'text',
+                    'style' => 'width:150px;',
+                    'tabindex' => '14',
+                ]
+            ],
+            'fig_formula' => [
+                'name'   => 'dil[fig_formula]',
+                'label' => 'Vzorec:',
+                'value' => null,
+                'attrs' => [
+                    'type' => 'text',
+                    'style' => 'width:150px;',
+                    'tabindex' => '15',
+                ]
             ]            
         ];
 

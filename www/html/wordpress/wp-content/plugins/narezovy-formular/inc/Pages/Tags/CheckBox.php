@@ -33,6 +33,12 @@ class CheckBox {
                 'label' => 'Souhlasím s <a href="/obchodni-a-technicke-podminky-vyroby-rezani/">obchodními podmínkami</a>.',
                 'checked' => false,
                 'attrs' => []
+            ],
+            'orientace' => [
+                'id' => 'orientace',
+                'label' => 'Směr vláken',
+                'checked' => false,
+                'attrs' => ['name' => 'orientace']
             ]            
         ];
 
