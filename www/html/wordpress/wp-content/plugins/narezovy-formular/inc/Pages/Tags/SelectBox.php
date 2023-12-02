@@ -174,7 +174,20 @@ class SelectBox {
                     'style' => 'width:250px;',
                     'tabindex' => '12'
                 ]
-            ]
+            ],
+            'orientace' => [
+                'name'  => 'dil[orientace]',
+                'label' => 'Směr vláken',
+                'options' => [
+                    '0' => 'Ne',
+                    '1' => 'Ano'
+                ],
+                'attrs' => [
+                    'id' => 'orientace',
+                    'style' => 'width:250px;',
+                    'tabindex' => '12'
+                ]                
+            ]             
         ];
 
         return $select_box[$select_box_id];

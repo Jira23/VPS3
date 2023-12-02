@@ -15,6 +15,7 @@ class Enqueue extends BaseController {
         wp_enqueue_style('nf-pluginstyle', $this->plugin_url . 'assets/css/narezovy-formular.css');
         wp_enqueue_style('nf-pickletree-pluginstyle', $this->plugin_url . 'assets/css/pickletree.css');
         wp_enqueue_style('nf-query-ui-pluginstyle', $this->plugin_url . 'assets/css/jquery-ui.css');
+        wp_enqueue_style('nf-lightbox-css', $this->plugin_url . 'assets/css/simple-lightbox.css');        
         wp_enqueue_script('nf-pickletree', $this->plugin_url . 'assets/js/pickletree.js');
         wp_enqueue_script('nf-ajax-calls', $this->plugin_url . 'assets/js/ajax-calls.js');
         wp_enqueue_script('nf-pickletree-helpers', $this->plugin_url . 'assets/js/pickletree-helpers.js');
@@ -23,5 +24,7 @@ class Enqueue extends BaseController {
         wp_enqueue_script('nf-form-utils', $this->plugin_url . 'assets/js/form-utils.js');
         wp_enqueue_script('nf-jquery-ui', $this->plugin_url . 'assets/js/jquery-ui.js');
         wp_enqueue_script('nf-import', $this->plugin_url . 'assets/js/import.js');
+        wp_enqueue_script('nf-lightbox-js', $this->plugin_url . 'assets/js/simple-lightbox.jquery.js');        
+        wp_enqueue_script('nf-lightbox-js-helpers', $this->plugin_url . 'assets/js/simple-lightbox-helpers.js');        
     }
 }

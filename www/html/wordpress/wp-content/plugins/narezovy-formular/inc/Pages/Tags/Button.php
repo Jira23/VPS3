@@ -44,11 +44,11 @@ class Button {
                     'type' => 'input'
                 ]
             ],
-            'poptat' => [
-                'text' => 'Poptat cenu',
+            'optimalizovat' => [
+                'text' => 'optimalizovat',
                 'disabled' => null,
                 'attrs' => [
-                    'name' => 'btn_poptat',
+                    'name' => 'btn_optimalizovat',
                     'class' => 'button button-main',
                     'type' => 'button'
                 ]

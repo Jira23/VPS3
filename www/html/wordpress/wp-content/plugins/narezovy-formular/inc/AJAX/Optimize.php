@@ -10,6 +10,8 @@ class Optimize {
     
     const ARDIS_SERVER_URL = 'https://ardis.drevoobchoddolezal.cz/';
     const ARDIS_SERVER_IMG_PATH = self::ARDIS_SERVER_URL .'img/';
+    const PLOTNA_TUPL_30 = 58910;
+    const PLOTNA_TUPL_30_BILA = 52462;
     
     public function optimize() {
 
@@ -54,7 +56,7 @@ var_dump($response);
             $this->report_error('file_get_content() returned false!');
         } else {
             return $result;
-        }        
+        }  
     }
     
     private function response_handler($response_body){
@@ -81,6 +83,8 @@ var_dump($response);
             if ($part->hrana_leva != 0) $parts_ids[] = $part->hrana_leva;
             if ($part->hrana_prava != 0) $parts_ids[] = $part->hrana_prava;
             if ($part->hrana_dolni != 0) $parts_ids[] = $part->hrana_dolni;
+            if ($part->tupl == '30mm') $parts_ids[] = PLOTNA_TUPL_30;                   
+            if ($part->tupl == '36mm-bila') $parts_ids[] = PLOTNA_TUPL_30_BILA;         
         }
         
         $unique_ids = array_unique($parts_ids);
@@ -105,6 +109,7 @@ var_dump($response);
             $layouts[] = self::ARDIS_SERVER_IMG_PATH .$item['OrderId'] .'/' .basename($item['ImgPath']);
         }
         
+        $converted = [];
         foreach ($response_body['ItemsList'] as $key => $item) {
             $converted[$key]['form_id'] = $this->form_id;
             $converted[$key]['order_id'] = $item['MpsId'];

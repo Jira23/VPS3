@@ -40,41 +40,57 @@ class OptResults {
     private function render_table_head(){
     ?>
         <div style="overflow-x: auto;">
-            <table class="shop_table cart wishlist_table wishlist_view traditional responsive">
-                <thead style="display: block;">
-                    <th style="width: 60%">Položka</th>
+            <table class="result-table">
+                <thead>
+                    <th style="width: 40%">Položka</th>
                     <th style="width: 20%">Cena</th>
                     <th style="width: 20%">Množství</th>
+                    <th style="width: 20%">Celkem</th>
                 </thead>
     <?php
     }
     
     private function render_table_content(){
-        echo '<tbody style="overflow: auto;">';
+        echo '<tbody>';
+        $big_total = 0;
         foreach ($this->opt_results as $row) {
+            $row_total = (float)$row->price * (float)$row->quantity;
             echo '<tr>';
-            echo '<td style="width: 60%">' . (($row->item_id[0] != 'Z') ? get_post($row->item_id)->post_title : $row->item_id ) . '</td>';          // IDs starting with 'Z' are not products
+            echo '<td style="width: 40%">' . (($row->item_id[0] != 'Z') ? get_post($row->item_id)->post_title : $row->item_id ) . '</td>';          // IDs starting with 'Z' are not products
             echo '<td style="width: 20%">' .$row->price .'</td>';            
             echo '<td style="width: 20%">' .$row->quantity .'</td>';
+            echo '<td style="width: 20%" class="item-total">' .$row_total .'</td>';
             echo '</tr>';
-        }   
+            $big_total += $row_total;            
+        }
+
         echo '</tbody>';
         ?>
-            </table></div>
+            <tfoot>
+                <tr>
+                    <td colspan="3">Celkem</td>
+                    <td class="total-cost"><?php echo $big_total; ?></td>
+                </tr>
+            </tfoot>              
+            </table>
+        </div>
         <?php 
     }
     
     private function render_layouts(){
         $layouts = $this->get_orders_layouts();
     ?>
-        <div>
+        <div class="result-gallery">
+            <div class="result-thumbnails">
             <?php
-                foreach ($layouts as $layout_url) {
-                    echo '<img src="' .$layout_url .'" style="max-width: 300px;"/>';
+                if(!empty($layouts)){
+                    foreach ($layouts as $layout_url) {
+                        echo '<a href="'.$layout_url .'"><img src="'.$layout_url .'"/></a>';
+                    }
                 }
             ?>
+            </div>
         </div>
-        
     <?php
     }    
     

@@ -41,13 +41,13 @@ jQuery(document).ready(function($) {
     });    
     
     // AJAX dotaz, nacte vysledek optimalizace
-    $("button[name='btn_poptat']").click(function() {
+    $("button[name='btn_optimalizovat']").click(function() {
         $('#optimized-block').show();
         $('#optimized-results-table').html('');
         showWaitingIcon($('#optimized-results-table'), true);
         $('#optimized-results-table').append('<h5>Probíhá optimalizace. Při velkém počtu dílů může trvat i několik minut.</h5>');
         
-        if($("button[name='btn_poptat']").index(this) === 0) $(window).scrollTop($('#optimized-results-table').offset().top);       // on top button click, scroll down
+        if($("button[name='btn_optimalizovat']").index(this) === 0) $(window).scrollTop($('#optimized-results-table').offset().top);       // on top button click, scroll down
         
         var formId = new URLSearchParams(window.location.search).get('form_id');                            // get form id value from page URL
         var request = {'action': 'optimize', 'form_id' : formId};                                           // pripravim parametry pro AJAX volani

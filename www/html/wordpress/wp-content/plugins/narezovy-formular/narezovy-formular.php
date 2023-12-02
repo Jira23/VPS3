@@ -65,6 +65,8 @@ define( 'DENIDED_CATEGORIES',  array(                                           
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('TOP_CATEGORY_ID', 21) : define('TOP_CATEGORY_ID', 2255);
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PDK_CATEGORY_ID', 44) : define('PDK_CATEGORY_ID', 2276);
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('MDF_LAKOVANE_CATEGORY_ID', 154) : define('MDF_LAKOVANE_CATEGORY_ID', 2405);
+$_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_30', 15567) : define('MDF_LAKOVANE_CATEGORY_ID', 58910);                // L 0113 SM bílá 2800*2070*12
+$_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_30_BILA', 12896) : define('MDF_LAKOVANE_CATEGORY_ID', 52462);           // L 0113 SM bílá 2800*2070*16
 
 // Require once the Composer Autoload
 if ( file_exists( dirname( __FILE__ ) . '/vendor/autoload.php' ) ) {

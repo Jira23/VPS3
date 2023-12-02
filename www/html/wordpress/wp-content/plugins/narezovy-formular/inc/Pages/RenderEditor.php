@@ -218,12 +218,14 @@ class RenderEditor extends PagesContoller {
             </div>
 
             <div class="form-section">    
-                <?php $this->checkbox->render_checkbox('orientace'); ?>
+                <?php $this->select_box->render_select_box('orientace', $this->current_part['orientace'] ?? null); ?>
             </div>
             <div class="form-section" style="display: inline-block; margin-bottom: 0px; margin-right: 50px;">
-                <?php $this->input->render_input('fig_name', $this->current_part['fig_name'] ?? null);?>
-                <?php $this->input->render_input('fig_part_code', $this->current_part['fig_part_code'] ?? null);?>
-                <?php $this->input->render_input('fig_formula', $this->current_part['fig_formula'] ?? null);?>
+                <?php 
+                    $this->input->render_input('fig_name', $this->current_part['fig_name'] ?? null);
+                    $this->input->render_input('fig_part_code', $this->current_part['fig_part_code'] ?? null);
+                    $this->input->render_input('fig_formula', $this->current_part['fig_formula'] ?? null);
+                ?>
             </div>        
         
         </div>         
@@ -267,7 +269,7 @@ class RenderEditor extends PagesContoller {
 
         // buttons will be disabled if there are no records in db
         if($user->is_registered()) empty($this->parts) ? $this->button->render_button('ulozit', 'disabled') : $this->button->render_button('ulozit');
-        empty($this->parts) ? $this->button->render_button('poptat', 'disabled') : $this->button->render_button('poptat');
+        empty($this->parts) ? $this->button->render_button('optimalizovat', 'disabled') : $this->button->render_button('optimalizovat');
         empty($this->parts) ? $this->button->render_button('odeslat', 'disabled') : $this->button->render_button('odeslat');
             
         if($user->is_registered()) {
