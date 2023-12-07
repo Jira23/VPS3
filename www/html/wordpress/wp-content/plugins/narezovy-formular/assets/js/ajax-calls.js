@@ -51,7 +51,7 @@ jQuery(document).ready(function($) {
         
         var formId = new URLSearchParams(window.location.search).get('form_id');                            // get form id value from page URL
         var request = {'action': 'optimize', 'form_id' : formId};                                           // pripravim parametry pro AJAX volani
-        ajaxRequest(request, $("#optimized-results-table"));                                           // zavolam AJAX a vykreslim vysledek
+        ajaxRequest(request, $("#optimized-results-table"));                                                // zavolam AJAX a vykreslim vysledek
     });    
     
     function getWpUrl(){

@@ -51,7 +51,7 @@ var_dump($response);
 
         $context  = stream_context_create($options);
         $result = file_get_contents(self::ARDIS_SERVER_URL, false, $context);
-
+//var_dump($result);
         if ($result === FALSE) {
             $this->report_error('file_get_content() returned false!');
         } else {
@@ -104,7 +104,7 @@ var_dump($response);
     }
     
     private function convert_response($response_body){
-       
+        
         foreach ($response_body['Layouts'] as $key => $item) {
             $layouts[] = self::ARDIS_SERVER_IMG_PATH .$item['OrderId'] .'/' .basename($item['ImgPath']);
         }
