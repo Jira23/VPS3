@@ -58,21 +58,14 @@ jQuery(document).ready(function($) {
             }
         }
     });
-
-    function getWpUrl(){
-        var currentUrl = window.location.href;
-        var matches = currentUrl.match(/^(https?:\/\/[^/]+\/[^/]+\/)/);         // Extract the WordPress installation directory (the part after the host and before any query parameters)                
-        return (matches[1]);
-    }  
     
     function ajaxRequest (request, target) {
-        var ajaxUrl = getWpUrl() + 'wp-admin/admin-ajax.php';
 
         latestRequest = request;                                                // used for strategy to show last request if there are multiple
         latestTarget = target;
 
         jQuery.ajax({
-            url: ajaxUrl,
+            url: NF_ajaxUrl,
             type: 'POST',
             data: request,
             processData: false,
@@ -89,7 +82,7 @@ jQuery(document).ready(function($) {
     
     function showWaitingIcon(target) {
         target.html('<h3>Importuji...</h3>');
-        target.append('<img width="200" id="loadingIcon" src="' + getWpUrl() + '/wp-content/plugins/narezovy-formular/assets/img/Loading_icon.gif" />');        
+        target.append('<img width="200" id="loadingIcon" src="' + NF_wpUrl + '/wp-content/plugins/narezovy-formular/assets/img/Loading_icon.gif" />');        
     };    
    
 // jen testovaci kod, pak smazat

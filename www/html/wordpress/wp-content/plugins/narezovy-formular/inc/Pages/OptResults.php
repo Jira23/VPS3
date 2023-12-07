@@ -11,6 +11,9 @@ error_reporting(E_ALL);
 
 class OptResults {
     
+    public $form_id;
+    public $opt_results;
+    
     public function __construct($form_id) {
         $this->form_id = $form_id;
         $this->opt_results = $this->get_opt_results();
@@ -40,7 +43,7 @@ class OptResults {
     private function render_table_head(){
     ?>
         <div style="overflow-x: auto;">
-            <table class="result-table">
+            <table id="opt-results-table" class="result-table">
                 <thead>
                     <th style="width: 40%">Položka</th>
                     <th style="width: 20%">Cena</th>

@@ -40,17 +40,11 @@ jQuery(document).ready(function($) {
     function getHrany(product_id, dekor = ''){
         showLoadingIconHranySelectboxes(true);
         var data = {'action': 'get_hrany_dimensions','product_id': product_id,'tupl' : jQuery('#tupl').val(), 'dekor' : dekor};         // get data
-        jQuery.post(getWpUrl() + 'wp-admin/admin-ajax.php', data, function(response) {
+        jQuery.post(NF_ajaxUrl, data, function(response) {
             fillHranySelectboxes (response);                                                                                            // fill selecboxes with data
             showLoadingIconHranySelectboxes(false);
         });
     };
-    
-    function getWpUrl(){
-        var currentUrl = window.location.href;
-        var matches = currentUrl.match(/^(https?:\/\/[^/]+\/[^/]+\/)/);         // Extract the WordPress installation directory (the part after the host and before any query parameters)                
-        return (matches[1]);
-    }    
     
     function showLoadingIconHranySelectboxes(state){
         hranyRozmerSelectboxes.forEach(function(element) {
@@ -68,7 +62,7 @@ jQuery(document).ready(function($) {
     
     function toggleHranySelectboxes(state){
         hranyRozmerSelectboxes.forEach(function(element) {
-            jQuery('#select-' + element).html(state);
+            jQuery('#select-' + element).prop('disabled', state);
         });                
     }    
     

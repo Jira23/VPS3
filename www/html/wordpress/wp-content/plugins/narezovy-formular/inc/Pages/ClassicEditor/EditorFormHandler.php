@@ -1,6 +1,6 @@
 <?php
 
-namespace Inc\Pages;
+namespace Inc\Pages\ClassicEditor;
 
 use Inc\Base\BaseController;
 use Inc\Base\User;
@@ -21,6 +21,14 @@ use Inc\Base\User;
             if(isset($_POST['btn_ulozit_zadani'])) $this->save_form(false);
             if(isset($_POST['btn_duplikovat_dil'])) $this->duplicate_part();
             if(isset($_POST['btn_smazat_dil'])) $this->delete_part();
+            if(isset($_POST['btn_delete_opt'])) $this->delete_opt();
+            
+        }
+        
+        private function delete_opt(){
+            global $wpdb;
+            $form_id = $this->query_params['form_id'];
+            $wpdb->delete(NF_OPT_RESULTS_TABLE, array('form_id' => $form_id), array('%d'));            
         }
         
         private function delete_part(){

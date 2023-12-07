@@ -3,12 +3,14 @@
  *  @package  narezovy-formular
  */
 
-namespace Inc\Pages;
+namespace Inc\Pages\ClassicEditor;
 
 use Inc\AJAX\AjaxUtils;
 use Inc\Base\User;
+use Inc\Pages\PagesController;
+use Inc\Pages\OptResults;
 
-class RenderEditor extends PagesContoller {
+class RenderEditor extends PagesController {
     
     public function __construct() {
         parent::__construct();
@@ -28,16 +30,20 @@ class RenderEditor extends PagesContoller {
     }
     
     public function render_edit_page(){
-        $this->render_header();
-        $this->renderButtons();
-        $this->render_form_upper_section();
-        $this->render_part_upper_section();
-        $this->render_part_lower_section();
-        $this->render_form_lower_section();
-        (new PartsList())->render_parts_list();
-        (new OptResults($this->form_id))->render_opt_results();
-        $this->renderButtons();
-        $this->render_footer();        
+        if($this->form['odeslano'] == 1){                                       // render summary of closed order
+            $this->render_order_summary();
+        } else {                                                                // render editor form
+            $this->render_header();
+            $this->renderButtons();
+            $this->render_form_upper_section();
+            $this->render_part_upper_section();
+            $this->render_part_lower_section();
+            (new PartsList())->render_parts_list();
+            (new OptResults($this->form_id))->render_opt_results();
+            $this->render_form_lower_section();
+            $this->renderButtons();
+            $this->render_footer();        
+        }
     }
     
     
@@ -220,7 +226,7 @@ class RenderEditor extends PagesContoller {
             <div class="form-section">    
                 <?php $this->select_box->render_select_box('orientace', $this->current_part['orientace'] ?? null); ?>
             </div>
-            <div class="form-section" style="display: inline-block; margin-bottom: 0px; margin-right: 50px;">
+            <div class="form-section" style="display: inline-block; margin-bottom: 30px; margin-right: 50px;">
                 <?php 
                     $this->input->render_input('fig_name', $this->current_part['fig_name'] ?? null);
                     $this->input->render_input('fig_part_code', $this->current_part['fig_part_code'] ?? null);
@@ -229,7 +235,7 @@ class RenderEditor extends PagesContoller {
             </div>        
         
         </div>         
-        <div style="text-align: left;">    
+        <div style="display: flex; align-items: center;">    
             <?php 
                 $this->button->render_button('ulozit_dil');
                 $this->tooltip->render_tooltip('ulozit_dil');
@@ -286,13 +292,28 @@ class RenderEditor extends PagesContoller {
         echo '</div>'; 
     }
 
+    private function render_order_summary(){
+        ?>
+        <div>
+            <a href="' .$this->forms_list_page .'">
+            <?php $this->button->render_button('zpet_na_seznam'); ?>
+            </a>
+        </div>
+        <?php
+        (new \Inc\Output\OutputToPDF())->render_customer_summary($this->form_id);
+    }
+    
     public function get_parts() {
+
         if(!isset($this->parts )){                                              // query will be executed only once per object init
+
             global $wpdb;
 //$parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` DESC");
 $parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY fig_formula ASC, id DESC");
+
             $this->parts = $parts;
         }
+
         return $this->parts;        
     }
 
@@ -312,8 +333,13 @@ $parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id`
     }
     
     public function get_deska_name_by_id($deska_id){
-        if($deska_id == NULL || $deska_id == 0) return NULL;
-        $deska_name = get_post($deska_id)->post_title;
+        if($deska_id === NULL || $deska_id == 0) return NULL;
+        
+        $deska_post = get_post($deska_id);
+        if($deska_post === NULL) return 'JIŽ NENÍ V PRODEJI';
+        
+        $deska_name = $deska_post->post_title;
+        
         return $deska_name;
     }
 

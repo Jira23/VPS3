@@ -182,6 +182,7 @@ class SelectBox {
                     '0' => 'Ne',
                     '1' => 'Ano'
                 ],
+                'select' => 1,
                 'attrs' => [
                     'id' => 'orientace',
                     'style' => 'width:250px;',

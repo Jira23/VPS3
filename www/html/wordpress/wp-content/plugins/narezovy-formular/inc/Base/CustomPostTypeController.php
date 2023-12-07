@@ -16,8 +16,8 @@ class CustomPostTypeController extends BaseController {
     }
 
     public function render_editor_content() {
-        (new \Inc\Pages\EditorFormHandler())->handle_edit_form();
-        (new \Inc\Pages\RenderEditor)->render_edit_page();
+        (new \Inc\Pages\ClassicEditor\EditorFormHandler())->handle_edit_form();
+        (new \Inc\Pages\ClassicEditor\RenderEditor)->render_edit_page();
     }
 
     public function render_forms_list_content(){
@@ -31,6 +31,10 @@ class CustomPostTypeController extends BaseController {
 
     public function render_import_content(){
         (new \Inc\Pages\RenderImport())->render_import();
-    }    
+    }
+    
+    public function is_NF_page(){
+        return strpos($_SERVER["REQUEST_URI"], 'narezovy-formular-') !== false ? true : false;
+    }
     
 }

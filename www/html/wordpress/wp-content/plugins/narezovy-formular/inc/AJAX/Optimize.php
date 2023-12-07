@@ -6,12 +6,15 @@ namespace Inc\AJAX;
 
 // handles Ardis form optimization and returns results
 
+
 class Optimize {
     
+    public $parts;
+    public $form_id;
+    
+    const CONNECTION_TIMEOUT = 120;
     const ARDIS_SERVER_URL = 'https://ardis.drevoobchoddolezal.cz/';
     const ARDIS_SERVER_IMG_PATH = self::ARDIS_SERVER_URL .'img/';
-    const PLOTNA_TUPL_30 = 58910;
-    const PLOTNA_TUPL_30_BILA = 52462;
     
     public function optimize() {
 
@@ -22,7 +25,7 @@ error_reporting(E_ALL);
         global  $wpdb;
 
         $this->form_id = (int)$_POST['form_id'];
-        $parts = $parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` DESC");
+        $parts = $this->get_parts();
         $form = $wpdb->get_results("SELECT * FROM `" .NF_FORMULARE_TABLE ."` WHERE `id` LIKE '" .$this->form_id ."'")[0];
         $plotny = $this->get_plotny($parts);
 
@@ -45,6 +48,7 @@ var_dump($response);
             'http' => array(
                 'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
                 'method'  => 'POST',
+                'timeout' => self::CONNECTION_TIMEOUT,                          // Timeout in seconds
                 'content' => http_build_query($parts)
             )
         );
@@ -52,6 +56,7 @@ var_dump($response);
         $context  = stream_context_create($options);
         $result = file_get_contents(self::ARDIS_SERVER_URL, false, $context);
 //var_dump($result);
+
         if ($result === FALSE) {
             $this->report_error('file_get_content() returned false!');
         } else {
@@ -68,13 +73,35 @@ var_dump($response);
     
     private function report_error($error){
         echo '<h4 style="color: red;">Během optimalizace se vyskytla chyba. Zkuste to prosím později.</h4>';
-        $to = get_option('admin_email');
+//$to = get_option('admin_email');
+$to = 'jiri.freelancer@gmail.com';
         $subject = 'Optimization error';
         $message = 'Při optimalizaci formluláře id:' .$this->form_id .' se vyskytla následující chyba:' .PHP_EOL .$error;
-        wp_mail($to, $subject, $message);
+        $a = wp_mail($to, $subject, $message);
+        var_dump($a);
         wp_die();
     }
 
+    private function get_parts(){
+        global  $wpdb;
+        $parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` DESC");
+        
+        foreach ($parts as $part) {
+            if($part->tupl == '30mm') {                                         // podlepeni bilou deskou 12mm
+                $part->tupl_mat_id = PLOTNA_TUPL_30;
+            } elseif($part->tupl == '36mm'){                                    // podlepeni deskou ve stejnem dekoru
+                $part->tupl_mat_id = $part->lamino_id;
+            } elseif($part->tupl == '36mm-bila'){                               // podlepeni bilou deskou 18mm
+                $part->tupl_mat_id = PLOTNA_TUPL_36;
+            } else{
+                $part->tupl_mat_id = '';
+            }
+        }
+        unset($part);                                                           // unset the reference after the loop to avoid potential conflicts
+
+        return $parts;
+    }
+    
     private function get_plotny($parts){
         
         foreach ($parts as $part) {
@@ -84,7 +111,7 @@ var_dump($response);
             if ($part->hrana_prava != 0) $parts_ids[] = $part->hrana_prava;
             if ($part->hrana_dolni != 0) $parts_ids[] = $part->hrana_dolni;
             if ($part->tupl == '30mm') $parts_ids[] = PLOTNA_TUPL_30;                   
-            if ($part->tupl == '36mm-bila') $parts_ids[] = PLOTNA_TUPL_30_BILA;         
+            if ($part->tupl == '36mm-bila') $parts_ids[] = PLOTNA_TUPL_36;         
         }
         
         $unique_ids = array_unique($parts_ids);

@@ -36,6 +36,8 @@ if ( ! defined( 'ABSPATH' ) ) return;
 
 global $wpdb;
 
+define('SHOW_NF_ERRORS', true);                                                 // if true display PHP errors on narezovy formular pages
+
 // page constants
 define('NF_PAGE_EDITOR_SLUG', 'narezovy-formular-editor');
 define('NF_PAGE_FORMS_LIST_SLUG', 'narezovy-formular-seznam');
@@ -65,8 +67,8 @@ define( 'DENIDED_CATEGORIES',  array(                                           
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('TOP_CATEGORY_ID', 21) : define('TOP_CATEGORY_ID', 2255);
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PDK_CATEGORY_ID', 44) : define('PDK_CATEGORY_ID', 2276);
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('MDF_LAKOVANE_CATEGORY_ID', 154) : define('MDF_LAKOVANE_CATEGORY_ID', 2405);
-$_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_30', 15567) : define('MDF_LAKOVANE_CATEGORY_ID', 58910);                // L 0113 SM bílá 2800*2070*12
-$_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_30_BILA', 12896) : define('MDF_LAKOVANE_CATEGORY_ID', 52462);           // L 0113 SM bílá 2800*2070*16
+$_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_30', 15567) : define('PLOTNA_TUPL_30', 575645);                   // L 0110 SM  HL Bílá 2800*2070*12  !!! POZOR pri zmene je potreba zmenit i na ardis serveru
+$_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_36', 12896) : define('PLOTNA_TUPL_36', 522250);                   // L 0110 SM  HL Bílá 2800*2070*18  !!! POZOR pri zmene je potreba zmenit i na ardis serveru
 
 // Require once the Composer Autoload
 if ( file_exists( dirname( __FILE__ ) . '/vendor/autoload.php' ) ) {
@@ -88,3 +90,5 @@ add_action('plugins_loaded', function(){
         Inc\Init::register_services();
     }
 });
+
+

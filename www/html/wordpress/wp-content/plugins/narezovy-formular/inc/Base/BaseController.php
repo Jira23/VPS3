@@ -10,6 +10,8 @@ class BaseController {
 	public $plugin;
         public $editor_page;
         public $forms_list_page;
+        public $register_user_page;
+        public $import_page;
 
 	public function __construct() {
             $this->plugin_path = plugin_dir_path( dirname( __FILE__, 2 ) );

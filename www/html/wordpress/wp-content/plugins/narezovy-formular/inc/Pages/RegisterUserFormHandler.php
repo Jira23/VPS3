@@ -4,7 +4,7 @@ namespace Inc\Pages;
 
 use Inc\Base\BaseController;
 
-class RegisterUserFormHandler extends PagesContoller{
+class RegisterUserFormHandler extends PagesController{
 
     public function __construct() {
         parent::__construct();

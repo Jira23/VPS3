@@ -3,7 +3,7 @@
  *  @package  narezovy-formular
  */
 
-namespace Inc\Pages;
+namespace Inc\Pages\ClassicEditor;
 
 class PartsList extends RenderEditor {
     public function __construct() {
@@ -60,7 +60,7 @@ class PartsList extends RenderEditor {
     
     private function render_head(){
         ?>
-            <div style="overflow-x: auto;">
+            <div class="parts-table-container">
                 <table class="shop_table cart wishlist_table wishlist_view traditional responsive">
                     <thead style="display: block;" class="th-middle">
                         <th style="width: 15%">Lamino</th>
@@ -84,11 +84,20 @@ class PartsList extends RenderEditor {
     private function render_footer(){
         ?>
                 </table>
+                <div class="parts-table-overlay" <?php if(!$this->has_opt_results()) echo 'style="display: none;"'; ?>>
+                    <?php $this->button->render_button('smazat_opt'); ?>
+                </div>
             </div>  
         <?php
     }
     
     private function render_empty_list(){
         echo '<h2>Zatím zde nejsou žádné díly.</h2>';
+    }
+    
+    private function has_opt_results(){
+        global $wpdb;
+        $opt_results = $wpdb->get_results("SELECT * FROM `" .NF_OPT_RESULTS_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' LIMIT 1");
+        return (!empty($opt_results)) ? true : false;
     }
 }

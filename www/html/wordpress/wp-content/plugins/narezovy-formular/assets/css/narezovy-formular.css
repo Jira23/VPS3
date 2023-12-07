@@ -77,12 +77,11 @@ button:focus {
 
 .button-alert {
     background-color: #fffb01 !important;
-    color: red;
-    border-width: 3px;
-    border-style: solid;
-    margin-left: 20px;
-    cursor: default;
-    display: none;
+    color: red !important;
+    border-width: 3px !important;
+    border-style: solid !important;
+    margin-left: 20px !important;
+    cursor: default !important;
 }
 .button-alert:hover {
     color: red !important;
@@ -103,6 +102,14 @@ table td {
 
 .figure {
     background: #f0f8ff;
+}
+
+.top-buttons {
+    text-align: left;
+}
+
+.top-buttons a {
+  text-decoration: none !important;
 }
 
 /*--- TOOLTIPS ---*/
@@ -149,7 +156,7 @@ table td {
     }
     
     .linear-loading-icon img {
-        max-width: 60%;
+        max-width: 30%;
     }
     
     /* --- import --- */
@@ -179,13 +186,47 @@ table td {
         color: #333;
     }
 
+    /* NF table*/
+    /* Reset default table styles */
+    .NF-table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 20px auto;
+    }
+
+    /* Style for table header and footer*/
+    .NF-table th,
+    .NF-table tfoot {
+        background-color: #f2f2f2;
+        text-align: left;
+        padding: 10px;
+    }
+
+    /* Style for table rows */
+    .NF-table td {
+        border-bottom: 1px solid #e0e0e0;
+        padding: 10px;
+    }
+
+    .NF-table a {
+        text-decoration: none !important;
+    }
+
+    .clickable-row {
+        cursor: pointer;
+    }    
+    
+    /* Hover effect */
+    .NF-table tbody tr:hover {
+        background-color: #f5f5f5;
+    }    
+    
     /* result table */
     
     /* Reset default table styles */
     .result-table {
         border-collapse: collapse;
         width: 100%;
-        /*max-width: 600px;*/
         margin: 20px auto;
     }
 
@@ -227,12 +268,53 @@ table td {
         transform: scale(1.05); /* Adjust the scale value as needed */
     }
 
-/* tepmorary for testing reasons */    
-.container {
-  width: auto !important;
+    
+    /* full width */
+    .container {
+      width: auto !important;
+    }
+
+    .content-area {
+      width: 100% !important;
+    }
+
+
+
+/* Container for the table and overlay */
+.parts-table-container {
+    position: relative;
 }
 
-.content-area {
-  width: 100% !important;
+/* Overlay covering the table */
+.parts-table-overlay {
+    overflow-x: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(204, 219, 223, 0.5);
+    z-index: 1;
+    text-align: center;
 }
 
+.parts-table-overlay h2 {
+    color: rgba(123, 123, 123, 0.7);
+    margin-top: 40px;
+}
+
+.button-delete-opt {
+    background-color: #ff8b1047;
+    font-size: 25px;
+    margin-top: 35px;
+    color: #0b0b0b;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+}
+
+.button-delete-opt:focus {
+  background-color: #ff898900;
+}

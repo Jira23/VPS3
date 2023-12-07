@@ -71,17 +71,16 @@ jQuery(document).ready(function($) {
 
     function showWaitingIcon(target, no_tag = false) {
         if(!no_tag) target.html('<h3>Hledám...</h3>');
-        target.append('<img width="200" id="loadingIcon" src="' + getWpUrl() + '/wp-content/plugins/narezovy-formular/assets/img/Loading_icon.gif" />');        
+        target.append('<img width="200" id="loadingIcon" src="' + NF_wpUrl + '/wp-content/plugins/narezovy-formular/assets/img/Loading_icon.gif" />');        
     };
 
     function ajaxRequest (request, target) {
-        var ajaxUrl = getWpUrl() + 'wp-admin/admin-ajax.php';
 
         latestRequest = request;                                                // used for strategy to show last request if there are multiple
         latestTarget = target;
 
         $.ajax({
-            url: ajaxUrl,
+            url: NF_ajaxUrl,
             type: 'POST',
             data: request,
             success: function (response) {

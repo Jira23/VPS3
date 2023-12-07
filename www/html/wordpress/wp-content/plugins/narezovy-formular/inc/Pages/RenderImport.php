@@ -7,7 +7,7 @@ namespace Inc\Pages;
 
 use Inc\Base\User;
 
-class RenderImport extends PagesContoller{
+class RenderImport extends PagesController{
     public function __construct() {
         parent::__construct();
     }

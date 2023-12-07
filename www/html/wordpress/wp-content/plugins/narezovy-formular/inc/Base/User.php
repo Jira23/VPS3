@@ -35,16 +35,16 @@ class User {
         return in_array($form_id, $user_forms) ? true : false;
     }
     
-        // nacte cookies data - funkce pro neregistrovaneho uzivatele
-        public function get_cookies(){
-            
-            foreach ($_COOKIE as $key => $value) {
-                $cookies[$key] = sanitize_text_field($value);
-            }
-            if(isset($cookies['jmeno']) && isset($cookies['prijmeni']) && isset($cookies['nf_email']) && isset($cookies['telefon']) && isset($cookies['ulice']) && isset($cookies['mesto'])){
-                return $cookies;
-            } else {
-                return false;
-            }
-        }    
+    // nacte cookies data - funkce pro neregistrovaneho uzivatele
+    public function get_cookies(){
+
+        foreach ($_COOKIE as $key => $value) {
+            $cookies[$key] = sanitize_text_field($value);
+        }
+        if(isset($cookies['jmeno']) && isset($cookies['prijmeni']) && isset($cookies['nf_email']) && isset($cookies['telefon']) && isset($cookies['ulice']) && isset($cookies['mesto'])){
+            return $cookies;
+        } else {
+            return false;
+        }
+    }    
 }

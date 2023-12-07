@@ -143,7 +143,17 @@ class Button {
                     'class' => 'button button-main',
                     'type' => 'button'
                 ]
-            ]            
+            ],
+            'smazat_opt' => [
+                'text' => 'Díly nelze editovat. Pro odemčení editace klikněte zde.',
+                'disabled' => null,
+                'attrs' => [
+                    'name'   => 'btn_delete_opt',
+                    'class' => 'button-delete-opt',
+                    'type' => 'button',
+                    'title' => 'Odemknout editaci dílů'
+                ]
+            ]
         ];
         return $button[$button_id];
     }

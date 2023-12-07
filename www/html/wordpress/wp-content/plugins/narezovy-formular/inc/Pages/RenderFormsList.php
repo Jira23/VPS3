@@ -7,7 +7,7 @@ namespace Inc\Pages;
 
 use Inc\Base\User;
 
-class RenderFormsList extends PagesContoller{
+class RenderFormsList extends PagesController{
     
     function __construct() {
         parent::__construct();
@@ -35,7 +35,7 @@ class RenderFormsList extends PagesContoller{
     
     private function render_header(){
         ?>
-        <div style="text-align: left;">
+        <div class="top-buttons">
         <?php
             echo '<a href="' .$this->import_page .'">';
             if(get_user_meta(get_current_user_id(), 'nf_import_select', true))$this->button->render_button('import');                       // add import button if user have import allowed
@@ -55,12 +55,12 @@ class RenderFormsList extends PagesContoller{
             <li><a href="#tabs-2">Odeslané</a></li>
           </ul>
           <div id="tabs-1">
-            <table id="rozepsane" class="shop_table cart wishlist_table wishlist_view traditional">
+            <table id="rozepsane" class="NF-table">
                 <?php $this->render_rows(); ?>
             </table>
           </div>
           <div id="tabs-2">
-            <table id="odeslane" class="shop_table cart wishlist_table wishlist_view traditional">
+            <table id="odeslane" class="NF-table">
                 <?php $this->render_rows(1); ?>
             </table>
           </div>
@@ -94,10 +94,14 @@ class RenderFormsList extends PagesContoller{
         <tbody>
         <?php
             foreach ($rows as $row) {
-                echo '<tr>';
-                echo '<td><a href="' .$this->editor_page .'?form_id=' .$row['id'] .'&part_id=0">' .$row['id'] .'</a></td>';
-                echo '<td><a href="' .$this->editor_page .'?form_id=' .$row['id'].'&part_id=0">' .$row['nazev'] .'</a></td>';
-                echo ($row['poptano'] == 1 && $row['odeslano'] == 0) ? '<td><b>Poptávka odeslána</b></td>' : '<td></td>';
+                echo '<tr class="clickable-row" data-href="' .$this->editor_page .'?form_id=' .$row['id'] .'&part_id=0">';
+                echo '<td>' .$row['id'] .'</td>';
+                echo '<td>' .$row['nazev'] .'</td>';
+                if($this->has_opt_results($row['id'])){                                                                                 // "Poptávka odeslána" for old forms before optimalization functionality added
+                    echo '<td><b>Optimalizováno</b></td>';
+                } else {
+                    echo ($row['poptano'] == 1 && $row['odeslano'] == 0) ? '<td><b>Poptávka odeslána</b></td>' : '<td></td>';
+                }
                 echo '<td>' .date('j.n.Y', strtotime($row['datum'])) .'</td>';
                 echo '<td><form id="parts-list-form" method="post">';
                 $this->button->render_button('smazat_formular', null, ['value' => $row['id']]); 
@@ -110,5 +114,11 @@ class RenderFormsList extends PagesContoller{
     
     private function render_empty_list(){
         echo '<h2>Zatím zde nejsou žádné formuláře.</h2>';
+    }
+
+    private function has_opt_results($form_id){
+        global $wpdb;
+        $opt_results = $wpdb->get_results("SELECT * FROM `" .NF_OPT_RESULTS_TABLE ."` WHERE `form_id` LIKE '" .$form_id ."' LIMIT 1");
+        return (!empty($opt_results)) ? true : false;
     }    
 }

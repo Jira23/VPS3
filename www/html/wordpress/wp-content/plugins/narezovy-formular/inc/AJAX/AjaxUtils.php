@@ -17,8 +17,25 @@ class AjaxUtils extends BaseController {
         add_action( 'wp_ajax_import_upload', array((new ImportUpload()), 'import_upload'));
         add_action( 'wp_ajax_nopriv_import_upload', array((new ImportUpload()), 'import_upload'));
         add_action( 'wp_ajax_optimize', array((new Optimize()), 'optimize'));
-        add_action( 'wp_ajax_nopriv_optimize', array((new Optimize()), 'optimize'));        
+        add_action( 'wp_ajax_nopriv_optimize', array((new Optimize()), 'optimize'));
+        
+        add_action('wp_footer', array($this, 'inject_global_urls'));
     }
+    
+    public function inject_global_urls(){                                          // print wp and ajax paths to footer so they can be used by jQuery functions (WP instalation url may vary). 
+        
+        if((new \Inc\Base\CustomPostTypeController())->is_NF_page()){
+            $wp_url = site_url();
+            $ajax_url = admin_url('admin-ajax.php');
+            echo '
+                <script type="text/javascript">
+                    var NF_wpUrl = "' .$wp_url .'";
+                    var NF_ajaxUrl = "' .$ajax_url .'";
+                </script>
+            ';
+        }
+    }
+           
     
     public function get_product_categories($product_id, $form = 'id'){
         
@@ -39,6 +56,8 @@ class AjaxUtils extends BaseController {
     
     // upravi nazev hrany tak, ze vrati pole (nazev, rozmer)
     public function shorten_hrana_title($hrana){
+
+        if(!$hrana) return ['decor' => 'JIŽ NENÍ V PRODEJI', 'rozmer' => ''];
         $title = $hrana->get_name();
 
         $hvezdicka = strpos($title, '*');                                   // najdu si pozici hvezdicky, ktera znaci rozmer napr. 8*20
@@ -53,6 +72,6 @@ class AjaxUtils extends BaseController {
         $product_decor = substr($title, 0, $konec_nazvu);                   // oriznu vse od mezery (vcetne) do prava
         $product_decor = trim($product_decor);                              // oriznu pripadne mezery na zacatku a na konci             
 
-        return(array('decor' => $product_decor, 'rozmer' => $product_rozmer));
+        return ['decor' => $product_decor, 'rozmer' => $product_rozmer];
     }    
 }

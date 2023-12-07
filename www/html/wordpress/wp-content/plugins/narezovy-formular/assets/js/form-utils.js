@@ -18,36 +18,47 @@ jQuery(document).ready(function($) {
 
     
 */    
-    // manage forms list buttons
+    // manage buttons with alert
     $("button[type='button']").click(function() {
         var inputField = $("<input>")                                           // Create an input element with the name and value of clicked button
             .attr("type", "hidden")
             .attr("name", $(this).attr("name"))
             .val($(this).val());
 
-        if($(this).attr("name") === 'btn_smazat_formular') {                         // confirmation when deleting part
+        if($(this).attr("name") === 'btn_smazat_formular') {                    // confirmation when deleting form
             if(!confirm("Opravdu smazat?")) return;
+            $("#parts-list-form").append(inputField);
+            $("#parts-list-form").submit();            
         }
-        
-        $("#parts-list-form").append(inputField);
-        $("#parts-list-form").submit();
-    });
-
-    // manage parts list buttons
-    $("table button[type='button']").click(function() {
-        var inputField = $("<input>")                                           // Create an input element with the name and value of clicked button
-            .attr("type", "hidden")
-            .attr("name", $(this).attr("name"))
-            .val($(this).val());
 
         if($(this).attr("name") === 'btn_smazat_dil') {                         // confirmation when deleting part
             if(!confirm("Opravdu smazat?")) return;
+            $("#mainForm").append(inputField);
+            $("#mainForm").submit();
         }
+
+        if($(this).attr("name") === 'btn_delete_opt') {                         // confirmation when deleting optimalization
+            if(!confirm("Opravdu odemknout? Budou odebrány výsledky optimalizace.")) return;
+            $("#mainForm").append(inputField);
+            $("#mainForm").submit();            
+        }         
         
-        $("#mainForm").append(inputField);
-        $("#mainForm").submit();
+        if($(this).attr("name") === 'btn_duplikovat_dil') {    
+            $("#mainForm").append(inputField);
+            $("#mainForm").submit();      
+        }
+            
+        if($(this).attr("name") === 'btn_duplikovat_formular') {    
+            $("#parts-list-form").append(inputField);
+            $("#parts-list-form").submit();             
+        }
     });
 
+    $('#optimized-results-table').on('DOMSubtreeModified', function() {         // lock parts table
+        if ($('#optimized-results-table').find('tr').length) {
+            $('.parts-table-overlay').show();
+        }
+    });
  
     // odstrani praram. required z selectboxu lepidlo, pokud uzivatel nevybere zadnou hranu 
     jQuery('#btn_ulozit_dil').on("click", function() {
