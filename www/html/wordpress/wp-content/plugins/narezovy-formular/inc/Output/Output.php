@@ -10,28 +10,51 @@ use Dompdf\Dompdf;
 class Output  {
     
     public function render_customer_summary_html($form_id){
-        echo $this->render_page($form_id, 'html');
-        
+        echo $this->render_header('html');
+        echo $this->render_user_table($form_id);
+        echo $this->render_parts_table($form_id);
         (new \Inc\Pages\OptResults($form_id))->render_opt_results();
-        
+        echo $this->render_footer();
     }
     
     public function render_customer_summary_pdf($form_id){
         
-        $html = $this->render_page($form_id, 'pdf');
-        
-        $dompdf = new Dompdf();
+        $html = $this->render_header('pdf');
+        $html .= $this->render_user_table($form_id);
+        $html .= $this->render_parts_table($form_id);
+        $html .= '<h4 class="email-center page-break">Výsledky optimalizace</h4>';
 
+        ob_start();
+        (new \Inc\Pages\OptResults($form_id))->render_table(false);
+        $html .= ob_get_clean();
+        $html .= $this->render_layouts($form_id);
+        $html .= $this->render_footer();
+
+        $dompdf = new Dompdf(['enable_remote' => true]);
         $dompdf->setPaper('A4', 'landscape');
         $dompdf->loadHtml($html);
         $dompdf->render();
         $pdf_content = $dompdf->output();
-        $pdf_file_path = '/var/www/html/wordpress/wp-content/plugins/narezovy-formular/yourfile.pdf'; // Replace this with your desired file path
-        file_put_contents($pdf_file_path, $pdf_content);
         
+$pdf_file_path = '/var/www/html/wordpress/wp-content/plugins/narezovy-formular/yourfile.pdf';
+file_put_contents($pdf_file_path, $pdf_content);
+
+        return $pdf_content;
     }    
 
-    public function render_page($form_id, $for){
+    private function render_layouts($form_id){
+        global $wpdb;    
+        $results = $wpdb->get_results("SELECT `layouts` FROM `" .NF_OPT_RESULTS_TABLE ."` WHERE `form_id` LIKE '" .$form_id ."' LIMIT 1");
+        $layouts = json_decode($results[0]->layouts);
+        
+        $to_return = '';
+        foreach ($layouts as  $layout) {
+            $to_return .= '<img src="' .$layout .'" class="page-break" />';
+        }
+        return $to_return;
+    }
+    
+    private function render_header($for){
         $html = '
             <!DOCTYPE html>
             <html>
@@ -39,20 +62,24 @@ class Output  {
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
                 ' .$this->set_style($for) .'
             </head>
-            <body>'
-            .$this->render_user_table($form_id)
-            .$this->render_parts_table($form_id)
-            . '</body>
+            <body>';           
+
+        return $html;
+    }
+    
+    private function render_footer(){
+        $html = '
+                </body>
             </html>
         ';           
 
         return $html;
-    }
+    }    
 
-    public function render_user_table($form_id){
+    private function render_user_table($form_id){
 
         global $wpdb;    
-        $formular_data = $wpdb->get_results("SELECT * FROM `wp_nf_formulare` WHERE `id` LIKE '" .$form_id ."'")[0];
+        $formular_data = $wpdb->get_results("SELECT * FROM " .NF_FORMULARE_TABLE ." WHERE `id` LIKE '" .$form_id ."'")[0];
         $user_data = (new \Inc\Base\User())->get_contact();
 
         $table = '
@@ -109,15 +136,14 @@ class Output  {
         return $table;
     }
 
-    public function render_parts_table($form_id){
+    private function render_parts_table($form_id){
 
         global $wpdb;    
-        $dily_data = $wpdb->get_results("SELECT * FROM `wp_nf_dily` WHERE `form_id` LIKE '" .$form_id ."' ORDER BY `lamino_id`, `id`");            
+        $dily_data = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$form_id ."' ORDER BY `lamino_id`, `id`");
 
         $table = '
             <br>
-            <!--p style="font-size: 15px; margin-bottom: 0px; text-align: center;"><b>ROZPIS DÍLŮ</b></p-->
-            <div style="text-align: center;">
+            <div style="text-align: center;" class="page-break">
                 <h4>Rozpis dílů</h4>
             </div>
             <table class="parts-table">
@@ -175,31 +201,14 @@ class Output  {
     }
 
     private function set_style($for = 'html'){
-        $style = '
-            <style>
-
-              body { 
-                font-family: DejaVu Sans, sans-serif; 
-              }
-              .user-table { 
-                width: 100%;
-                margin-top: 60px;
-              }                    
-              .parts-table { 
-                border-collapse: collapse;
-                border: 2px solid black; 
-                width: 100%; 
-              }                  
-              .parts-table td {border: 1px solid black}';
-
+        $style = '<style>';
+        $style .= file_get_contents( (new \Inc\Base\BaseController())->plugin_url .'assets/css/email.css');
         if($for == 'html'){
               $style .= ' .parts-table { font-size:12px; }';
         } else {
             $style .= ' .parts-table { font-size:8px; }';
-        }
-
+        }        
         $style .= '</style>';
-
         return $style;
     }
     

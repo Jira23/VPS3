@@ -81,4 +81,19 @@ class User {
         }
     }
     
+    public function count_opts(){                                               // counts unfinished orders wich are not
+        $user_id = $this->get_id();
+        global $wpdb;
+        $query = $wpdb->prepare("SELECT `id` FROM " .NF_FORMULARE_TABLE ." WHERE userId = %d AND `odeslano` LIKE '0'",$user_id);
+        $orders_to_place = $wpdb->get_results($query);
+        $opt_orders = 0;
+        foreach ($orders_to_place as $form_id) {
+            $query = $wpdb->prepare("SELECT COUNT(*) FROM " .NF_OPT_RESULTS_TABLE ." WHERE form_id = %d", $form_id->id);
+            $result = $wpdb->get_var($query);
+            if ($result > 0) $opt_orders++;
+        }
+        
+        return $opt_orders;
+    }
+    
 }

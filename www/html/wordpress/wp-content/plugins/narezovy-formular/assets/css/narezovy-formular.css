@@ -185,6 +185,17 @@ table td {
         font-size: 18px;
         color: #333;
     }
+    
+    .import-results {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;        
+    }
+    
+    .import-results h3 {
+        margin-top: 20px;
+    }
 
     /* NF table*/
     /* Reset default table styles */
@@ -317,4 +328,36 @@ table td {
 
 .button-delete-opt:focus {
   background-color: #ff898900;
+}
+
+
+/* ALERTS */
+/* Style for the alert container */
+.NF-alert {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 3px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+}
+
+/* Style for the alert icon */
+.alert-icon {
+  color: white;
+  margin-right: 10px;
+}
+
+/* Style for the content inside the alert */
+.alert-content {
+  text-align: center;
+}
+
+/* Additional styles for the heading and paragraph */
+.alert-content h4 {
+  margin: 0;
+  font-size: 14px;
+  color: white;
+  line-height: 1.2;
 }

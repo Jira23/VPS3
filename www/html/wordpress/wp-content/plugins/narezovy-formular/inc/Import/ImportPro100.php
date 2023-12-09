@@ -52,7 +52,7 @@ class ImportPro100 {
             $converted[$key]['hrana_horni'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[7]));
             $converted[$key]['hrana_prava'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[8]));
             $converted[$key]['hrana_leva'] = wc_get_product_id_by_sku($this->sanitizeSKU($columns[9]));
-            
+            $converted[$key]['tupl'] = 'NE';
             $converted[$key]['hrana'] = $this->get_hrana_option($converted[$key]['lamino_id'], [$converted[$key]['hrana_dolni'], $converted[$key]['hrana_horni'], $converted[$key]['hrana_prava'], $converted[$key]['hrana_leva']]);
             $converted[$key]['hrana_id'] = $this->get_hrana_id([$converted[$key]['hrana_dolni'], $converted[$key]['hrana_horni'], $converted[$key]['hrana_prava'], $converted[$key]['hrana_leva']]);
         }

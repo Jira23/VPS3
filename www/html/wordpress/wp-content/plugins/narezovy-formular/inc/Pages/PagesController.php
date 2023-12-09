@@ -25,6 +25,7 @@ class PagesController extends BaseController {
         $this->button = new Tags\Button();        
         $this->textarea = new Tags\Textarea();
         $this->checkbox = new Tags\CheckBox();
+        $this->alert = new Tags\Alert();
 
         add_action('wp_loaded', array($this, 'adapt_NF_pages'));        
         add_action('wp_loaded', array($this, 'show_nf_errors'));        

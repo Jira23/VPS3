@@ -24,10 +24,13 @@ class RenderEditor extends PagesController {
         $this->form = $this->get_form();
         $this->current_part = $this->get_current_part();
         
+        $this->max_unfinished_orders_reached = !current_user_can('administrator') && (new User())->count_opts() >= NF_MAX_UNFINISHED_ORDERS;    // check if user reached max. nubmer of optimalization withou placed order, not used with admin rights users
+        
         $this->check_user();                                                    // check if user is allowed to be on this page
     }
     
     public function render_edit_page(){
+        
         if(isset($this->form['odeslano']) && $this->form['odeslano'] == 1){     // render summary of closed order
             $this->render_order_summary();
         } else {                                                                // render editor form
@@ -43,7 +46,6 @@ class RenderEditor extends PagesController {
             $this->render_footer();        
         }
     }
-    
     
     private function render_header(){
         echo '<form method="post" id="mainForm">' .PHP_EOL;
@@ -277,7 +279,7 @@ class RenderEditor extends PagesController {
         $opt_results = (new OptResults($this->form_id))->opt_results;
         if(empty($opt_results)){
             $this->button->render_button('odeslat', NULL, ['style' => 'display: none;']);
-            if(!empty($this->parts)) $this->button->render_button('optimalizovat');
+            if(!empty($this->parts) && !$this->max_unfinished_orders_reached) $this->button->render_button('optimalizovat');
         } else {
             $this->button->render_button('odeslat');
             if(!empty($this->parts)) $this->button->render_button('optimalizovat', NULL, ['style' => 'display: none;']);
@@ -290,8 +292,8 @@ class RenderEditor extends PagesController {
         } else {
             $this->button->render_button('opustit');
         }
-        
-        if(empty($this->parts)) echo ' <h4 style="color:red;">Formulář je možné odeslat, pokud je uložen alespoň 1 díl.</h4>';
+        if($this->max_unfinished_orders_reached && empty($opt_results)) $this->alert->render_alert('Max. počet optimalizovaných zakázek je 5!');    // show whem max. limit is reached and there is no opt. for this order
+        if(empty($this->parts)) $this->alert->render_alert('Formulář je možné odeslat, pokud je uložen alespoň 1 díl.');
         echo '</div>'; 
     }
 
@@ -300,7 +302,6 @@ class RenderEditor extends PagesController {
         $this->button->render_button('zpet_na_seznam');
         echo '</a></div>';
         (new \Inc\Output\Output())->render_customer_summary_html($this->form_id);
-        (new \Inc\Output\Output())->render_customer_summary_pdf($this->form_id);
     }
     
     public function get_parts() {

@@ -6,6 +6,7 @@
 namespace Inc\Pages;
 
 use Inc\Base\User;
+use Inc\Pages\Tags\Alert;
 
 class RenderImport extends PagesController{
     public function __construct() {
@@ -19,7 +20,7 @@ class RenderImport extends PagesController{
         </a>
 
         <div id="file-info-block" hidden>
-            <div class="button button-alert" id="file-info"></div>
+            <?php (new Alert())->render_alert('Import je možný pouze pro soubory CSV!', 'error'); ?>
         </div> 
         <div id="file-drop-area" class="file-drop">
             <i class="fas fa-cloud-upload-alt"></i>
@@ -29,8 +30,9 @@ class RenderImport extends PagesController{
             <input name="file" type="file" id="file-input" accept=".csv" style="display: none;" />
         </form>
 <!--button type="button" id="test">Click</button-->
-        <div id="results" hidden></div>
-        
+        <div class="import-results">
+            <div id="results" hidden></div>
+        </div>        
     <?php
     }
 }

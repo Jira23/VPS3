@@ -31,7 +31,6 @@ jQuery(document).ready(function($) {
                 ajaxRequest(formData, $('#results'));                           // Perform the AJAX request with the formData
             } else {
                 $('#file-info-block').show(500);
-                $('#file-info').html('Import je možný pouze pro soubory CSV!');
             }
         }
     });
@@ -54,7 +53,6 @@ jQuery(document).ready(function($) {
                 ajaxRequest(formData, $('#results'));                           // Perform the AJAX request with the formData
             } else {
                 $('#file-info-block').show(500);
-                $('#file-info').html('Import je možný pouze pro soubory CSV!');
             }
         }
     });
@@ -73,6 +71,7 @@ jQuery(document).ready(function($) {
             success: function (response) {
                 if (request === latestRequest && target === latestTarget) {     // Check if this is the response for the latest request
                     $('#file-drop-area').hide(500);
+                    $('#file-info-block').hide(500);
                     target.html(response);
                     target.show(500);
                 }

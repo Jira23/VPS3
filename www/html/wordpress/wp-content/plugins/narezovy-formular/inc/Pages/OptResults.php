@@ -25,22 +25,22 @@ class OptResults {
         $this->render_footer();
     }
     
-    public function render_table(){
+    public function render_table($with_layouts = true){
         $this->render_table_head();
         $this->render_table_content();
-        $this->render_layouts();
+        if($with_layouts) $this->render_layouts();
     }
     
     private function render_title(){
     ?>
         <div id="optimized-block" style="margin-top: 40px; <?php if(empty($this->opt_results)) echo 'display: none;'; ?>">
             <hr>
-            <h4>Výsledky optimalizace</h4>
+            <h4 class="email-center">Výsledky optimalizace</h4>
             <div id="optimized-results-table">
     <?php                
     }
     
-    private function render_table_head(){
+    public function render_table_head(){
     ?>
         <div style="overflow-x: auto;">
             <table id="opt-results-table" class="result-table">
@@ -53,7 +53,7 @@ class OptResults {
     <?php
     }
     
-    private function render_table_content(){
+    public function render_table_content(){
         echo '<tbody>';
         $great_total = 0;
         foreach ($this->opt_results as $row) {

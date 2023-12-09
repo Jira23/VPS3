@@ -70,6 +70,10 @@ $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('MDF_LAKOVANE_CATEGORY_ID',
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_30', 15567) : define('PLOTNA_TUPL_30', 575645);                   // L 0110 SM  HL Bílá 2800*2070*12  !!! POZOR pri zmene je potreba zmenit i na ardis serveru
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_36', 12896) : define('PLOTNA_TUPL_36', 522250);                   // L 0110 SM  HL Bílá 2800*2070*18  !!! POZOR pri zmene je potreba zmenit i na ardis serveru
 
+// other constants
+define('NF_MAX_UNFINISHED_ORDERS', 5);
+define('NF_NEW_ORDER_NOTICE_EMAILS', ['rezaninamiru@drevoobchoddolezal.cz, pavel.zitka@drevoobchoddolezal.cz']);
+
 // Require once the Composer Autoload
 if ( file_exists( dirname( __FILE__ ) . '/vendor/autoload.php' ) ) {
     require_once dirname( __FILE__ ) . '/vendor/autoload.php';

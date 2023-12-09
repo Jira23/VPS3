@@ -4,8 +4,9 @@
  */
 namespace Inc\AJAX;
 
-// handles import file upload and returns results
+use Inc\Pages\Tags\Alert;
 
+// handles import file upload and returns results
 class ImportUpload {
     
     public function import_upload() {
@@ -47,8 +48,8 @@ error_reporting(E_ALL);
     }
     
     private function render_success_report($new_form_id) {
+        (new Alert())->render_alert('Import proběhl v pořádku.', 'success');
         ?>
-            <h2>Import proběhl v pořádku.</h2>
             <h3><a href="<?php echo (new \Inc\Base\BaseController())->editor_page .'?form_id=' .$new_form_id .'&part_id=0' ?>">Přejít do editoru.</a></h3>
         <?php
     }
