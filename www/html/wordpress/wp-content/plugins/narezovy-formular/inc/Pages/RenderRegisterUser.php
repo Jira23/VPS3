@@ -5,9 +5,16 @@
 
 namespace Inc\Pages;
 
-class RenderRegisterUser extends \Inc\Base\BaseController{
+use Inc\Base\BaseController;
+
+class RenderRegisterUser extends BaseController{
     
     public function render_register_user(){
+        
+        // redirect if have needed cookies
+        $user = new \Inc\Base\User();
+        if($user->is_logged_with_cookies()) (new PagesController())->jQuery_redirect($this->editor_page .'?form_id=0&part_id=0#form_top');
+        
         ?>
             <form method="post" class="register-form" id="register-user-form">
                 <h3>Před vyplněním nářezového fomuláře zadejte prosím své kontaktní údaje.</h3>
@@ -41,7 +48,7 @@ class RenderRegisterUser extends \Inc\Base\BaseController{
                     <input type="text" name="nf_ICO" style="width: 300px;"></input>    
                 </div>     
                 <div class="form-section">    
-                    <button class="button" name="btn_odeslat_registraci" id="btn-odeslat" type="submit">Odeslat</button>
+                    <button class="button" name="btn_odeslat_registraci" type="submit">Odeslat</button>
                 </div>    
             </form>
         <?php

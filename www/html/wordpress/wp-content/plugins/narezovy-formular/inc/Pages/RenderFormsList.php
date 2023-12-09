@@ -35,6 +35,46 @@ class RenderFormsList extends PagesController{
     
     private function render_header(){
         ?>
+<style>
+/* Style for the alert container */
+.custom-alert {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: orange;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  max-width: 80%;
+}
+
+/* Style for the alert icon */
+.alert-icon {
+  color: white;
+  margin-right: 10px;
+}
+
+/* Style for the content inside the alert */
+.alert-content {
+  text-align: center;
+}
+
+/* Additional styles for the heading and paragraph */
+.alert-content h4 {
+  margin: 0;
+  font-size: 14px;
+  color: white;
+  line-height: 1.2;
+}
+</style>
+
+
+
+
+
+
+
+
         <div class="top-buttons">
         <?php
             echo '<a href="' .$this->import_page .'">';
@@ -44,6 +84,12 @@ class RenderFormsList extends PagesController{
             <a href="<?php echo $this->editor_page; ?>?form_id=0&part_id=0"><?php $this->button->render_button('nove_zadani');?></a>
             <a href="/navod-formular-narez/"><?php $this->button->render_button('navod');?></a>
         </div>
+<div class="custom-alert">
+  <span class="dashicons dashicons-warning alert-icon"></span>
+  <div class="alert-content">
+    <h4>Max. počet současně rozpracovaných zakázek je 5!</h4>
+  </div>
+</div>
         <?php
     }
 

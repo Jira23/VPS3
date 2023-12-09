@@ -24,13 +24,11 @@ class RenderEditor extends PagesController {
         $this->form = $this->get_form();
         $this->current_part = $this->get_current_part();
         
-        if(!(new User())->is_form_owner($this->form_id) && $this->form_id != 0) $this->jQuery_redirect($this->forms_list_page);                         // form owner/form exist check
-        if($this->part_id != 0 && empty($this->current_part)) $this->jQuery_redirect(get_permalink() .'?form_id=' .$this->form_id .'&part_id=0');       // part exist check
-
+        $this->check_user();                                                    // check if user is allowed to be on this page
     }
     
     public function render_edit_page(){
-        if($this->form['odeslano'] == 1){                                       // render summary of closed order
+        if(isset($this->form['odeslano']) && $this->form['odeslano'] == 1){     // render summary of closed order
             $this->render_order_summary();
         } else {                                                                // render editor form
             $this->render_header();
@@ -275,17 +273,22 @@ class RenderEditor extends PagesController {
 
         // buttons will be disabled if there are no records in db
         if($user->is_registered()) empty($this->parts) ? $this->button->render_button('ulozit', 'disabled') : $this->button->render_button('ulozit');
-        empty($this->parts) ? $this->button->render_button('optimalizovat', 'disabled') : $this->button->render_button('optimalizovat');
-        empty($this->parts) ? $this->button->render_button('odeslat', 'disabled') : $this->button->render_button('odeslat');
+        
+        $opt_results = (new OptResults($this->form_id))->opt_results;
+        if(empty($opt_results)){
+            $this->button->render_button('odeslat', NULL, ['style' => 'display: none;']);
+            if(!empty($this->parts)) $this->button->render_button('optimalizovat');
+        } else {
+            $this->button->render_button('odeslat');
+            if(!empty($this->parts)) $this->button->render_button('optimalizovat', NULL, ['style' => 'display: none;']);
+        }
             
         if($user->is_registered()) {
             echo '<a href="' .$this->forms_list_page .'">';
             $this->button->render_button('zpet_na_seznam'); 
             echo '</a>';            
         } else {
-            echo '<a href="' .$this->register_user_page .'">';
             $this->button->render_button('opustit');
-            echo '</a>';            
         }
         
         if(empty($this->parts)) echo ' <h4 style="color:red;">Formulář je možné odeslat, pokud je uložen alespoň 1 díl.</h4>';
@@ -293,14 +296,11 @@ class RenderEditor extends PagesController {
     }
 
     private function render_order_summary(){
-        ?>
-        <div>
-            <a href="' .$this->forms_list_page .'">
-            <?php $this->button->render_button('zpet_na_seznam'); ?>
-            </a>
-        </div>
-        <?php
-        (new \Inc\Output\OutputToPDF())->render_customer_summary($this->form_id);
+        echo '<div><a href="' .$this->forms_list_page .'#tabs-2">';
+        $this->button->render_button('zpet_na_seznam');
+        echo '</a></div>';
+        (new \Inc\Output\Output())->render_customer_summary_html($this->form_id);
+        (new \Inc\Output\Output())->render_customer_summary_pdf($this->form_id);
     }
     
     public function get_parts() {
@@ -387,6 +387,12 @@ $parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id`
         $image_id = wc_get_product($hrana_id)->get_image_id();
         if($image_id == '') return $this->plugin_url .'assets/img/no_img_icon.png';
         return wp_get_attachment_image_src($image_id)[0];
+    }
+
+    private function check_user(){                                              // check if user is allowed to be on this page
+        $user = new User();
+        if(!($user->is_registered() || $user->is_logged_with_cookies())) $this->jQuery_redirect($this->register_user_page);                             // redirect unknown user
+        if(!$user->is_form_owner($this->form_id) && $this->form_id != 0) $this->jQuery_redirect($this->forms_list_page);                                // form owner/form exist check
+        if($this->part_id != 0 && empty($this->current_part)) $this->jQuery_redirect(get_permalink() .'?form_id=' .$this->form_id .'&part_id=0');       // part exist check            
     }    
-    
 }

@@ -4,6 +4,7 @@ namespace Inc\Pages\ClassicEditor;
 
 use Inc\Base\BaseController;
 use Inc\Base\User;
+use \Inc\Pages\OrderHandler;
 
 
     class EditorFormHandler extends BaseController{
@@ -22,7 +23,7 @@ use Inc\Base\User;
             if(isset($_POST['btn_duplikovat_dil'])) $this->duplicate_part();
             if(isset($_POST['btn_smazat_dil'])) $this->delete_part();
             if(isset($_POST['btn_delete_opt'])) $this->delete_opt();
-            
+            if(isset($_POST['btn_odeslat'])) (new OrderHandler())->create_order();
         }
         
         private function delete_opt(){
@@ -82,13 +83,13 @@ use Inc\Base\User;
                 return;
             }
             
-            if (isset($_POST['formular']) && is_array($_POST['formular'])) {
+            if (isset($_POST['formular']) && is_array($_POST['formular'])) {    // not really necessary, at least setting $_POST to variable
                 foreach ($_POST['formular'] as $key => $value) {
                     $this->form_data[$key] = sanitize_text_field($value);
                 }
             }
             
-            if (isset($_POST['dil']) && is_array($_POST['dil'])) {
+            if (isset($_POST['dil']) && is_array($_POST['dil'])) {              // not really necessary, at least setting $_POST to variable
                 foreach ($_POST['dil'] as $key => $value) {
                     $this->part_data[$key] = sanitize_text_field($value);
                 }

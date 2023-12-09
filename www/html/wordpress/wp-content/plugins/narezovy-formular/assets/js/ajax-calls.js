@@ -54,11 +54,23 @@ jQuery(document).ready(function($) {
         ajaxRequest(request, $("#optimized-results-table"));                                                // zavolam AJAX a vykreslim vysledek
     });    
     
-    function getWpUrl(){
-        var currentUrl = window.location.href;
-        var matches = currentUrl.match(/^(https?:\/\/[^/]+\/[^/]+\/)/);         // Extract the WordPress installation directory (the part after the host and before any query parameters)                
-        return (matches[1]);
-    }
+    // AJAX call, sets user cookkies
+    $('.register-form').submit(function(event) {
+        event.preventDefault();
+        var formData = $('.register-form').serializeArray();
+        var request = {'action': 'set_user_cookies', 'formData' : formData};
+        
+        var $form = $(this);
+        
+        $.ajax({
+            url: NF_ajaxUrl,
+            type: 'POST',
+            data: request,
+            success: function(response) {
+                $form.off('submit').submit();
+            }
+        });        
+    });
 
     // zpozduje keyup pri vyplnovani inputu, aby se neposilal za kazdym keyupem ale pockal danou dobu a poslal se az pak
     var delay = (function(){
@@ -74,7 +86,7 @@ jQuery(document).ready(function($) {
         target.append('<img width="200" id="loadingIcon" src="' + NF_wpUrl + '/wp-content/plugins/narezovy-formular/assets/img/Loading_icon.gif" />');        
     };
 
-    function ajaxRequest (request, target) {
+    function ajaxRequest (request, target = false) {
 
         latestRequest = request;                                                // used for strategy to show last request if there are multiple
         latestTarget = target;
@@ -85,10 +97,10 @@ jQuery(document).ready(function($) {
             data: request,
             success: function (response) {
                 if (request === latestRequest && target === latestTarget) {     // Check if this is the response for the latest request
-                    target.html(response);
+                    if(target) target.html(response);
                 }
             }
         });
-    }    
+    }
 
 });

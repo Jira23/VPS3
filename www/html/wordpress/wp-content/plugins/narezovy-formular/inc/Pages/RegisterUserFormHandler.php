@@ -11,7 +11,7 @@ class RegisterUserFormHandler extends PagesController{
     }
     
     public function register(){
-        add_action('init', array($this, 'handle_register_user_form'));
+        add_action('wp_admin ', array($this, 'handle_register_user_form'));
     } 
 
     public function handle_register_user_form(){
@@ -24,7 +24,7 @@ class RegisterUserFormHandler extends PagesController{
             }
             
             foreach ($to_insert as $key => $value) {
-                setcookie($key, $value, strtotime('+1 day'), '/', $_SERVER['HTTP_HOST']);
+                setcookie($key, $value, strtotime('+1day'), '/', $_SERVER['HTTP_HOST']);
             }
         }
     }

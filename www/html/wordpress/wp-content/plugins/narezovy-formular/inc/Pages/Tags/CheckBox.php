@@ -13,9 +13,10 @@ class CheckBox {
     public function render_checkbox($checkbox_id, $checked = false){
        
         $props = $this->define_checkbox_props($checkbox_id);
-        
         echo '<input type="checkbox" ';
 
+        echo isset($props['id']) ? 'id="' .$props['id'] .'"' : '';
+        
         foreach ($props['attrs'] as $attr_name => $attr_value) {
             echo $attr_name .'="' .$attr_value .'" ';
         }

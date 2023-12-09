@@ -28,7 +28,9 @@ jQuery(document).ready(function($) {
         if($(this).attr("name") === 'btn_smazat_formular') {                    // confirmation when deleting form
             if(!confirm("Opravdu smazat?")) return;
             $("#parts-list-form").append(inputField);
+console.log(1);
             $("#parts-list-form").submit();            
+console.log(2);            
         }
 
         if($(this).attr("name") === 'btn_smazat_dil') {                         // confirmation when deleting part
@@ -57,6 +59,8 @@ jQuery(document).ready(function($) {
     $('#optimized-results-table').on('DOMSubtreeModified', function() {         // lock parts table
         if ($('#optimized-results-table').find('tr').length) {
             $('.parts-table-overlay').show();
+            $("[name='btn_odeslat']").show();
+            $("[name='btn_optimalizovat']").hide();
         }
     });
  
@@ -65,6 +69,23 @@ jQuery(document).ready(function($) {
         onSubmitLepidlo();
     });    
     
+    jQuery("[name='btn_opustit']").on("click", function() {                     // remove param. required from all inputs
+        $('[required]').removeAttr('required');
+        
+        event.preventDefault();
+        var request = {'action': 'unset_user_cookies'};
+        var $form = $(this);
+        
+        $.ajax({
+            url: NF_ajaxUrl,
+            type: 'POST',
+            data: request,
+            success: function(response) {
+                $('#mainForm').off('submit').submit();
+            }
+        });        
+    }); 
+    
     jQuery("[name='btn_ulozit_zadani']").on("click", function() {
         onSubmitLepidlo();        
         $('#input-deska').removeAttr('required');                               // remove param. required from form inputs
@@ -72,6 +93,15 @@ jQuery(document).ready(function($) {
         $('#delka_dilu').removeAttr('required');
         $('#sirka_dilu').removeAttr('required');
      }); 
+
+    jQuery("[name='btn_odeslat']").on("click", function() {
+        $('#obchodni_podminky').attr('required', 'true');
+        onSubmitLepidlo();        
+        $('#input-deska').removeAttr('required');                               // remove param. required from form inputs
+        $('#hrana_id').removeAttr('required');
+        $('#delka_dilu').removeAttr('required');
+        $('#sirka_dilu').removeAttr('required');
+     });    
     
     function onSubmitLepidlo(){
         if($('#select-hrana-horni').val() == 0 && $('#select-hrana-dolni').val() == 0 && $('#select-hrana-prava').val() == 0 && $('#select-hrana-leva').val() == 0 ){
