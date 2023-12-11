@@ -18,6 +18,13 @@ jQuery(document).ready(function($) {
 
     
 */    
+    // toggle block visibility
+    $('.icon').click(function() {
+        $('.toggle-vis').toggle(500);
+        $('.show-icon').toggle(500);
+        $('.hide-icon').toggle(500);
+    });
+    
     // manage buttons with alert
     $("button[type='button']").click(function() {
         var inputField = $("<input>")                                           // Create an input element with the name and value of clicked button
@@ -28,9 +35,7 @@ jQuery(document).ready(function($) {
         if($(this).attr("name") === 'btn_smazat_formular') {                    // confirmation when deleting form
             if(!confirm("Opravdu smazat?")) return;
             $("#parts-list-form").append(inputField);
-console.log(1);
             $("#parts-list-form").submit();            
-console.log(2);            
         }
 
         if($(this).attr("name") === 'btn_smazat_dil') {                         // confirmation when deleting part

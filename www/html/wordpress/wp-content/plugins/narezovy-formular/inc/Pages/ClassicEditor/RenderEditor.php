@@ -39,6 +39,7 @@ class RenderEditor extends PagesController {
             $this->render_form_upper_section();
             $this->render_part_upper_section();
             $this->render_part_lower_section();
+            $this->render_figures();
             (new PartsList())->render_parts_list();
             (new OptResults($this->form_id))->render_opt_results();
             $this->render_form_lower_section();
@@ -250,6 +251,41 @@ class RenderEditor extends PagesController {
     <?php
     }    
     
+    private function render_figures(){
+    ?>
+    <h2 style="margin-top: 20px;">Figury 
+        <span class="icon">
+            <i class="show-icon fas fa-eye"></i>
+            <i class="hide-icon fas fa-eye-slash" style="display: none;"></i>
+        </span>
+    </h2>
+    
+    <div class="toggle-vis" style="">
+    <!--div class="toggle-vis" style="display: none;"-->
+    <div id="figures-inputs-section">
+        <?php
+            $all_fig_ormulas = array_column(
+                array_filter($this->parts, function($subarray) {
+                    return $subarray->fig_formula !== '';
+                }),
+                'fig_formula'
+            );
+                
+            $unique_fig_formulas = array_unique($all_fig_ormulas);
+            
+            foreach ($unique_fig_formulas as $formula) {
+                echo '<div class="form-section figures-section"><input type="text" class="figure-input input-small" value="' .$formula .'"><span class="dashicons dashicons-trash figure-delete-button"></span></div>';
+            }
+        ?>
+    </div>
+    <span class="dashicons dashicons-plus-alt" id="figures-add-button"></span><br>
+        <button type="button" id="apply-changes-button">Aplikovat změny</button>
+    </div>
+
+
+    <?php
+    }
+    
     private function render_form_lower_section(){
     ?>
         <hr>
@@ -309,8 +345,8 @@ class RenderEditor extends PagesController {
         if(!isset($this->parts )){                                              // query will be executed only once per object init
 
             global $wpdb;
-//$parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` DESC");
-$parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY fig_formula ASC, id DESC");
+$parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` DESC");
+//$parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY fig_formula ASC, id DESC");
 
             $this->parts = $parts;
         }
@@ -395,5 +431,6 @@ $parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id`
         if(!($user->is_registered() || $user->is_logged_with_cookies())) $this->jQuery_redirect($this->register_user_page);                             // redirect unknown user
         if(!$user->is_form_owner($this->form_id) && $this->form_id != 0) $this->jQuery_redirect($this->forms_list_page);                                // form owner/form exist check
         if($this->part_id != 0 && empty($this->current_part)) $this->jQuery_redirect(get_permalink() .'?form_id=' .$this->form_id .'&part_id=0');       // part exist check            
-    }    
+    }
+    
 }
