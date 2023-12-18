@@ -6,7 +6,7 @@
 Plugin Name: Narezovy formular
 Plugin URI: 
 Description: Narezovy formular pro Drevoobchod Dolezal
-Version: 1.0.1
+Version: 2.1.0
 Author: RSS
 Author URI:
 License: GPLv2 or later
@@ -72,7 +72,8 @@ $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_36', 12896) : 
 
 // other constants
 define('NF_MAX_UNFINISHED_ORDERS', 5);
-define('NF_NEW_ORDER_NOTICE_EMAILS', ['rezaninamiru@drevoobchoddolezal.cz, pavel.zitka@drevoobchoddolezal.cz']);
+//define('NF_NEW_ORDER_NOTICE_EMAILS', ['rezaninamiru@drevoobchoddolezal.cz, pavel.zitka@drevoobchoddolezal.cz']);
+define('NF_NEW_ORDER_NOTICE_EMAILS', ['pavel.zitka@drevoobchoddolezal.cz']);
 
 // Require once the Composer Autoload
 if ( file_exists( dirname( __FILE__ ) . '/vendor/autoload.php' ) ) {

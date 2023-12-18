@@ -12,9 +12,17 @@ use Inc\Pages\OptResults;
 
 class RenderEditor extends PagesController {
     
+    public $form_id;
+    public $part_id;
+    public $parts;
+    public $form;
+    public $current_part;
+    public $max_unfinished_orders_reached;
+    
+    
     public function __construct() {
         parent::__construct();
-        
+      
         if(!isset($_GET['form_id']) || !isset($_GET['part_id'])) exit;
 
         $this->form_id = (int)$_GET['form_id'];
@@ -84,7 +92,7 @@ class RenderEditor extends PagesController {
     <?php    
     }
     
-    private function render_part_upper_section(){
+    public function render_part_upper_section(){
     ?>        
         <div id="dil-horni-cast">
             <h2 id="form_top">Zadání dílu</h2>
@@ -236,10 +244,12 @@ class RenderEditor extends PagesController {
             </div>        
         
         </div>         
-        <div style="display: flex; align-items: center;">    
+        <div style="display: flex; align-items: center;" id="save-part-block">    
             <?php 
-                $this->button->render_button('ulozit_dil');
-                $this->tooltip->render_tooltip('ulozit_dil');
+                if(!( new PartsList())->has_opt_results()){
+                    $this->button->render_button('ulozit_dil');
+                    $this->tooltip->render_tooltip('ulozit_dil');
+                }
             ?>
             <div id="save-alert" hidden>
                 <div class="button button-alert">Díl není uložen!</div>
@@ -260,8 +270,7 @@ class RenderEditor extends PagesController {
         </span>
     </h2>
     
-    <div class="toggle-vis" style="">
-    <!--div class="toggle-vis" style="display: none;"-->
+    <div class="toggle-vis" style="display: none;">
     <div id="figures-inputs-section">
         <?php
             $all_fig_ormulas = array_column(
@@ -279,7 +288,7 @@ class RenderEditor extends PagesController {
         ?>
     </div>
     <span class="dashicons dashicons-plus-alt" id="figures-add-button"></span><br>
-        <button type="button" id="apply-changes-button">Aplikovat změny</button>
+        <?php $this->button->render_button('aplikovat_zmeny'); ?>
     </div>
 
 
@@ -328,17 +337,34 @@ class RenderEditor extends PagesController {
         } else {
             $this->button->render_button('opustit');
         }
-        if($this->max_unfinished_orders_reached && empty($opt_results)) $this->alert->render_alert('Max. počet optimalizovaných zakázek je 5!');    // show whem max. limit is reached and there is no opt. for this order
+        if($this->max_unfinished_orders_reached && empty($opt_results)) $this->alert->render_alert('Max. počet rozpracovaných optimalizací je 5!');    // show whem max. limit is reached and there is no opt. for this order
         if(empty($this->parts)) $this->alert->render_alert('Formulář je možné odeslat, pokud je uložen alespoň 1 díl.');
         echo '</div>'; 
     }
-
+    
     private function render_order_summary(){
-        echo '<div><a href="' .$this->forms_list_page .'#tabs-2">';
-        $this->button->render_button('zpet_na_seznam');
-        echo '</a></div>';
+        if(isset($_GET['order_sent'])) {                                        // add thank you block for just sent order
+            $this->render_thankyou();
+        } else {
+            echo '<div><a href="' .$this->forms_list_page .'#tabs-2">';
+            $this->button->render_button('zpet_na_seznam');
+            echo '</a></div>';
+        }
+        
         (new \Inc\Output\Output())->render_customer_summary_html($this->form_id);
     }
+
+    private function render_thankyou(){
+        echo '<div style="text-align: center; margin-bottom:100px;"><h1>Děkujeme. Váše objednávka  byla odeslána ke zpracování.</h1>';
+        $user = new User();
+        if($user->is_registered()) {
+            echo '<a href="' .$this->forms_list_page .'"><button class="button" type="button">Zpět na seznam</button></a>';
+        } else {
+            echo '<a href="/"><button class="button" type="button">Zpět na hlavní stranu</button></a>';
+            $user->unset_cookies();
+        }
+        echo '</div><hr>';
+    }  
     
     public function get_parts() {
 

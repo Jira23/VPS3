@@ -27,6 +27,7 @@ class Enqueue extends BaseController {
         wp_enqueue_script('nf-form-utils', $this->plugin_url .'assets/js/form-utils.js');
         wp_enqueue_script('nf-form-figures', $this->plugin_url .'assets/js/form-figures.js');
         wp_enqueue_script('nf-formsList-utils', $this->plugin_url .'assets/js/formsList-utils.js');
+        wp_enqueue_script('nf-modal-utils', $this->plugin_url . 'assets/js/modal-utils.js');
         wp_enqueue_script('nf-jquery-ui', $this->plugin_url .'assets/js/jquery-ui.js');
         wp_enqueue_script('nf-import', $this->plugin_url . 'assets/js/import.js');
         wp_enqueue_script('nf-lightbox-js', $this->plugin_url .'assets/js/simple-lightbox.jquery.js');        

@@ -34,7 +34,7 @@ error_reporting(E_ALL);
         $report .= '<table>';
         foreach ($errors as $row => $error) {
             if(is_array($error['message'])) {
-                $report .= '<tr><td>Řádek&nbsp' .$row .':</td>';
+                $report .= '<tr><td>Řádek&nbsp' .$row + 1 .':</td>';
                 foreach ($error['message'] as $message) {
                     $report .= '<td>' .$message .'</td>';
                 }

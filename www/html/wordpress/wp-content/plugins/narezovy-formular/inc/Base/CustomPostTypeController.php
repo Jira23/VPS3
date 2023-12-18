@@ -18,6 +18,7 @@ class CustomPostTypeController extends BaseController {
     public function render_editor_content() {
         (new \Inc\Pages\ClassicEditor\EditorFormHandler())->handle_edit_form();
         (new \Inc\Pages\ClassicEditor\RenderEditor)->render_edit_page();
+        //(new \Inc\Pages\RowEditor\RenderEditor)->render();
     }
 
     public function render_forms_list_content(){

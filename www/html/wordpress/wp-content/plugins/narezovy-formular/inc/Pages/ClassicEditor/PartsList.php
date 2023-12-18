@@ -64,7 +64,7 @@ class PartsList extends RenderEditor {
     private function render_head(){
         ?>
             <div class="parts-table-container">
-                <table class="shop_table cart wishlist_table wishlist_view traditional responsive parts-table" ">
+                <table class="shop_table cart wishlist_table wishlist_view traditional responsive parts-table">
                     <thead class="th-middle">
                         <th style="width: 2%">č.</th>
                         <th style="width: 15%">Lamino</th>
@@ -99,7 +99,7 @@ class PartsList extends RenderEditor {
         echo '<h2>Zatím zde nejsou žádné díly.</h2>';
     }
     
-    private function has_opt_results(){
+    public function has_opt_results(){
         global $wpdb;
         $opt_results = $wpdb->get_results("SELECT * FROM `" .NF_OPT_RESULTS_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' LIMIT 1");
         return (!empty($opt_results)) ? true : false;

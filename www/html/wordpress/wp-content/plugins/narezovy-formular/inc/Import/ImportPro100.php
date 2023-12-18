@@ -20,12 +20,16 @@ class ImportPro100 {
             $csv_data = $this->load_data();
             $lines = explode(PHP_EOL, $csv_data);
             $errors = [];
+            $do_coversion = true;
+            $converted_data = false;
             foreach ($lines as $line) {
                 if($line == '') continue;
-                $errors[] = $this->check_item_params(explode(';', $line));
+                $item_check = $this->check_item_params(explode(';', $line)); 
+                if(!$item_check['status']) $do_coversion = false;               // skip data conversion if error
+                $errors[] = $item_check;
             }
 
-            $converted_data = array_reverse($this->convert_data($lines));       // reversing to be in same order as in csv file
+            if($do_coversion) $converted_data = array_reverse($this->convert_data($lines));       // reversing to be in same order as in csv file
 
             $to_return = ['data' => $converted_data, 'errors' => $errors];
             return $to_return;
@@ -88,11 +92,8 @@ class ImportPro100 {
 
         if (array_sum($hrany) === 0) return -1;                                                     // if there are no edges return -1
 
-       /*
-        * !!!!!!!!!! prekontolovat funkcnost !!!!!!!!!
-        */
         $related_products = (new \Inc\AJAX\HranyDimensions())->getRelatedProducts($lamino_id);
-        
+    
         $commonValues = array_intersect($related_products, $hrany);                                 // Use array_intersect to find the common elements
         $allValuesInFirstArray = count($commonValues) === count($hrany);                            // Check if all values from the second array are present in the first array
         //var_dump($allValuesInFirstArray);
@@ -109,9 +110,10 @@ class ImportPro100 {
         if($params[2] == '') $errors[2] = ('Není zadána délka desky!');
         if($params[3] == '') $errors[3] = ('Není zadána šířka desky!');
         if($params[4] == '') $errors[4] = ('Není zadán počet kusů desky!');
-        
+
         if(!(isset($errors[0]))) {
             if(!wc_get_product_id_by_sku($this->sanitizeSKU($params[0]))) $errors[0] = ('Nenalezeno SKU desky!');
+            //if(wc_get_product_id_by_sku($this->sanitizeSKU($params[0])) === 0) $errors[0] = ('Nenalezeno SKU desky!');
         }
         
         if($this->sanitizeSKU($params[6]) !== ''){

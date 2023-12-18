@@ -1,11 +1,89 @@
-.input-small {
-    min-height: 1px !important;
-    padding: 3px !important;
+/* parts table */
+
+.parts-table-container {
+  overflow-x: auto; /* Add horizontal scroll when content overflows */
 }
 
-.parts-table td {
-    text-align: center;
+.parts-table tbody {
+  font-size: 12px;
 }
+.parts-table thead {
+  background-color: #f2f2f2;
+}
+
+.parts-table input[type="text"],select {
+  height: 14px !important;
+  min-height: 24px !important;
+  padding: 3px;
+  box-sizing: border-box;
+  font-size: 12px;
+  width: auto;
+}
+
+.parts-table-input-name {
+    width: 150px !important;
+}
+.parts-table-input-material{
+
+}
+.parts-table-input-pocet{
+    width: 30px !important;
+}
+.parts-table-input-size{
+    width: 50px !important;
+}
+.parts-table-selectbox-edge{
+    width: 100px !important;
+}
+.parts-table-selectbox-tupl{
+    width: 100px !important;
+}
+.parts-table-selectbox-lepidlo {
+    width: 70px !important;
+}
+
+.parts-table th {
+  text-transform: none;
+  line-height: 15px;
+}
+
+.parts-table th, table td {
+  padding: 10px 5px 10px 5px !important;
+}
+
+#forms-list-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.mat-selector {
+    display: flex;
+    align-items: center;
+    min-width: 150px;
+}
+
+.mat-selector:hover {
+    cursor: pointer;
+}
+
+.mat-title {
+    flex: 1;
+    margin-left: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;    
+}
+
+.mat-icon img {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+
+
+
+
 
 h2 .icon {
     display: inline-block;
@@ -75,24 +153,22 @@ h2 .icon {
     text-align: center;
 }
 
-
+/*
 input[type="text"], input[type="email"], input[type="number"], textarea, select {
   background-color: #00000014 !important;
 }
-
+*/
 
 input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus {
-  background-color: #ff8989 !important;
-  /*border-color: #e9322d !important;*/
+  /*background-color: #ff8989 !important;*/
+  border-color: #e9322d !important;
 }
 
 select:focus {
-   background-color: #ff8989 !important;
+   /*background-color: #ff8989 !important;*/
+   border-color: #e9322d !important;
 }
 
-button:focus {
-  background-color: #ff8989;
-}
 
 .button-alert {
     background-color: #fffb01 !important;
@@ -397,4 +473,57 @@ table td {
 
 .figure-delete-button {
     cursor: pointer;
+}
+
+
+
+
+/**** MODAL ****/
+
+.modal-container {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.modal-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.close {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 10px 0;
+}
+
+.modal-footer {
+    text-align: right;
 }

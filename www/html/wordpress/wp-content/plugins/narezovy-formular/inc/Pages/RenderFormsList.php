@@ -11,8 +11,6 @@ class RenderFormsList extends PagesController{
     
     function __construct() {
         parent::__construct();
-
-
     }
 
     public function register(){
@@ -35,7 +33,6 @@ class RenderFormsList extends PagesController{
     }
     
     private function render_header(){
-
         ?>
         <div class="top-buttons">
         <?php
@@ -87,10 +84,10 @@ class RenderFormsList extends PagesController{
         }
         ?>
         <thead>
-            <th style="width: 10%;"> Číslo formuláře </th>
-            <th style="width: 55%;"> Název formuláře </th>
-            <th style="width: 15%;"></th>
-            <th style="width: 15%;"> Datum </th>
+            <th style="width: 10%;">Číslo formuláře </th>
+            <th style="width: 55%;">Název formuláře </th>
+            <th style="width: 15%;">Stav</th>
+            <th style="width: 15%;">Datum </th>
             <th style="width: 5%;">Úpravy</th>
         </thead>
         <tbody>
@@ -105,9 +102,9 @@ class RenderFormsList extends PagesController{
                     echo ($row['poptano'] == 1 && $row['odeslano'] == 0) ? '<td><b>Poptávka odeslána</b></td>' : '<td></td>';
                 }
                 echo '<td>' .date('j.n.Y', strtotime($row['datum'])) .'</td>';
-                echo '<td><form id="parts-list-form" method="post">';
-                $this->button->render_button('smazat_formular', null, ['value' => $row['id']]); 
+                echo '<td><form id="forms-list-buttons" method="post">';
                 $this->button->render_button('duplikovat_formular', null, ['value' => $row['id']]); 
+                $this->button->render_button('smazat_formular', null, ['value' => $row['id']]); 
                 echo '</form></td>';
                 echo '</tr>';
             }

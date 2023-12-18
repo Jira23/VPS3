@@ -106,7 +106,7 @@ class Input {
                 'attrs' => [
                     'type' => 'number',
                     'id' => 'delka_dilu',
-                    'style' => 'width:80px;',
+                    'style' => 'width:80px; max-width: 120px !important;',
                     'tabindex' => '10',
                     'required' => ''                    
                 ]
@@ -118,7 +118,7 @@ class Input {
                 'attrs' => [
                     'type' => 'number',
                     'id' => 'sirka_dilu',
-                    'style' => 'width:80px;',
+                    'style' => 'width:80px; max-width: 120px !important;',
                     'tabindex' => '11',
                     'required' => ''                    
                 ]

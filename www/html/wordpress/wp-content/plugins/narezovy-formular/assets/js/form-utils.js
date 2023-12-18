@@ -34,8 +34,8 @@ jQuery(document).ready(function($) {
 
         if($(this).attr("name") === 'btn_smazat_formular') {                    // confirmation when deleting form
             if(!confirm("Opravdu smazat?")) return;
-            $("#parts-list-form").append(inputField);
-            $("#parts-list-form").submit();            
+            $("#forms-list-buttons").append(inputField);
+            $("#forms-list-buttons").submit();            
         }
 
         if($(this).attr("name") === 'btn_smazat_dil') {                         // confirmation when deleting part
@@ -56,8 +56,8 @@ jQuery(document).ready(function($) {
         }
             
         if($(this).attr("name") === 'btn_duplikovat_formular') {    
-            $("#parts-list-form").append(inputField);
-            $("#parts-list-form").submit();             
+            $("#forms-list-buttons").append(inputField);
+            $("#forms-list-buttons").submit();             
         }
     });
 
@@ -66,6 +66,7 @@ jQuery(document).ready(function($) {
             $('.parts-table-overlay').show();
             $("[name='btn_odeslat']").show();
             $("[name='btn_optimalizovat']").hide();
+            $("#save-part-block").hide();
         }
     });
  

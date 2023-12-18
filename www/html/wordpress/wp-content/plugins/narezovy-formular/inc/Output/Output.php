@@ -36,8 +36,8 @@ class Output  {
         $dompdf->render();
         $pdf_content = $dompdf->output();
         
-$pdf_file_path = '/var/www/html/wordpress/wp-content/plugins/narezovy-formular/yourfile.pdf';
-file_put_contents($pdf_file_path, $pdf_content);
+//$pdf_file_path = '/var/www/html/wordpress/wp-content/plugins/narezovy-formular/yourfile.pdf';
+//file_put_contents($pdf_file_path, $pdf_content);
 
         return $pdf_content;
     }    

@@ -15,7 +15,7 @@ class OrderHandler extends BaseController{
     public function handle_order($form_id) {
         (new CreateWcOrder())->create_order($form_id);
         $this->send_customer_email($form_id);
-        $this->render_thankyou_page();
+        $this->change_order_status($form_id);
     }
     
     public function send_customer_email($form_id){
@@ -37,6 +37,7 @@ class OrderHandler extends BaseController{
 
         // prepare email customer
         $to = $user->get_contact()['email'];
+//$to = 'jiri.freelancer@gmail.com';
         $subject = 'Nářezový formulář číslo ' .$form_id;
         $message = (new EmailText())->customer_email();
         $headers[] = 'Content-Type: text/html; charset=UTF-8';
@@ -47,24 +48,18 @@ class OrderHandler extends BaseController{
         // modify for admin
         $to = NF_NEW_ORDER_NOTICE_EMAILS;
         $message = $subject;
-//        wp_mail($to, $subject, $message, $headers, $attachments);               // email to DOD
+        wp_mail($to, $subject, $message, $headers, $attachments);               // email to DOD
         
         // Delete the temporary file
         fclose($temp_pdf);
         if (file_exists($temp_pdf_path)) unlink($temp_pdf_path);
     }
-
-    private function render_thankyou_page(){
-        echo '<h2>Děkujeme. Váš formulář byl odeslán.</h2>';
-        $user = new User();
-        if($user->is_registered()) {
-            echo '<a href="' .$this->forms_list_page .'"><button class="button" type="button">Zpět na seznam</button></a>';
-        } else {
-            echo '<a href="/"><button class="button" type="button">Zpět na hlavní stranu</button></a>';
-            $user->unset_cookies();
-        }
-        wp_die();
-    } 
+    
+    public function change_order_status($form_id){
+        global $wpdb;
+        $wpdb->update(NF_FORMULARE_TABLE, ['odeslano' => 1], ['id' => $form_id]);
+       
+    }
 
 }
 
