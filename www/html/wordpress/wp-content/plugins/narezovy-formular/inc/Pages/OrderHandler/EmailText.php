@@ -10,7 +10,7 @@ class EmailText {
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
-                <title>Email Confirmation</title>
+                <title>Nářezový formulář</title>
             </head>
             <body>
                 <p>Dobrý den,</p>
@@ -26,5 +26,24 @@ class EmailText {
         
         return $email_text;
     }
+    
+    public function admin_email($saw_file_url){
+        $email_text = '
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Nářezový formulář</title>
+            </head>
+            <body>
+                <p>Dobrý den,</p>
+                <p>byl přijat nový nářezový formulář.</p>
+                <p><a href="' .$saw_file_url .'">Soubor pro pilu je ke stažení zde</a></p>
+            </body>
+            </html>
+            ';
+        
+        return $email_text;
+    }    
 }
 

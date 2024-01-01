@@ -2,8 +2,10 @@
 /**
  *  @package  narezovy-formular
  */
-namespace Inc\Output;
 
+// creates PDF output for customer and DOD
+
+namespace Inc\Output;
 
 use Dompdf\Dompdf;
 

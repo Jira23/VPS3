@@ -29,7 +29,7 @@ use Inc\Pages\OrderHandler\OrderHandler;
         private function handle_order(){
             $form_id = $this->query_params['form_id'];
             (new OrderHandler())->handle_order($form_id);
-            self::jQuery_redirect(get_permalink() .'?form_id=' .$form_id .'&part_id=0&order_sent=1');
+//            self::jQuery_redirect(get_permalink() .'?form_id=' .$form_id .'&part_id=0&order_sent=1');
         }
         
         private function delete_opt(){

@@ -17,6 +17,7 @@ final class Init{
                 Pages\FormTree::class,
                 Pages\RenderFormsList::class,
                 Pages\RegisterUserFormHandler::class,
+                Pages\OrderHandler\ModifyCompletedOrderEmail::class,
                 Import\UserPageEdit::class
             );
 	}

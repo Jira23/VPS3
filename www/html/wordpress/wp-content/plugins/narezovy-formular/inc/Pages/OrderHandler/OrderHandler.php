@@ -14,11 +14,11 @@ class OrderHandler extends BaseController{
 
     public function handle_order($form_id) {
         (new CreateWcOrder())->create_order($form_id);
-        $this->send_customer_email($form_id);
-        $this->change_order_status($form_id);
+        $this->send_emails($form_id);
+//        $this->change_order_status($form_id);
     }
     
-    public function send_customer_email($form_id){
+    public function send_emails($form_id){
         $user = new User();
 
         add_filter('wp_mail_from', function () {
@@ -37,17 +37,18 @@ class OrderHandler extends BaseController{
 
         // prepare email customer
         $to = $user->get_contact()['email'];
-//$to = 'jiri.freelancer@gmail.com';
+$to = 'jiri.freelancer@gmail.com';
         $subject = 'Nářezový formulář číslo ' .$form_id;
         $message = (new EmailText())->customer_email();
         $headers[] = 'Content-Type: text/html; charset=UTF-8';
-        $attachments = ['seznam_dilu.pdf' => $temp_pdf_path];
-        
+        $attachments = ['seznam_dilu.pdf' => $temp_pdf_path, 'Obchodni_a_technicke_podminky_vyroby.pdf' => '/home/drevoobchoddolezal.cz/public_html/DOD_Obchodni_a_technicke_podminky_vyroby.pdf'];
         wp_mail($to, $subject, $message, $headers, $attachments);               // email to customer
         
         // modify for admin
         $to = NF_NEW_ORDER_NOTICE_EMAILS;
-        $message = $subject;
+        $message = (new EmailText())->admin_email($this->get_saw_file_url($form_id));
+        $attachments = ['seznam_dilu.pdf' => $temp_pdf_path];
+
         wp_mail($to, $subject, $message, $headers, $attachments);               // email to DOD
         
         // Delete the temporary file
@@ -59,6 +60,13 @@ class OrderHandler extends BaseController{
         global $wpdb;
         $wpdb->update(NF_FORMULARE_TABLE, ['odeslano' => 1], ['id' => $form_id]);
        
+    }
+    
+    private function get_saw_file_url($form_id){
+        global $wpdb;
+        $order_id = $wpdb->get_results("SELECT `order_id` FROM `" .NF_OPT_RESULTS_TABLE ."` WHERE `form_id` LIKE '" .$form_id ."' LIMIT 1")[0]->order_id;
+
+        if($order_id) return ARDIS_SERVER_SAW_FILES_PATH .$order_id .'.NC';        
     }
 
 }

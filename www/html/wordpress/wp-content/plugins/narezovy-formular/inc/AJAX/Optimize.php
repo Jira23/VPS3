@@ -4,6 +4,11 @@
  */
 namespace Inc\AJAX;
 
+use \Inc\Exceptions\NFOptException;
+use \Inc\Optimalization\HandleResponse;
+use \Inc\Pages\OptResults;
+use \Inc\Optimalization\PrepareRequest;
+
 // handles Ardis form optimization and returns results
 
 
@@ -13,31 +18,27 @@ class Optimize {
     public $form_id;
     
     const CONNECTION_TIMEOUT = 120;
-    const ARDIS_SERVER_URL = 'https://ardis.drevoobchoddolezal.cz/';
-    const ARDIS_SERVER_IMG_PATH = self::ARDIS_SERVER_URL .'img/';
     
     public function optimize() {
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);         
-
-        global  $wpdb;
-
-        $this->form_id = (int)$_POST['form_id'];
-        $parts = $this->get_parts();
-        $form = $wpdb->get_results("SELECT * FROM `" .NF_FORMULARE_TABLE ."` WHERE `id` LIKE '" .$this->form_id ."'")[0];
-        $plotny = $this->get_plotny($parts);
-
-        $response = $this->send_request(['form' => $form, 'parts' => $parts, 'plotny' => $plotny]);
-
-        $response_data = json_decode($response, true);
-
-        if(isset($response_data['state']) && $response_data['state'] === 'success'){
-            $this->response_handler($response_data['body']);
-        } else {
-var_dump($response);            
-            $this->report_error('Ardis error at ' .date('d.m.Y H:i'));
+        
+        try {
+            // prepare data
+            $form_id = (int)$_POST['form_id'];
+            $request_data = (new PrepareRequest())->prepare($form_id);
+            
+            // send request
+            $response_data = $this->send_request($request_data);
+            
+            // handle response - convert it for DOD
+            (new HandleResponse())->handle($form_id, $response_data['body']);
+            (new OptResults($form_id))->render_table();
+            
+        } catch (\Throwable $t) {
+            $this->report_error($t, $form_id);    
         }
         
         wp_die();
@@ -54,111 +55,31 @@ var_dump($response);
         );
 
         $context  = stream_context_create($options);
-        $result = file_get_contents(self::ARDIS_SERVER_URL, false, $context);
-//var_dump($result);
+        $response = file_get_contents(ARDIS_SERVER_URL, false, $context);
 
-        if ($result === FALSE) {
-            $this->report_error('file_get_content() returned false!');
-        } else {
-            return $result;
-        }  
-    }
+        if ($response === FALSE) throw new NFOptException('file_get_content() returned false!');
+        
+        $response_data = json_decode($response, true);            
+        if(!isset($response_data['state']) && $response_data['state'] !== 'success') throw new NFOptException('Unknown Ardis error!');
+        
+        if($response_data['state'] === 'success' && empty($response_data['body']['ItemsList']))  throw new NFOptException('Ardis returned empty array!');
+        
+        return $response_data;
+    }  
     
-    private function response_handler($response_body){
-        $converted_response = $this->convert_response($response_body);
-        $this->save_response($converted_response);
-        (new \Inc\Pages\OptResults($this->form_id))->render_table();
-        wp_die();
-    }
-    
-    private function report_error($error){
-        echo '<h4 style="color: red;">Během optimalizace se vyskytla chyba. Zkuste to prosím později.</h4>';
+    private function report_error($t, $form_id){
+echo '<pre>';        
+var_dump($t);        
+echo '<pre>';
+
+        $message = ($t instanceof \Inc\Exceptions\NFOptException && $t->get_user_message()) ? $t->get_user_message() : 'Během optimalizace se vyskytla chyba. Zkuste to prosím později.';
+
+        echo '<h4 style="color: red;">' .$message .'</h4>';
 //$to = get_option('admin_email');
 $to = 'jiri.freelancer@gmail.com';
         $subject = 'Optimization error';
-        $message = 'Při optimalizaci formluláře id:' .$this->form_id .' se vyskytla následující chyba:' .PHP_EOL .$error;
-        $a = wp_mail($to, $subject, $message);
-        var_dump($a);
+        $body = 'Při optimalizaci formluláře id:' .$form_id .' se vyskytla následující chyba:' .PHP_EOL .$t .PHP_EOL;
+//        wp_mail($to, $subject, $body);
         wp_die();
     }
-
-    private function get_parts(){
-        global  $wpdb;
-        $parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` DESC");
-        
-        foreach ($parts as $part) {
-            if($part->tupl == '30mm') {                                         // podlepeni bilou deskou 12mm
-                $part->tupl_mat_id = PLOTNA_TUPL_30;
-            } elseif($part->tupl == '36mm'){                                    // podlepeni deskou ve stejnem dekoru
-                $part->tupl_mat_id = $part->lamino_id;
-            } elseif($part->tupl == '36mm-bila'){                               // podlepeni bilou deskou 18mm
-                $part->tupl_mat_id = PLOTNA_TUPL_36;
-            } else{
-                $part->tupl_mat_id = '';
-            }
-        }
-        unset($part);                                                           // unset the reference after the loop to avoid potential conflicts
-
-        return $parts;
-    }
-    
-    private function get_plotny($parts){
-        
-        foreach ($parts as $part) {
-            $parts_ids[] = $part->lamino_id;
-            if ($part->hrana_horni != 0) $parts_ids[] = $part->hrana_horni;
-            if ($part->hrana_leva != 0) $parts_ids[] = $part->hrana_leva;
-            if ($part->hrana_prava != 0) $parts_ids[] = $part->hrana_prava;
-            if ($part->hrana_dolni != 0) $parts_ids[] = $part->hrana_dolni;
-            if ($part->tupl == '30mm') $parts_ids[] = PLOTNA_TUPL_30;                   
-            if ($part->tupl == '36mm-bila') $parts_ids[] = PLOTNA_TUPL_36;         
-        }
-        
-        $unique_ids = array_unique($parts_ids);
-        $plotny = [];
-        
-        foreach ($unique_ids as $productId) {
-            $product = wc_get_product($productId);
-            $plotny[$productId]['id'] = $productId;
-            $plotny[$productId]['name'] = $product->get_name();
-            $plotny[$productId]['price'] = $product->get_price();
-            $plotny[$productId]['delka'] = $product->get_attribute('pa_delka');
-            $plotny[$productId]['sirka'] = $product->get_attribute('pa_sirka');
-            $plotny[$productId]['sila'] = $product->get_attribute('pa_sila');            
-        }
-       
-       return $plotny;
-    }
-    
-    private function convert_response($response_body){
-        
-        foreach ($response_body['Layouts'] as $key => $item) {
-            $layouts[] = self::ARDIS_SERVER_IMG_PATH .$item['OrderId'] .'/' .basename($item['ImgPath']);
-        }
-        
-        $converted = [];
-        foreach ($response_body['ItemsList'] as $key => $item) {
-            $converted[$key]['form_id'] = $this->form_id;
-            $converted[$key]['order_id'] = $item['MpsId'];
-            $converted[$key]['item_id'] = $item['ItemCode'];
-            $converted[$key]['quantity'] = $item['Quantity'];
-            $converted[$key]['price'] = $item['Price'];
-            $converted[$key]['layouts'] = json_encode($layouts);
-        }
-        return $converted;
-    }
-    
-    private function save_response($response){
-        global $wpdb;
-        $order_exists = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " .NF_OPT_RESULTS_TABLE ." WHERE form_id = %d", $this->form_id ));
-        
-        if($order_exists != 0){                                                 // there is no order with this form_id in db, remove it so it can be "updated"
-            $wpdb->delete(NF_OPT_RESULTS_TABLE, ['form_id' => $this->form_id]);
-        }
-        
-        foreach ($response as $item) {
-            $wpdb->insert(NF_OPT_RESULTS_TABLE,  $item);
-        }        
-    }
-    
 }

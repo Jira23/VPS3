@@ -70,10 +70,16 @@ $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('MDF_LAKOVANE_CATEGORY_ID',
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_30', 15567) : define('PLOTNA_TUPL_30', 575645);                   // L 0110 SM  HL Bílá 2800*2070*12  !!! POZOR pri zmene je potreba zmenit i na ardis serveru
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_36', 12896) : define('PLOTNA_TUPL_36', 522250);                   // L 0110 SM  HL Bílá 2800*2070*18  !!! POZOR pri zmene je potreba zmenit i na ardis serveru
 
+// define optimalization constants
+define('ARDIS_SERVER_URL', 'https://ardis.drevoobchoddolezal.cz/');
+define('ARDIS_SERVER_IMG_PATH', ARDIS_SERVER_URL .'img/');
+define('ARDIS_SERVER_SAW_FILES_PATH', ARDIS_SERVER_URL .'pila/');
+
 // other constants
 define('NF_MAX_UNFINISHED_ORDERS', 5);
 //define('NF_NEW_ORDER_NOTICE_EMAILS', ['rezaninamiru@drevoobchoddolezal.cz, pavel.zitka@drevoobchoddolezal.cz']);
-define('NF_NEW_ORDER_NOTICE_EMAILS', ['pavel.zitka@drevoobchoddolezal.cz']);
+//define('NF_NEW_ORDER_NOTICE_EMAILS', ['pavel.zitka@drevoobchoddolezal.cz']);
+define('NF_NEW_ORDER_NOTICE_EMAILS', ['jiri.nikola@gmail.com']);
 
 // Require once the Composer Autoload
 if ( file_exists( dirname( __FILE__ ) . '/vendor/autoload.php' ) ) {
