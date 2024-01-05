@@ -16,8 +16,6 @@ final class Init{
                 AJAX\AjaxUtils::class,
                 Pages\FormTree::class,
                 Pages\RenderFormsList::class,
-                Pages\RegisterUserFormHandler::class,
-                Pages\OrderHandler\ModifyCompletedOrderEmail::class,
                 Import\UserPageEdit::class
             );
 	}

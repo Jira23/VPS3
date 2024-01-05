@@ -31,9 +31,20 @@ class RenderEditor extends PagesController {
         $this->parts = $this->get_parts();
         $this->form = $this->get_form();
         
-        $this->max_unfinished_orders_reached = !current_user_can('administrator') && (new User())->count_opts() >= NF_MAX_UNFINISHED_ORDERS;    // check if user reached max. nubmer of optimalization withou placed order, not used with admin rights users
-        
+        $user = new User();
+        $this->max_unfinished_orders_reached = !$user->has_unlimited_opt() && count($user->get_opts()) >= NF_MAX_UNFINISHED_ORDERS;    // check if user reached max. nubmer of optimalization withou placed order, not used with admin rights users
+      
         $this->check_user();                                                    // check if user is allowed to be on this page
+        
+        $this->init_tags();
+    }
+    
+    private function init_tags(){
+        $this->select_box = new Tags\SelectBox();        
+        $this->checkbox = new Tags\CheckBox();
+        $this->input = new Tags\Input();
+        $this->button = new Tags\Button();        
+        $this->mat_selector = new Tags\MatSelector();        
     }
     
     public function render(){
@@ -43,7 +54,7 @@ class RenderEditor extends PagesController {
         } else {                                                                // render editor form
             $this->render_header();
             $this->renderButtons();
-            (new RenderParts())->render($this->parts);
+            (new RenderParts())->render_parts($this->parts);
             
             $this->render_footer();
             $this->render_modals();

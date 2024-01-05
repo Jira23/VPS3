@@ -1,6 +1,6 @@
 <?php
 
-namespace Inc\Pages\OrderHandler;
+namespace Inc\OrderHandler;
 
 use Inc\Base\User;
 
@@ -11,20 +11,27 @@ class CreateWcOrder{
         $user = new User();
         $order = new \WC_Order();
 
-        $order->set_customer_note('--- Z NÁŘEZOVÉHO FORMULÁŘE ---' .PHP_EOL .$this->get_customer_note($form_id));
+        //$order->set_customer_note('--- Z NÁŘEZOVÉHO FORMULÁŘE ---' .PHP_EOL .$this->get_customer_note($form_id));
+        //$order->add_order_note('--- Z NÁŘEZOVÉHO FORMULÁŘE č.' .$form_id .' ---' .PHP_EOL);
+        
+        
         $this->set_products($order, $form_id);
         $this->set_addresses($order);
-        $order->set_status('processing');
           
         if($user->is_registered()) $order->set_customer_id($user->get_id());
 
         //$order->set_payment_method('cop');
-        //$order->set_payment_method_title('Hotově / kartou (při vyzvednutí)');        
+        //$order->set_payment_method_title('Dobírka');        
         
         $order->calculate_totals();
-        $order_id = $order->save();
+        $order->set_status('processing');
         
-        return $order_id;
+        $WC_order_id = $order->save();
+        
+        //update_post_meta($order_id, '_from_NF', 'true');
+        $custom_order_id = get_post_meta($WC_order_id, '_alg_wc_custom_order_number', true);
+        
+        return $custom_order_id;
     }
 
     private function set_addresses($order){
@@ -65,20 +72,20 @@ class CreateWcOrder{
             if(!$contact) return;
             
             $billing_address = $shipping_address = array(
-                'first_name' => $contact['nf_jmeno'],
-                'last_name' => $contact['nf_prijmeni'],
-                'address_1' => $contact['nf_ulice'],
+                'first_name' => $contact['jmeno'],
+                'last_name' => $contact['prijmeni'],
+                'address_1' => $contact['ulice'],
                 'country' => 'CZ',
-                'phone' => $contact['nf_telefon']
+                'phone' => $contact['telefon']
             );  
             
-            if(strpos($contact['nf_mesto'], ',')){
-                $billing_address['city'] = $shipping_address['city'] = explode(',', $contact['nf_mesto'])[0];
-                $billing_address['postcode'] = $shipping_address['postcode'] = explode(',', $contact['nf_mesto'])[1];
+            if(strpos($contact['mesto'], ',')){
+                $billing_address['city'] = $shipping_address['city'] = explode(',', $contact['mesto'])[0];
+                $billing_address['postcode'] = $shipping_address['postcode'] = explode(',', $contact['mesto'])[1];
             } else {
-                $billing_address['address_2'] = $shipping_address['address_2'] == $contact['nf_mesto'];
+                $billing_address['address_2'] = $shipping_address['address_2'] = $contact['mesto'];
             }
-            if(strpos($contact['nf_email'], '@') && strpos($contact['nf_email'], '.')) $billing_address['email'] = $shipping_address['email'] = $contact['nf_email'];
+            if(strpos($contact['email'], '@') && strpos($contact['email'], '.')) $billing_address['email'] = $shipping_address['email'] = $contact['email'];
         }
         
         // finally set data
@@ -94,7 +101,16 @@ class CreateWcOrder{
             $product_id = $product->item_id;
             $quantity = $product->quantity;
             $product = wc_get_product($product_id);
-            if($product)  $order->add_product($product, $quantity);                    
+            if($product)  {
+                $item_id = $order->add_product($product, $quantity);
+                if (!empty($item_id)){                                          // add product meta
+                    $order_item = $order->get_item($item_id);
+                    $order_item->add_meta_data('_productuid', $product->get_meta('_productuid'), true);
+                    $order_item->add_meta_data('_unit_name', $product->get_meta('unit_name'), true);
+                    $order_item->add_meta_data('_filled_amount', $product->get_meta('filled_amount'), true);
+                    $order_item->save();
+                }
+            }
         }
     }
     
@@ -104,4 +120,5 @@ class CreateWcOrder{
         return $customer_note->poznamka;
     }
 }
+
 

@@ -66,6 +66,7 @@ class Activate{
             $sql = "CREATE TABLE $table_name (
                 id mediumint(9) NOT NULL AUTO_INCREMENT,
                 userId TINYTEXT,
+                WcZakazkaId TINYTEXT,
                 nazev TINYTEXT,
                 olepeni ENUM('0', '1'),
                 stitky ENUM('0', '1'),
@@ -73,6 +74,8 @@ class Activate{
                 poznamka TEXT,
                 odeslano ENUM('0', '1') NOT NULL DEFAULT '0'
                 poptano ENUM('0', '1'),
+                urlHash TINYTEXT,
+                userContact TINYTEXT,
                 datum TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY  (id)
             ) $charset_collate;";
@@ -130,8 +133,10 @@ class Activate{
                 form_id INT(11),
                 order_id TINYTEXT,
                 item_id TINYTEXT,
+                item_label TINYTEXT,
                 quantity INT(11),
                 price FLOAT,
+                unit_name TINYTEXT,
                 layouts TEXT,
                 modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY  (id)

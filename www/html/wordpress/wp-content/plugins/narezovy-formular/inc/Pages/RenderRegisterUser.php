@@ -35,7 +35,7 @@ class RenderRegisterUser extends BaseController{
                     <label for="telefon">*Telefon:</label><br>
                     <input type="text" name="nf_telefon" style="width: 300px;" required></input>    
                 </div>
-                <div class="form-section">    
+                <div class="form-section">
                     <label for="ulice">*Ulice, č.p.:</label><br>
                     <input type="text" name="nf_ulice" style="width: 300px;" required></input>    
                 </div>
@@ -48,7 +48,7 @@ class RenderRegisterUser extends BaseController{
                     <input type="text" name="nf_ICO" style="width: 300px;"></input>    
                 </div>     
                 <div class="form-section">    
-                    <button class="button" name="btn_odeslat_registraci" type="submit">Odeslat</button>
+                    <button class="button button-main" name="btn_odeslat_registraci" type="input">Odeslat</button>
                 </div>    
             </form>
         <?php

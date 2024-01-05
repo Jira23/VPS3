@@ -2,7 +2,7 @@
 /**
  *  @package  narezovy-formular
  */
-namespace Inc\Pages\Tags\RowEditor;
+namespace Inc\Pages\RowEditor\Tags;
 
 class SelectBox {
     

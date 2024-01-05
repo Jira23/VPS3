@@ -15,25 +15,15 @@ class PagesController extends BaseController {
     public $textarea;
     public $checkbox;
     public $alert;
+    public $info_modal;
     
     public function __construct() {
         parent::__construct();
         
         // tags init
-        $this->select_box = new Tags\SelectBox();
-        $this->checkbox = new Tags\CheckBox();
-        $this->input = new Tags\Input();
-        $this->button = new Tags\Button();        
-//$this->select_box = new Tags\RowEditor\SelectBox();        
-//$this->checkbox = new Tags\RowEditor\CheckBox();
-//$this->input = new Tags\RowEditor\Input();
-//$this->button = new Tags\RowEditor\Button();        
-//$this->mat_selector = new Tags\RowEditor\MatSelector();
+        $this->button = new Tags\Button();  
+        $this->alert = new Tags\Alert();  
         
-        $this->tooltip = new Tags\Tooltip();
-        $this->textarea = new Tags\Textarea();
-        $this->alert = new Tags\Alert();
-
         add_action('wp_loaded', array($this, 'adapt_NF_pages'));        
         add_action('wp_loaded', array($this, 'show_nf_errors'));        
     }

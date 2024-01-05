@@ -44,6 +44,7 @@ class RenderFormsList extends PagesController{
             <a href="/navod-formular-narez/"><?php $this->button->render_button('navod');?></a>
         </div>
         <?php
+        if((new User())->is_nf_admin()) $this->render_import_form();
     }
 
     private function render_list(){
@@ -70,7 +71,7 @@ class RenderFormsList extends PagesController{
     private function get_forms_list($odeslano = 0){
         global $wpdb;
         $user_id = (new User())->get_id();
-
+//$user_id = 6374;
         $prepared_statement = $wpdb->prepare("SELECT * FROM " .NF_FORMULARE_TABLE ." WHERE userId LIKE %d AND odeslano LIKE %d ORDER BY id DESC", $user_id, $odeslano);
         $results = $wpdb->get_results($prepared_statement, ARRAY_A);
         return($results);
@@ -84,7 +85,6 @@ class RenderFormsList extends PagesController{
         }
         ?>
         <thead>
-            <th style="width: 10%;">Číslo formuláře </th>
             <th style="width: 55%;">Název formuláře </th>
             <th style="width: 15%;">Stav</th>
             <th style="width: 15%;">Datum </th>
@@ -94,7 +94,6 @@ class RenderFormsList extends PagesController{
         <?php
             foreach ($rows as $row) {
                 echo '<tr class="clickable-row" data-href="' .$this->editor_page .'?form_id=' .$row['id'] .'&part_id=0">';
-                echo '<td>' .$row['id'] .'</td>';
                 echo '<td>' .$row['nazev'] .'</td>';
                 if($this->has_opt_results($row['id'])){                                                                                 // "Poptávka odeslána" for old forms before optimalization functionality added
                     echo '<td><b>Optimalizováno</b></td>';
@@ -109,6 +108,16 @@ class RenderFormsList extends PagesController{
                 echo '</tr>';
             }
             echo '</tbody>';        
+    }
+    
+    private function render_import_form(){
+    ?>
+        <form method="post">
+            <label for="import_form_id">Import formuláře č.:</label>
+            <input type="number" name="import_form_id" style="width: 80px; max-width: none;">
+            <button type="input" class="button button-main" name="btn_import_form">Import</button>
+        </form>
+    <?php    
     }
     
     private function render_empty_list(){

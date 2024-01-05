@@ -2,7 +2,7 @@
 /**
  *  @package  narezovy-formular
  */
-namespace Inc\Pages\Tags;
+namespace Inc\Pages\RowEditor\Tags;
 
 class CheckBox {
     
@@ -10,7 +10,7 @@ class CheckBox {
     //            <label for="obchodni_podminky">Souhlasím s <a href="/obchodni-a-technicke-podminky-vyroby-rezani/">obchodními podmínkami</a>.</label>
     
     
-    public function render_checkbox($checkbox_id, $checked = false){
+    public function render($checkbox_id, $checked = false){
        
         $props = $this->define_checkbox_props($checkbox_id);
         echo '<input type="checkbox" ';
@@ -29,10 +29,9 @@ class CheckBox {
     
     private function define_checkbox_props($checkbox_id){
         $checkbox= [
-            'obchodni_podminky' => [
-                'id'   => 'obchodni_podminky',
-                'label' => 'Souhlasím s <a href="/obchodni-a-technicke-podminky-vyroby-rezani/">obchodními podmínkami</a>.',
-                'checked' => false,
+            'orient' => [
+                'name' => 'parts[orientace]',
+                'checked' => NULL,
                 'attrs' => []
             ]
         ];

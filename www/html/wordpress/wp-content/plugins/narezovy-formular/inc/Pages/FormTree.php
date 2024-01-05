@@ -53,7 +53,7 @@ namespace Inc\Pages;
             
             foreach ( $terms as $term ) {
                 $this->generateMenu($term->term_id);
-                if(!in_array($term->name, DENIDED_CATEGORIES)){                 // pokud neni kategorie na seznamu zakazanych, vykreslim ji
+                if(!in_array($term->name, NF_DENIDED_CATEGORIES)){                 // pokud neni kategorie na seznamu zakazanych, vykreslim ji
                     echo "{n_id: " .$term->term_id  .", n_title: '" .$term->name ."', n_parentid: " .$term->parent .", n_addional: '" .$term->slug ."'},";
                 }
             }

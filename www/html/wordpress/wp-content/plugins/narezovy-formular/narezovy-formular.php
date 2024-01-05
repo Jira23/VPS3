@@ -53,7 +53,7 @@ define('NF_FORMULARE_TABLE', $wpdb->prefix .'nf_formulare');
 define('NF_DILY_TABLE', $wpdb->prefix .'nf_dily');
 define('NF_OPT_RESULTS_TABLE', $wpdb->prefix .'nf_opt_results');
 
-define( 'DENIDED_CATEGORIES',  array(                                           // kategories, not be visible on deska selection
+define('NF_DENIDED_CATEGORIES',  array(                                           // kategories, not be visible on deska selection
     'Spárovky - přířezy', 
     'Spárovky smrk - přířezy',
     'Hrany + ABS',
@@ -74,12 +74,17 @@ $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_36', 12896) : 
 define('ARDIS_SERVER_URL', 'https://ardis.drevoobchoddolezal.cz/');
 define('ARDIS_SERVER_IMG_PATH', ARDIS_SERVER_URL .'img/');
 define('ARDIS_SERVER_SAW_FILES_PATH', ARDIS_SERVER_URL .'pila/');
+define('NF_KOLEKCE_TAG', 'Formátování odběr jen to co chci bez zbytků');
 
 // other constants
 define('NF_MAX_UNFINISHED_ORDERS', 5);
+define('NF_UNLIMITED_OPT_USERS', [3906, 4634]);                                    // no limit for optimalizatons
+define('NF_ADMIN_USERS', [3906, 4634]);                                         // users with admin rights
 //define('NF_NEW_ORDER_NOTICE_EMAILS', ['rezaninamiru@drevoobchoddolezal.cz, pavel.zitka@drevoobchoddolezal.cz']);
-//define('NF_NEW_ORDER_NOTICE_EMAILS', ['pavel.zitka@drevoobchoddolezal.cz']);
-define('NF_NEW_ORDER_NOTICE_EMAILS', ['jiri.nikola@gmail.com']);
+define('NF_NEW_ORDER_NOTICE_EMAILS', ['pavel.zitka@drevoobchoddolezal.cz']);
+//define('NF_NEW_ORDER_NOTICE_EMAILS', ['jiri.nikola@gmail.com']);
+
+
 
 // Require once the Composer Autoload
 if ( file_exists( dirname( __FILE__ ) . '/vendor/autoload.php' ) ) {

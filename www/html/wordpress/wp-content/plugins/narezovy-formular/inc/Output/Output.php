@@ -20,7 +20,7 @@ class Output  {
     }
     
     public function render_customer_summary_pdf($form_id){
-        
+
         $html = $this->render_header('pdf');
         $html .= $this->render_user_table($form_id);
         $html .= $this->render_parts_table($form_id);
@@ -37,8 +37,8 @@ class Output  {
         $dompdf->loadHtml($html);
         $dompdf->render();
         $pdf_content = $dompdf->output();
-        
-//$pdf_file_path = '/var/www/html/wordpress/wp-content/plugins/narezovy-formular/yourfile.pdf';
+
+//$pdf_file_path = '/home/drevoobchoddolezal.cz/public_html/wp-content/plugins/narezovy-formular2/yourfile.pdf';
 //file_put_contents($pdf_file_path, $pdf_content);
 
         return $pdf_content;
@@ -81,12 +81,13 @@ class Output  {
     private function render_user_table($form_id){
 
         global $wpdb;    
+        
         $formular_data = $wpdb->get_results("SELECT * FROM " .NF_FORMULARE_TABLE ." WHERE `id` LIKE '" .$form_id ."'")[0];
         $user_data = (new \Inc\Base\User())->get_contact();
 
         $table = '
             <h5 style=" text-align: center;">Dřevoobchod Doležal</h5>
-            <h3 style=" text-align: center;">Nářezový formulář číslo ' .$form_id .' - ' .$formular_data->nazev .'</h3>
+            <h3 style=" text-align: center;">Nářezový formulář číslo ' .$formular_data->WcZakazkaId .' - ' .$formular_data->nazev .'</h3>
 
             <table class="user-table">
                     <td colspan="10" style="text-align: center; border-bottom: 2px solid black;"><h4>Detail zakázky</h4></td>
@@ -175,10 +176,12 @@ class Output  {
                 $re = new \Inc\Pages\ClassicEditor\RenderEditor();                
                 $i = 1;
                 foreach ($dily_data as $row) {                                       // vypis dat
+                    $product = wc_get_product($row->lamino_id);
+                    $sku = $product ? $product->get_sku() : '';
                     $table .=
                     '<tr>'
                     .'<td>' .$i .'</td>'
-                    .'<td>' .$row->lamino_id .'</td>'                                    
+                    .'<td>' .$sku .'</td>'
                     .'<td>' .$re->get_deska_name_by_id($row->lamino_id) .'</td>'
                     .'<td>' .$row->nazev_dilce .'</td>'
                     .'<td>' .$row->ks .'</td>'

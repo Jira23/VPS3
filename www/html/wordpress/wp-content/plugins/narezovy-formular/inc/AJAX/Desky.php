@@ -108,7 +108,7 @@ class Desky {
 
         $product_categories = wp_get_post_terms($product_id, 'product_cat', array('fields' => 'names'));
 
-        foreach (DENIDED_CATEGORIES as $denided_cat) {                                                  // vyradim kategorie, ktere tam byt nemaji
+        foreach (NF_DENIDED_CATEGORIES as $denided_cat) {                                                  // vyradim kategorie, ktere tam byt nemaji
             if(in_array($denided_cat, $product_categories)) return (false);  
         }
 

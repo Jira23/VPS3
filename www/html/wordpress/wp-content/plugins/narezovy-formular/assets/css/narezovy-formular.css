@@ -149,7 +149,8 @@ h2 .icon {
     text-align: center;
 }
 
-.register-form .form-section{
+.register-form .form-section {
+    display: block;
     text-align: center;
 }
 
@@ -425,6 +426,24 @@ table td {
   background-color: #ff898900;
 }
 
+.opt-row-upper {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.opt-row-lower {
+    font-size: 12px;
+}
+
+.opt-total-upper {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.opt-total-lower {
+    font-size: 16px;
+    font-weight: normal;
+}
 
 /* ALERTS */
 /* Style for the alert container */
@@ -481,15 +500,15 @@ table td {
 /**** MODAL ****/
 
 .modal-container {
-    display: none;
+    /*display: none;*/
     position: fixed;
-    z-index: 1;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
 }
 
 
@@ -498,14 +517,21 @@ table td {
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    max-width: 40%;
 }
 
 .modal-header {
     padding-bottom: 10px;
     border-bottom: 1px solid #ddd;
+    text-align: center;
 }
-
+.modal-header .dashicons {
+    width: 80px;
+    height: 80px;
+    font-size: 80px;
+    color: orange;
+}
+  
 .close {
     float: right;
     font-size: 28px;
@@ -522,8 +548,18 @@ table td {
 
 .modal-body {
     padding: 10px 0;
+    text-align: center;
+    margin-top: 25px;
 }
 
 .modal-footer {
-    text-align: right;
+    margin-top: 25px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-footer button {
+    margin: 0 15px;
 }

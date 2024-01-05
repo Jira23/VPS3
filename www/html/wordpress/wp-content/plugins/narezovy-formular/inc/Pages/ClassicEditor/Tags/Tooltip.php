@@ -2,7 +2,7 @@
 /**
  *  @package  narezovy-formular
  */
-namespace Inc\Pages\Tags;
+namespace Inc\Pages\ClassicEditor\Tags;
 
 use Inc\Base\BaseController;
 

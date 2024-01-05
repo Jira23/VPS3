@@ -32,13 +32,29 @@ class RenderEditor extends PagesController {
         $this->form = $this->get_form();
         $this->current_part = $this->get_current_part();
         
-        $this->max_unfinished_orders_reached = !current_user_can('administrator') && (new User())->count_opts() >= NF_MAX_UNFINISHED_ORDERS;    // check if user reached max. nubmer of optimalization withou placed order, not used with admin rights users
-        
+        $user = new User();
+        $this->max_unfinished_orders_reached = !$user->has_unlimited_opt() && count($user->get_opts()) >= NF_MAX_UNFINISHED_ORDERS;    // check if user reached max. nubmer of optimalization withou placed order, not used with admin rights users
+
         $this->check_user();                                                    // check if user is allowed to be on this page
+        
+        $this->init_tags();
     }
     
+    private function init_tags(){
+        $this->select_box = new Tags\SelectBox();
+        $this->checkbox = new Tags\CheckBox();
+        $this->input = new Tags\Input();
+        $this->button = new Tags\Button();
+        $this->tooltip = new Tags\Tooltip();
+        $this->textarea = new Tags\Textarea();
+        $this->info_modal = new \Inc\Pages\Tags\InfoModal();        
+        $this->alert = new \Inc\Pages\Tags\Alert();        
+    }    
+    
     public function render_edit_page(){
-        
+
+        if(isset($_POST['btn_odeslat'])) return;                                // stop render page, user will to be redirected after data processing complete
+
         if(isset($this->form['odeslano']) && $this->form['odeslano'] == 1){     // render summary of closed order
             $this->render_order_summary();
         } else {                                                                // render editor form
@@ -356,12 +372,10 @@ class RenderEditor extends PagesController {
 
     private function render_thankyou(){
         echo '<div style="text-align: center; margin-bottom:100px;"><h1>Děkujeme. Váše objednávka  byla odeslána ke zpracování.</h1>';
-        $user = new User();
-        if($user->is_registered()) {
+        if((new User())->is_registered()) {
             echo '<a href="' .$this->forms_list_page .'"><button class="button" type="button">Zpět na seznam</button></a>';
         } else {
             echo '<a href="/"><button class="button" type="button">Zpět na hlavní stranu</button></a>';
-            $user->unset_cookies();
         }
         echo '</div><hr>';
     }  

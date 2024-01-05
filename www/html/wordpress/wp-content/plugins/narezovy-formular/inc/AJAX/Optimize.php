@@ -20,10 +20,6 @@ class Optimize {
     const CONNECTION_TIMEOUT = 120;
     
     public function optimize() {
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);         
         
         try {
             // prepare data
@@ -58,28 +54,47 @@ error_reporting(E_ALL);
         $response = file_get_contents(ARDIS_SERVER_URL, false, $context);
 
         if ($response === FALSE) throw new NFOptException('file_get_content() returned false!');
-        
-        $response_data = json_decode($response, true);            
-        if(!isset($response_data['state']) && $response_data['state'] !== 'success') throw new NFOptException('Unknown Ardis error!');
-        
+        $response_data = json_decode($response, true);
+
+        if(!isset($response_data['state'])) throw new NFOptException('Unknown Ardis error!');
+        if(isset($response_data['state']) && $response_data['state'] === 'opt_error') $this->handle_opt_error ($response_data['body']);
         if($response_data['state'] === 'success' && empty($response_data['body']['ItemsList']))  throw new NFOptException('Ardis returned empty array!');
         
         return $response_data;
     }  
     
     private function report_error($t, $form_id){
+/*
 echo '<pre>';        
 var_dump($t);        
 echo '<pre>';
-
+*/
         $message = ($t instanceof \Inc\Exceptions\NFOptException && $t->get_user_message()) ? $t->get_user_message() : 'Během optimalizace se vyskytla chyba. Zkuste to prosím později.';
 
-        echo '<h4 style="color: red;">' .$message .'</h4>';
+        (new \Inc\Pages\Tags\Alert())->render_alert($message, 'error');
+        
 //$to = get_option('admin_email');
 $to = 'jiri.freelancer@gmail.com';
         $subject = 'Optimization error';
         $body = 'Při optimalizaci formluláře id:' .$form_id .' se vyskytla následující chyba:' .PHP_EOL .$t .PHP_EOL;
-//        wp_mail($to, $subject, $body);
+        wp_mail($to, $subject, $body);
         wp_die();
+    }
+    
+    // create error message for user based on ardis error message
+    private function handle_opt_error($encoded_message){
+        $errors = json_decode($encoded_message);
+        
+        $ardis_errors_alias = [                                                                         // known ardis errors are converted to user friendly message
+            'Byla použita odlišná definice pro stejné schéma' => 'Zkontolujte prosím figury.',
+            'Neplatná hodnota.' => 'Zkontolujte prosím figury.',
+        ];
+        
+        foreach ($errors as $value) {
+            $message = end(explode(':', $value->Msg));
+            if(isset($ardis_errors_alias[trim($message)])) throw new NFOptException(print_r($errors, true), 'Během optimalizace se vyskytla chyba. ' .$ardis_errors_alias[trim($message)]);
+        }
+        
+        throw new NFOptException(print_r($errors, true), 'Během optimalizace se vyskytla chyba. Zkontrolujte prosím díly, zda jsou hodnoty zadány správně.');
     }
 }

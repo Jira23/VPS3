@@ -8,15 +8,14 @@ namespace Inc\Pages\RowEditor;
 use Inc\Pages\PagesController;
 use Inc\AJAX\AjaxUtils;
 
-class RenderParts extends PagesController{
+class RenderParts extends RenderEditor{
 
     
-    public function render($parts){
+    public function render_parts($parts){
         $this->render_table_header();
         $this->render_table_head();
         $this->render_table_body($parts);
         $this->render_table_footer();
-        
 
     }
     

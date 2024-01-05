@@ -11,6 +11,8 @@ error_reporting(E_ALL);
 
 class OptResults {
     
+    const DPH = 1.21;
+    
     public $form_id;
     public $opt_results;
     
@@ -60,19 +62,19 @@ class OptResults {
             $row_total = (float)$row->price  * (float)$row->quantity;
             echo '<tr>';
             echo '<td style="width: 40%">' .$row->item_label . '</td>';             
-            echo '<td style="width: 20%">' .$row->price .' / ' .$row->unit_name .'</td>';            
-            echo '<td style="width: 20%">' .$row->quantity .'</td>';
-            echo '<td style="width: 20%" class="item-total">' .$row_total .'</td>';
+            echo '<td style="width: 20%"><div class="opt-row-upper">' .round($row->price, 2) .'&nbsp;Kč&nbsp;/&nbsp;' .$row->unit_name .'</div><div class="opt-row-lower">' .round($row->price * self::DPH, 2) .'&nbsp;Kč&nbsp;s&nbsp;DPH</div></td>';
+            echo '<td style="width: 20%">' .$row->quantity .'&nbsp;' .$row->unit_name  .'</td>';
+            echo '<td style="width: 20%"><div class="opt-row-upper">' .round($row_total, 2) .'&nbsp;Kč</div><div class="opt-row-lower">' .round($row_total * self::DPH, 2) .'&nbsp;Kč&nbsp;s&nbsp;DPH</div></td>';
             echo '</tr>';
-            $great_total += $row_total;            
+            $great_total += round($row_total, 2);
         }
 
         echo '</tbody>';
         ?>
             <tfoot>
                 <tr>
-                    <td colspan="3">Celkem</td>
-                    <td class="total-cost"><?php echo $great_total; ?></td>
+                    <td colspan="3" class="opt-total-upper">Celkem</td>
+                    <td class="total-cost"><div class="opt-total-upper"><?php echo $great_total; ?>&nbsp;Kč</div><div class="opt-total-lower"><?php echo round($great_total * self::DPH, 2); ?>&nbsp;Kč&nbsp;s&nbsp;DPH</div></td>
                 </tr>
             </tfoot>              
             </table>
