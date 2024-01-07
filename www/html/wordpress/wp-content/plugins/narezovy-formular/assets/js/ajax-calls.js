@@ -40,6 +40,55 @@ jQuery(document).ready(function($) {
         }, 300 );                                                                                           // doba zpozdeni po keyup
     });    
     
+    
+// ---- AJAJX for row form start ----    
+    // AJAX dotaz, nacte seznam desek v jejichz nazvu je klicove slovo    
+    $('#modal-input-deska').bind('keyup select',function() {
+        $("#mat-select-button").prop('disabled', true);
+        $("#modal-deska-mat-info").hide();
+        delay(function(){
+                var request = {'action': 'get_desky', 'keyword': $('#modal-input-deska').val(), 'source':'input' };
+                if($('#modal-input-deska').is(':focus')){                                                    // dotaz na AJAX posilam pouze pokud je input s klicovym slovem aktivni (aby se nezobrazoval seznam vysledku, pokud uzivatel jen projede tabulatorem)
+                    showWaitingIcon($('#modal-deska-products-list'));
+                    ajaxRequest(request, $("#modal-deska-products-list"));
+                }
+        }, 300 );                                                                                           // doba zpozdeni po keyup
+    });
+    
+    // AJAX dotaz, nacte seznam desek z kategorie vybrane ve stome
+    jQuery('[id*=div_g_div_treenode_]').click(function(e) {  
+        var isVisible = jQuery(this).find('i').css('display');
+        if(isVisible !== 'none') return;                                                                     // show list for last category only
+
+        $("#mat-select-button").prop('disabled', true);
+        $("#modal-deska-mat-info").hide();        
+        
+        jQuery('.ptree-selected').removeClass('ptree-selected');                                            // vymazu oznaceni vybrane kategorie (predchozi)
+        jQuery(this).addClass('ptree-selected');                                                            // oznacim vybranou kategorii
+        showWaitingIcon(jQuery('#modal-deska-products-list'));
+        
+        var thisId = jQuery(this).attr('id').replace('div_g_div_treenode_', '');                            // id of node where user clicked
+        var request = {'action': 'get_desky','keyword': tree.getNode(thisId).addional, 'source':'ptree'};
+        ajaxRequest(request, jQuery("#modal-deska-products-list"));
+
+    });    
+      
+    // AJAX dotaz, nacte seznam hran, v jejichz nazvu je klicove slovo 
+    jQuery('#modal-input-hrana').bind('keyup select',function() {                                                 // select znamena, ze spusti event pokud vyberu polozku z naseptavace
+        $("#mat-select-button").prop('disabled', true);
+        $("#modal-hrana-mat-info").hide();        
+        delay(function(){
+                var request = {'action': 'get_hrany_list', 'keyword': $('#modal-input-hrana').val(),'tupl' : ''};
+                if(jQuery('#modal-input-hrana').is(':focus')){                                                    // dotaz na AJAX posilam pouze pokud je input s klicovym slovem aktivni (aby se nezobrazoval seznam vysledku, pokud uzivatel jen projede tabulatorem)
+                    showWaitingIcon(jQuery('#modal-hrana-products-list'));
+                    ajaxRequest(request, jQuery("#modal-hrana-products-list"));
+                }
+        }, 300 );                                                                                           // doba zpozdeni po keyup
+    });        
+      
+// ---- AJAJX for row form end ----     
+    
+    
     // AJAX dotaz, nacte vysledek optimalizace
     $("button[name='btn_optimalizovat']").click(function() {
         $('#optimized-block').show();

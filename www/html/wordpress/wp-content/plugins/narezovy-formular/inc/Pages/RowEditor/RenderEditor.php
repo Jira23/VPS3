@@ -44,6 +44,7 @@ class RenderEditor extends PagesController {
         $this->checkbox = new Tags\CheckBox();
         $this->input = new Tags\Input();
         $this->button = new Tags\Button();        
+        $this->radio = new Tags\Radio();
         $this->mat_selector = new Tags\MatSelector();        
     }
     
@@ -72,9 +73,7 @@ class RenderEditor extends PagesController {
     
     private function render_modals(){
         echo '<!-- MODALS -->';
-        echo '<div>';
-        (new RenderModal())->render('mod_material_desky', 'Materiál desky a hrany');
-        echo '<div>';
+        (new RenderMaterialSelectModal())->render();
     }
     
     private function renderButtons(){

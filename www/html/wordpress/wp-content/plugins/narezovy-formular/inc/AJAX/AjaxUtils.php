@@ -13,6 +13,8 @@ class AjaxUtils extends BaseController {
         add_action( 'wp_ajax_get_hrany_list', array((new HranyList()), 'get_hrany_list'));
         add_action( 'wp_ajax_nopriv_get_hrany_list', array((new HranyList()), 'get_hrany_list'));
         add_action( 'wp_ajax_get_hrany_dimensions', array((new HranyDimensions()), 'get_hrany_dimensions'));
+        add_action( 'wp_ajax_get_hrana_params', array((new HranaParams()), 'get_hrana_params'));
+        add_action( 'wp_ajax_nopriv_get_hrana_params', array((new HranaParams()), 'get_hrana_params'));        
         add_action( 'wp_ajax_nopriv_get_hrany_dimensions', array((new HranyDimensions()), 'get_hrany_dimensions'));
         add_action( 'wp_ajax_import_upload', array((new ImportUpload()), 'import_upload'));
         add_action( 'wp_ajax_nopriv_import_upload', array((new ImportUpload()), 'import_upload'));

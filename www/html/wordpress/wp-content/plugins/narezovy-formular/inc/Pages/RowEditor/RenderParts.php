@@ -44,11 +44,14 @@ class RenderParts extends RenderEditor{
             <?php
                 $i = 1;
                 foreach ($parts as $part) {
-                    echo '<tr>';
+                    
+                    $name = $this->get_deska_name_by_id($part->lamino_id);
+                    $img_url = $this->get_deska_icon($part->lamino_id);
+
+                    echo '<tr deska-params=' .$this->set_deska_params($part->lamino_id, $name, $img_url) .'>';
                     echo '<td>' .$i .'</td>';
                     echo '<td>'; echo $this->input->render('název', $part->nazev_dilce); echo '</td>';
-                    //echo '<td>'; echo $this->input->render('materiál', $this->get_deska_name_by_id($part->lamino_id)); echo'</td>';
-                    echo '<td>'; echo $this->mat_selector->render($this->get_deska_name_by_id($part->lamino_id), $this->get_deska_icon($part->lamino_id), 'material_deska'); echo'</td>';
+                    echo '<td>'; echo $this->mat_selector->render($name, $img_url, 'material_deska'); echo'</td>';
                     echo '<td>'; echo $this->input->render('počet', $part->ks); echo'</td>';
                     echo '<td>'; echo $this->input->render('délka', $part->delka_dilu); echo'</td>';
                     echo '<td>'; echo $this->input->render('šířka', $part->sirka_dilu); echo'</td>';
@@ -108,6 +111,17 @@ class RenderParts extends RenderEditor{
         $image_id = wc_get_product($hrana_id)->get_image_id();
         if($image_id == '') return $this->plugin_url .'assets/img/no_img_icon.png';
         return wp_get_attachment_image_src($image_id)[0];
-    }    
+    }
+    
+    private function set_deska_params($product_id, $name, $img_url){
+        $product = wc_get_product($product_id);
+        
+        $sku = $product->get_sku();
+        $delka = $product->get_attribute('pa_delka');
+        $sirka = $product->get_attribute('pa_sirka');
+        $sila = $product->get_attribute('pa_sila');
+       
+        return '\'{"id": ' . $product_id . ', "name": "' . $name . '", "sku": "' . $sku . '", "sirka": "' . $sirka . '", "delka": "' . $delka . '", "sila": "' . $sila . '", "imgUrl": "' . $img_url . '"}\'';
+    }
     
 }

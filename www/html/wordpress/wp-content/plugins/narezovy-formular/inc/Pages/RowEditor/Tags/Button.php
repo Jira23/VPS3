@@ -164,7 +164,18 @@ class Button {
                     'title' => 'Aplikovat změny',
                     'style' => 'margin-top: 10px;'
                 ]
-            ]            
+            ],
+            'mat_select' => [
+                'text' => 'Uložit',
+                'disabled' => null,
+                'attrs' => [
+                    'id'   => 'mat-select-button',
+                    'class' => 'button button-main',
+                    'type' => 'button',
+                    'title' => 'Uložit',
+                    'style' => 'margin-top: 10px;'
+                ]
+            ]             
         ];
         return $button[$button_id];
     }

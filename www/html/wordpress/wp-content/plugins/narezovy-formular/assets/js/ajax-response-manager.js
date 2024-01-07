@@ -49,10 +49,45 @@ jQuery(document).ready(function($) {
         $('#hrana_id').trigger("change");
     });    
     
+// ---- AJAJX for row form start ----        
+
+    $('#modal-deska-products-list').on("click", "tr", function(){               // click on product from list
+        var product_data = $(this).find("#selected_product_param").html();      // najde data o produktu v nakliknutem radku tabulky 
+        var obj = JSON.parse(product_data);
+
+        poulateModalDeskaParams(obj);
+        
+        $("#mat-select-button").prop('disabled', false);                        // enable button "ulozit"
+        $('#modal-deska-products-list').html('');
+        $("#modal-deska-mat-info").show();
+
+        closeTree();
+    });
+    
+    // pri kliknuti na jednu hranu ze seznamu
+    jQuery('#modal-hrana-products-list').on("click", "tr", function(){          // click on product from list
+        var product_data = $(this).find("#selected_product_param").html();
+        var obj = JSON.parse(product_data);
+
+        poulateModalHranaParams(obj);
+
+        $("#mat-select-button").prop('disabled', false);                        // enable button "ulozit"
+        $('#modal-hrana-products-list').html('');
+        $("#modal-hrana-mat-info").show();
+
+        closeTree();
+    });    
+
+
+
+
+// ---- AJAJX for row form end ----         
+    
+    
     
     // zavre tree menu, pokud je otevrene
     function closeTree(){
-        var mainCatId = jQuery('#div_tree').find('ul > li:first').attr('id').match(/\d+/g);
+        var mainCatId = $('#div_tree').find('ul > li:first').attr('id').match(/\d+/g);
         if(!tree.getNode(mainCatId).foldedStatus) tree.getNode(mainCatId).toggleNode();       
     }
     

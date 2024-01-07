@@ -495,12 +495,10 @@ table td {
 }
 
 
-
-
 /**** MODAL ****/
 
 .modal-container {
-    /*display: none;*/
+    display: none;
     position: fixed;
     left: 0;
     top: 0;
@@ -511,13 +509,23 @@ table td {
     z-index: 1000;
 }
 
-
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
     max-width: 40%;
+}
+
+.wide-modal {
+    max-width: 90%;
+}
+
+.modal-half {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .modal-header {
@@ -562,4 +570,14 @@ table td {
 
 .modal-footer button {
     margin: 0 15px;
+}
+
+
+.modal-deska-mat-params-table tr td:first-child{
+    font-weight: bold;
+    max-width: 20px;
+}
+
+.modal-edge-type-wrapper label {
+    display: block;
 }

@@ -124,11 +124,13 @@ class Desky {
         $params = array(
             'id' => $product->get_data()['id'],
             'name' => $product->get_data()['name'],
+            'sku' => $product->get_data()['sku'],
             'sirka' => $sirka,
             'delka' => $delka,
             'sila' => $sila,
             'isPDK' => in_array(PDK_CATEGORY_ID, $product->category_ids),
-            'categoryIds' => $product->get_data()['category_ids']
+            'categoryIds' => $product->get_data()['category_ids'],
+            'imgUrl' => wp_get_attachment_image_src( $product->get_image_id())[0]
         );
         echo '<tr><td width="25%"><img src="' .wp_get_attachment_image_src( $product->get_image_id())[0] .'" style="max-width: 50%;" /></td>' .PHP_EOL;
         echo '<td>' .$product->get_data()['name'] .'</td>' .PHP_EOL;
@@ -136,3 +138,4 @@ class Desky {
         echo '</tr>' .PHP_EOL;
     }
 }
+
