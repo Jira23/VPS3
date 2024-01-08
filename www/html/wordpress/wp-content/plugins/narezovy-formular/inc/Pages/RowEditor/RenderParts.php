@@ -48,7 +48,7 @@ class RenderParts extends RenderEditor{
                     $name = $this->get_deska_name_by_id($part->lamino_id);
                     $img_url = $this->get_deska_icon($part->lamino_id);
 
-                    echo '<tr deska-params=' .$this->set_deska_params($part->lamino_id, $name, $img_url) .'>';
+                    echo '<tr deska-params=' .$this->set_deska_params($part->lamino_id, $name, $img_url, $part->hrana) .'>';
                     echo '<td>' .$i .'</td>';
                     echo '<td>'; echo $this->input->render('název', $part->nazev_dilce); echo '</td>';
                     echo '<td>'; echo $this->mat_selector->render($name, $img_url, 'material_deska'); echo'</td>';
@@ -64,6 +64,8 @@ class RenderParts extends RenderEditor{
                     echo '<td>'; echo $this->select_box->render('tupl', NULL, $part->tupl); echo'</td>';
                     echo '<td>'; echo $this->select_box->render('lepidlo', NULL, $part->lepidlo); echo'</td>';
                     echo '<td>(1,2,3)/(4,5,6)</td>';
+                    echo $this->input->render('deska_hidden', $part->lamino_id);
+                    echo $this->input->render('hrana_type_hidden', $part->hrana);
                     echo '</tr>';
                     $i++;
                 }        
@@ -113,15 +115,17 @@ class RenderParts extends RenderEditor{
         return wp_get_attachment_image_src($image_id)[0];
     }
     
-    private function set_deska_params($product_id, $name, $img_url){
+    private function set_deska_params($product_id, $name, $img_url, $typ_hrany){    // sets params used by jQuery functions
         $product = wc_get_product($product_id);
         
         $sku = $product->get_sku();
         $delka = $product->get_attribute('pa_delka');
         $sirka = $product->get_attribute('pa_sirka');
         $sila = $product->get_attribute('pa_sila');
-       
-        return '\'{"id": ' . $product_id . ', "name": "' . $name . '", "sku": "' . $sku . '", "sirka": "' . $sirka . '", "delka": "' . $delka . '", "sila": "' . $sila . '", "imgUrl": "' . $img_url . '"}\'';
+        
+        $edge = (new \Inc\AJAX\Desky())->get_edge_decor($product_id);
+        
+        return '\'{"id": ' . $product_id . ', "name": "' . $name . '", "sku": "' . $sku . '", "sirka": "' . $sirka . '", "delka": "' . $delka . '", "sila": "' . $sila . '", "imgUrl": "' . $img_url . '", "edgeType": "' . $typ_hrany. '", "edgeId": "' . $edge['edgeId'] . '", "edgeName": "' . $edge['edgeName'] . '", "edgeImgUrl": "' . $edge['edgeImgUrl'] . '"}\'';
     }
     
 }

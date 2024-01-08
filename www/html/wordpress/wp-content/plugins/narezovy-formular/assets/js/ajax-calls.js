@@ -47,11 +47,11 @@ jQuery(document).ready(function($) {
         $("#mat-select-button").prop('disabled', true);
         $("#modal-deska-mat-info").hide();
         delay(function(){
-                var request = {'action': 'get_desky', 'keyword': $('#modal-input-deska').val(), 'source':'input' };
-                if($('#modal-input-deska').is(':focus')){                                                    // dotaz na AJAX posilam pouze pokud je input s klicovym slovem aktivni (aby se nezobrazoval seznam vysledku, pokud uzivatel jen projede tabulatorem)
-                    showWaitingIcon($('#modal-deska-products-list'));
-                    ajaxRequest(request, $("#modal-deska-products-list"));
-                }
+            var request = {'action': 'get_desky', 'keyword': $('#modal-input-deska').val(), 'source':'input' };
+            if($('#modal-input-deska').is(':focus')){                                                    // dotaz na AJAX posilam pouze pokud je input s klicovym slovem aktivni (aby se nezobrazoval seznam vysledku, pokud uzivatel jen projede tabulatorem)
+                showWaitingIcon($('#modal-deska-products-list'));
+                ajaxRequest(request, $("#modal-deska-products-list"));
+            }
         }, 300 );                                                                                           // doba zpozdeni po keyup
     });
     
@@ -78,14 +78,14 @@ jQuery(document).ready(function($) {
         $("#mat-select-button").prop('disabled', true);
         $("#modal-hrana-mat-info").hide();        
         delay(function(){
-                var request = {'action': 'get_hrany_list', 'keyword': $('#modal-input-hrana').val(),'tupl' : ''};
-                if(jQuery('#modal-input-hrana').is(':focus')){                                                    // dotaz na AJAX posilam pouze pokud je input s klicovym slovem aktivni (aby se nezobrazoval seznam vysledku, pokud uzivatel jen projede tabulatorem)
-                    showWaitingIcon(jQuery('#modal-hrana-products-list'));
-                    ajaxRequest(request, jQuery("#modal-hrana-products-list"));
-                }
+            var request = {'action': 'get_hrany_list', 'keyword': $('#modal-input-hrana').val(),'tupl' : ''};
+            if(jQuery('#modal-input-hrana').is(':focus')){                                                    // dotaz na AJAX posilam pouze pokud je input s klicovym slovem aktivni (aby se nezobrazoval seznam vysledku, pokud uzivatel jen projede tabulatorem)
+                showWaitingIcon(jQuery('#modal-hrana-products-list'));
+                ajaxRequest(request, jQuery("#modal-hrana-products-list"));
+            }
         }, 300 );                                                                                           // doba zpozdeni po keyup
     });        
-      
+
 // ---- AJAJX for row form end ----     
     
     

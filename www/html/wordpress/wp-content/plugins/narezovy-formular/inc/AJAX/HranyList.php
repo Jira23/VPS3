@@ -4,17 +4,16 @@
  */
 namespace Inc\AJAX;
 
-class HranaParams extends AjaxUtils{
+class HranyList extends AjaxUtils{
     
-    public function get_hrana_params() {
+    public function get_hrany_list() {
         
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);        
         
-        $hrana_id = (int)($_POST['id']);
-        var_dump($hrana_id);        
-exit;        
+        $keyword = sanitize_text_field($_POST['keyword']);
+        
         $products = wc_get_products(array(
             'status' => 'publish',
             's' => $keyword, 

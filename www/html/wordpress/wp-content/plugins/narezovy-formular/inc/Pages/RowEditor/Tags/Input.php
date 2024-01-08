@@ -65,6 +65,22 @@ class Input {
                     'type' => 'text',
                     'class' => 'parts-table-input-size',
                 ]
+            ],
+            'deska_hidden' => [
+                'name'   => 'dil[lamino_id]',
+                'value' => NULL,
+                'attrs' => [
+                    'type' => 'hidden',
+                    'id' => 'lamino_id'
+                ]
+            ],
+            'hrana_type_hidden' => [
+                'name'   => 'dil[hrana]',
+                'value' => NULL,
+                'attrs' => [
+                    'type' => 'hidden',
+                    'id' => 'hrana_type'
+                ]
             ]
         ];
 

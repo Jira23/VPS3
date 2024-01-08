@@ -6,9 +6,14 @@ namespace Inc\AJAX;
 
 // return list of desky
 
-class Desky {
+class Desky extends AjaxUtils {
     
     public function get_desky() {
+        
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);         
+                
         
         $keyword = sanitize_text_field($_POST['keyword']);
         $source = sanitize_text_field($_POST['source']);
@@ -25,7 +30,8 @@ class Desky {
             $filter = $this->filterDeska($product->ID);                                                             // odfiltruje nechtene produkty
             if($filter == false) continue;
             
-            self::assembleResponse($filter['sirka'], $filter['delka'], $filter['sila'], $filter['product']);       // sestavi html odpoved - udaje o danem produktu
+
+            self::assembleResponse($filter['sirka'], $filter['delka'], $filter['sila'], $filter['product'], $this->get_edge_decor($product->ID));       // sestavi html odpoved - udaje o danem produktu
             $productCount++;
 
             if($productCount > 50) {                                                                                // pokud je pocet zobrazenych produktu vyssi nez  limit, prerusim vykreslovani
@@ -37,7 +43,7 @@ class Desky {
         if($productCount == 0 ) echo '<tr><td colspan="2"><h4 style="color: red;">Nic nenalezeno! Zkuste jiný výraz.</h4></td></tr>';        // pokud nic nenaleznu, vyhodim chybovou hlasku
         wp_die();
     }    
-
+    
     // returns product in category (for pickletree)
     public function do_query_category($category_slug) {
         
@@ -120,7 +126,26 @@ class Desky {
         return(array('delka' => $delka, 'sirka' => $sirka, 'sila' => $sila, 'product' => $product));
     }    
     
-    public static function assembleResponse($sirka, $delka, $sila, $product){
+    public function get_edge_decor($product_id){
+        $product = wc_get_product($product_id);
+
+        if(in_array(MDF_LAKOVANE_CATEGORY_ID, $product->get_category_ids()) && $product->get_attribute('pa_sila') == '3') {       // if is in category "MDF Lakovane" and has sila = "3", deska will be without edges
+            return [];
+        }
+        
+        $hrany = wc_get_products(array('include' => (new HranyDimensions())->getRelatedProducts($product_id),'status' => 'publish'));
+        if(empty($hrany) || !isset($hrany[0])) return [];
+        
+        $hrana_id = $hrany[0]->get_id();
+        $hrana_title = (new self())->shorten_hrana_title($hrany[0])['decor'];
+        $image_url = wp_get_attachment_image_src($hrany[0]->get_image_id())[0];
+        
+        return ['edgeId' => $hrana_id, 'edgeName' => $hrana_title, 'edgeImgUrl' => $image_url];
+    }    
+    
+    public static function assembleResponse($sirka, $delka, $sila, $product, $edge_decor){
+        $img_url = wp_get_attachment_image_src( $product->get_image_id())[0];
+        
         $params = array(
             'id' => $product->get_data()['id'],
             'name' => $product->get_data()['name'],
@@ -130,9 +155,13 @@ class Desky {
             'sila' => $sila,
             'isPDK' => in_array(PDK_CATEGORY_ID, $product->category_ids),
             'categoryIds' => $product->get_data()['category_ids'],
-            'imgUrl' => wp_get_attachment_image_src( $product->get_image_id())[0]
+            'imgUrl' => $img_url,
+            'edgeId' => $edge_decor['edgeId'],
+            'edgeName' => $edge_decor['edgeName'],
+            'edgeImgUrl' => $edge_decor['edgeImgUrl']
         );
-        echo '<tr><td width="25%"><img src="' .wp_get_attachment_image_src( $product->get_image_id())[0] .'" style="max-width: 50%;" /></td>' .PHP_EOL;
+        
+        echo '<tr><td width="25%"><img src="' .$img_url .'" style="max-width: 50%;" /></td>' .PHP_EOL;
         echo '<td>' .$product->get_data()['name'] .'</td>' .PHP_EOL;
         echo '<td hidden id="selected_product_param">' .json_encode($params) .'</td>' .PHP_EOL;
         echo '</tr>' .PHP_EOL;

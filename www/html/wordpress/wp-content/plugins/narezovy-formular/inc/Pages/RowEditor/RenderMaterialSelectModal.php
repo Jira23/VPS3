@@ -92,10 +92,21 @@ class RenderMaterialSelectModal extends RenderEditor{
         
             <div class="modal-half">
                 <div id="modal-hrana-mat-info">
-                    <h3 id="modal-hrana-mat-nazev"></h3>
-                    <div id="icon-hrana">
-                        <img src="">
+                    <div id="no-edge">
+                        <h3>Deska nebude mít žádnou hranu.</h3>
                     </div>
+                    <div id="same-edge">
+                        <h3 id="modal-hrana-mat-nazev-same"></h3>
+                        <div id="icon-hrana-same">
+                            <img src="">
+                        </div>
+                    </div>
+                    <div id="different-edge">
+                        <h3 id="modal-hrana-mat-nazev-different"></h3>
+                        <div id="icon-hrana-different">
+                            <img src="">
+                        </div>
+                    </div>                    
                     <input id="modal-hrana-mat-id" value="" style="display: none;"/>
                 </div>
                 <table id="modal-hrana-products-list" class="lamino-list" style="margin-bottom: 0px;">
