@@ -68,8 +68,15 @@ jQuery(document).ready(function($) {
     jQuery('#modal-hrana-products-list').on("click", "tr", function(){          // click on product from list
         var product_data = $(this).find("#selected_product_param").html();
         var obj = JSON.parse(product_data);
-
+        
+        var toDeskaParams = {};
+        toDeskaParams.diffEdgeId = obj.id;
+        toDeskaParams.diffEdgeName = obj.name;
+        toDeskaParams.diffEdgeImgUrl = obj.imgUrl;
+        
+        poulateModalDeskaParams(toDeskaParams);
         poulateModalHranaParams(obj);
+        
 
         $("#mat-select-button").prop('disabled', false);                        // enable button "ulozit"
         $('#modal-hrana-products-list').html('');

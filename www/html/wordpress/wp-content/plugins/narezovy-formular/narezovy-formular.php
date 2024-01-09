@@ -78,8 +78,8 @@ define('NF_KOLEKCE_TAG', 'Formátování odběr jen to co chci bez zbytků');
 
 // other constants
 define('NF_MAX_UNFINISHED_ORDERS', 5);
-define('NF_UNLIMITED_OPT_USERS', [3906, 4634]);                                    // no limit for optimalizatons
-define('NF_ADMIN_USERS', [3906, 4634]);                                         // users with admin rights
+define('NF_UNLIMITED_OPT_USERS', [3906, 4634, 9259]);                           // no limit for optimalizatons
+define('NF_ADMIN_USERS', [3906, 4634, 9259]);                                   // users with admin rights
 //define('NF_NEW_ORDER_NOTICE_EMAILS', ['rezaninamiru@drevoobchoddolezal.cz, pavel.zitka@drevoobchoddolezal.cz']);
 define('NF_NEW_ORDER_NOTICE_EMAILS', ['pavel.zitka@drevoobchoddolezal.cz']);
 //define('NF_NEW_ORDER_NOTICE_EMAILS', ['jiri.nikola@gmail.com']);

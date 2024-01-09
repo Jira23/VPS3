@@ -15,6 +15,7 @@ jQuery(document).ready(function($) {
     
     // AJAX dotaz, nacte seznam desek z kategorie vybrane ve stome
     jQuery('[id*=div_g_div_treenode_]').click(function(e) {  
+        if($('#mod_material_desky').is(':visible')) return;                                                // avoid double call
         var isVisible = jQuery(this).find('i').css('display');
         if(isVisible != 'none') return;                                                                     // seznam zobrazuji pouze pro posledni kategorii
         
@@ -56,9 +57,11 @@ jQuery(document).ready(function($) {
     });
     
     // AJAX dotaz, nacte seznam desek z kategorie vybrane ve stome
-    jQuery('[id*=div_g_div_treenode_]').click(function(e) {  
+    $('[id*=div_g_div_treenode_]').click(function(e) {  
+        if(!$('#mod_material_desky').is(':visible')) return;                                                // avoid unwanted call
+        
         var isVisible = jQuery(this).find('i').css('display');
-        if(isVisible !== 'none') return;                                                                     // show list for last category only
+        if(isVisible !== 'none') return;                                                                    // show list for last category only
 
         $("#mat-select-button").prop('disabled', true);
         $("#modal-deska-mat-info").hide();        

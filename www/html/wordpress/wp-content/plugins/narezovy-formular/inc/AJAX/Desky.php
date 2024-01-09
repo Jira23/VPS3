@@ -31,7 +31,7 @@ error_reporting(E_ALL);
             if($filter == false) continue;
             
 
-            self::assembleResponse($filter['sirka'], $filter['delka'], $filter['sila'], $filter['product'], $this->get_edge_decor($product->ID));       // sestavi html odpoved - udaje o danem produktu
+            self::assembleResponse($filter['sirka'], $filter['delka'], $filter['sila'], $filter['product'], $this->get_edge_props($product->ID));       // sestavi html odpoved - udaje o danem produktu
             $productCount++;
 
             if($productCount > 50) {                                                                                // pokud je pocet zobrazenych produktu vyssi nez  limit, prerusim vykreslovani
@@ -126,21 +126,26 @@ error_reporting(E_ALL);
         return(array('delka' => $delka, 'sirka' => $sirka, 'sila' => $sila, 'product' => $product));
     }    
     
-    public function get_edge_decor($product_id){
+    public function get_edge_props($product_id){
         $product = wc_get_product($product_id);
-
         if(in_array(MDF_LAKOVANE_CATEGORY_ID, $product->get_category_ids()) && $product->get_attribute('pa_sila') == '3') {       // if is in category "MDF Lakovane" and has sila = "3", deska will be without edges
             return [];
         }
         
         $hrany = wc_get_products(array('include' => (new HranyDimensions())->getRelatedProducts($product_id),'status' => 'publish'));
         if(empty($hrany) || !isset($hrany[0])) return [];
+
+        $hrana_dims = [];
+        foreach ($hrany as $key => $hrana) {
+            $hrana_dims[$hrana->get_id()] = (new self())->shorten_hrana_title($hrana)['rozmer'];
+            if($key === 0 ){
+                $hrana_id = $hrany[0]->get_id();
+                $hrana_title = (new self())->shorten_hrana_title($hrany[0])['decor'];
+                $image_url = wp_get_attachment_image_src($hrany[0]->get_image_id())[0];                
+            }
+        }
         
-        $hrana_id = $hrany[0]->get_id();
-        $hrana_title = (new self())->shorten_hrana_title($hrany[0])['decor'];
-        $image_url = wp_get_attachment_image_src($hrany[0]->get_image_id())[0];
-        
-        return ['edgeId' => $hrana_id, 'edgeName' => $hrana_title, 'edgeImgUrl' => $image_url];
+        return ['edgeId' => $hrana_id, 'edgeName' => $hrana_title, 'edgeImgUrl' => $image_url, 'edgeDims' => $hrana_dims];
     }    
     
     public static function assembleResponse($sirka, $delka, $sila, $product, $edge_decor){

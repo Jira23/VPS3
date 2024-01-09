@@ -59,7 +59,7 @@
 .mat-selector {
     display: flex;
     align-items: center;
-    min-width: 150px;
+    min-width: 110px;
 }
 
 .mat-selector:hover {
@@ -71,7 +71,8 @@
     margin-left: 10px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;    
+    text-overflow: ellipsis;
+    max-width: 150px;
 }
 
 .mat-icon img {
@@ -321,7 +322,14 @@ table td {
 
     .clickable-row {
         cursor: pointer;
-    }    
+    }
+
+    .dashicons-small {
+        width: 10px;
+        height: 10px;
+        font-size: 10px;
+    } 
+
     
     /* Hover effect */
     .NF-table tbody tr:hover {
@@ -507,6 +515,10 @@ table td {
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
+}
+
+.modal-container .ptree {
+    height: auto;
 }
 
 .modal-content {

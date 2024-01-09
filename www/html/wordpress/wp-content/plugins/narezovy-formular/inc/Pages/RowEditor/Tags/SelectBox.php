@@ -6,13 +6,17 @@ namespace Inc\Pages\RowEditor\Tags;
 
 class SelectBox {
     
-    public function render($select_box_id, $options = null, $select = null){
+    public function render($select_box_id, $options = null, $select = null, $index = null){
         $props = $this->define_select_box_props($select_box_id);
         
         if(isset($props['label'])) echo '<label for="' .$props['name'] .'">' .$props['label'] .'</label>' .PHP_EOL;
         echo '<select '; 
         
-        if(isset($props['name'] )) echo 'name="' .$props['name'] .'" ';
+        if(isset($props['name'])) {
+            echo 'name="';
+            if($index) echo $index;
+            echo $props['name'] .'" ';
+        }
         
         foreach ($props['attrs'] as $attr_name => $attr_value) {
             echo $attr_name .'="' .$attr_value .'" ';
@@ -21,8 +25,8 @@ class SelectBox {
         echo '>' .PHP_EOL;
        
         $is_selected = $select ?? $props['select'];
-        
         if($options === NULL) $options = $props['options'];
+
         foreach ($options as $value => $text) {
             echo '<option value="' .$value .'"';
             if($value == $is_selected) echo ' selected ';
@@ -49,35 +53,35 @@ class SelectBox {
                 ]
             ],
             'hrana predni' => [
-                'name'   => 'parts[hrana_dolni]',
+                'name'   => '[hrana_dolni]',
                 'select' => null,
                 'attrs' => [
                     'class' => 'parts-table-selectbox-edge',
                 ]
             ],
             'hrana zadni' => [
-                'name'   => 'parts[hrana_horni]',
+                'name'   => '[hrana_horni]',
                 'select' => null,
                 'attrs' => [
                     'class' => 'parts-table-selectbox-edge',
                 ]
             ],
             'hrana prava' => [
-                'name'   => 'parts[hrana_prava]',
+                'name'   => '[hrana_prava]',
                 'select' => null,
                 'attrs' => [
                     'class' => 'parts-table-selectbox-edge',
                 ]
             ],
             'hrana leva' => [
-                'name'   => 'parts[hrana_leva]',
+                'name'   => '[hrana_leva]',
                 'select' => null,
                 'attrs' => [
                     'class' => 'parts-table-selectbox-edge',
                 ]
             ],
             'tupl' => [
-                'name'   => 'parts[tupl]',
+                'name'   => '[tupl]',
                 'options' => [
                     'NE' => 'NE',
                     '30mm' => '30mm',
@@ -90,7 +94,7 @@ class SelectBox {
                 ]
             ],
             'lepidlo' => [
-                'name'   => 'parts[lepidlo]',
+                'name'   => '[lepidlo]',
                 'options' => [
                     '0' => 'Trans.',
                     '1' => 'Bílá',

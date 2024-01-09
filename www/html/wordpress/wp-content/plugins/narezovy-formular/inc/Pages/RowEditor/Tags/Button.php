@@ -70,72 +70,6 @@ class Button {
                     'type' => 'button'
                 ]
             ],
-            'ulozit_dil' => [
-                'text' => 'Uložit díl',
-                'disabled' => null,
-                'attrs' => [
-                    'id' => 'btn_ulozit_dil',
-                    'name'   => 'btn_ulozit_dil',
-                    'class' => 'button button-main',
-                    'type' => 'input'
-                ]
-            ],
-            'smazat_dil' => [
-                'text' => 'X',
-                'disabled' => null,
-                'attrs' => [
-                    'name'   => 'btn_smazat_dil',
-                    'class' => 'button button-sm',
-                    'type' => 'button',
-                    'title' => 'smazat'
-                ]
-            ],
-            'duplikovat_dil' => [
-                'text' => 'D',
-                'disabled' => null,
-                'attrs' => [
-                    'name'   => 'btn_duplikovat_dil',
-                    'class' => 'button button-sm',
-                    'type' => 'button',
-                    'title' => 'duplikovat'
-                ]
-            ],
-            'smazat_formular' => [
-                'text' => '<span class="dashicons dashicons-trash"></span>',
-                'disabled' => null,
-                'attrs' => [
-                    'name'   => 'btn_smazat_formular',
-                    'class' => 'button button-sm',
-                    'type' => 'button',
-                    'title' => 'smazat'
-                ]
-            ],
-            'duplikovat_formular' => [
-                'text' => '<span class="dashicons dashicons-admin-page"></span>',
-                'disabled' => null,
-                'attrs' => [
-                    'name'   => 'btn_duplikovat_formular',
-                    'class' => 'button button-sm',
-                    'type' => 'button',
-                    'title' => 'duplikovat'
-                ]
-            ],
-            'nove_zadani' => [
-                'text' => 'Nové zadání',
-                'disabled' => null,
-                'attrs' => [
-                    'class' => 'button button-main',
-                    'type' => 'button'
-                ]
-            ],
-            'import' => [
-                'text' => 'Import',
-                'disabled' => null,
-                'attrs' => [
-                    'class' => 'button button-main',
-                    'type' => 'button'
-                ]
-            ],
             'navod' => [
                 'text' => 'Návod',
                 'disabled' => null,
@@ -175,7 +109,27 @@ class Button {
                     'title' => 'Uložit',
                     'style' => 'margin-top: 10px;'
                 ]
-            ]             
+            ],
+            'smazat_radek' => [
+                'text' => '<span class="dashicons dashicons-small dashicons-trash"></span>',
+                'disabled' => null,
+                'attrs' => [
+                    'name'   => 'btn_smazat_radek',
+                    'class' => 'button button-sm',
+                    'type' => 'button',
+                    'title' => 'smazat'
+                ]
+            ],
+            'duplikovat_radek' => [
+                'text' => '<span class="dashicons dashicons-small dashicons-admin-page"></span>',
+                'disabled' => null,
+                'attrs' => [
+                    'name'   => 'btn_duplikovat_radek',
+                    'class' => 'button button-sm',
+                    'type' => 'button',
+                    'title' => 'duplikovat'
+                ]
+            ],            
         ];
         return $button[$button_id];
     }

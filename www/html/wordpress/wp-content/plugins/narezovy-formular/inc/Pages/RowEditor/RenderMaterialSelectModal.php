@@ -70,7 +70,7 @@ class RenderMaterialSelectModal extends RenderEditor{
                                 <td id="modal-deska-mat-sila"></td>
                             </tr>
                         </table>
-                        <input id="modal-deska-mat-id" value="" style="display: none;"/>
+                        <input id="modal-deska-mat-data" value="{}" style="display: none;"/>
                     </div>
                     <div style="clear: both;"></div>
                 </div>
@@ -96,6 +96,7 @@ class RenderMaterialSelectModal extends RenderEditor{
                         <h3>Deska nebude mít žádnou hranu.</h3>
                     </div>
                     <div id="same-edge">
+                        <h5>Hrana bude mít stejný dekor jako deska.<br><small>Obrázek dekoru hrany a dekoru desky de může lišit.</small></h5>
                         <h3 id="modal-hrana-mat-nazev-same"></h3>
                         <div id="icon-hrana-same">
                             <img src="">

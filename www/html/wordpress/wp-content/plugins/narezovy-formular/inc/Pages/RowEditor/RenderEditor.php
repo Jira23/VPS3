@@ -82,7 +82,7 @@ class RenderEditor extends PagesController {
         echo '<div style="text-align: left; margin-bottom: 30px;">';
 
         // buttons will be disabled if there are no records in db
-        if($user->is_registered()) empty($this->parts) ? $this->button->render_button('ulozit', 'disabled') : $this->button->render_button('ulozit');
+        if($user->is_registered()) $this->button->render_button('ulozit');
         
         $opt_results = (new OptResults($this->form_id))->opt_results;
         if(empty($opt_results)){
@@ -101,7 +101,6 @@ class RenderEditor extends PagesController {
             $this->button->render_button('opustit');
         }
         if($this->max_unfinished_orders_reached && empty($opt_results)) $this->alert->render_alert('Max. počet rozpracovaných optimalizací je 5!');    // show whem max. limit is reached and there is no opt. for this order
-        if(empty($this->parts)) $this->alert->render_alert('Formulář je možné odeslat, pokud je uložen alespoň 1 díl.');
         echo '</div>'; 
     }
     
@@ -134,7 +133,7 @@ class RenderEditor extends PagesController {
         if(!isset($this->parts )){                                              // query will be executed only once per object init
 
             global $wpdb;
-$parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` DESC");
+$parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` ASC");
 //$parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY fig_formula ASC, id DESC");
 
             $this->parts = $parts;

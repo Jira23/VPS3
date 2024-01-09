@@ -10,12 +10,18 @@ class CheckBox {
     //            <label for="obchodni_podminky">Souhlasím s <a href="/obchodni-a-technicke-podminky-vyroby-rezani/">obchodními podmínkami</a>.</label>
     
     
-    public function render($checkbox_id, $checked = false){
+    public function render($checkbox_id, $checked = false, $index = null){
        
         $props = $this->define_checkbox_props($checkbox_id);
         echo '<input type="checkbox" ';
 
         echo isset($props['id']) ? 'id="' .$props['id'] .'"' : '';
+        
+        if(isset($props['name'])) {
+            echo 'name="';
+            if($index) echo $index;
+            echo $props['name'] .'" ';
+        }        
         
         foreach ($props['attrs'] as $attr_name => $attr_value) {
             echo $attr_name .'="' .$attr_value .'" ';
@@ -30,7 +36,7 @@ class CheckBox {
     private function define_checkbox_props($checkbox_id){
         $checkbox= [
             'orient' => [
-                'name' => 'parts[orientace]',
+                'name' => '[orientace]',
                 'checked' => NULL,
                 'attrs' => []
             ]

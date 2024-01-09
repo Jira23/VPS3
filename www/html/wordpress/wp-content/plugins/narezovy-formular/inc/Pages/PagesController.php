@@ -14,6 +14,8 @@ class PagesController extends BaseController {
     public $button;
     public $textarea;
     public $checkbox;
+    public $radio;
+    public $mat_selector;
     public $alert;
     public $info_modal;
     
