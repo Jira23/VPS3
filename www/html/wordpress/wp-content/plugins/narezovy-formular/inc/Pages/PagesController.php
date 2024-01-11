@@ -9,6 +9,7 @@ use Inc\Base\BaseController;
 class PagesController extends BaseController {
     
     public $select_box;
+    public $select_box_with_loading;    
     public $tooltip;
     public $input;
     public $button;

@@ -31,7 +31,7 @@ error_reporting(E_ALL);
             if($filter == false) continue;
             
 
-            self::assembleResponse($filter['sirka'], $filter['delka'], $filter['sila'], $filter['product'], $this->get_edge_props($product->ID));       // sestavi html odpoved - udaje o danem produktu
+            self::assembleResponse($filter['sirka'], $filter['delka'], $filter['sila'], $filter['product']);       // sestavi html odpoved - udaje o danem produktu
             $productCount++;
 
             if($productCount > 50) {                                                                                // pokud je pocet zobrazenych produktu vyssi nez  limit, prerusim vykreslovani
@@ -148,7 +148,7 @@ error_reporting(E_ALL);
         return ['edgeId' => $hrana_id, 'edgeName' => $hrana_title, 'edgeImgUrl' => $image_url, 'edgeDims' => $hrana_dims];
     }    
     
-    public static function assembleResponse($sirka, $delka, $sila, $product, $edge_decor){
+    public static function assembleResponse($sirka, $delka, $sila, $product){
         $img_url = wp_get_attachment_image_src( $product->get_image_id())[0];
         
         $params = array(
@@ -161,9 +161,6 @@ error_reporting(E_ALL);
             'isPDK' => in_array(PDK_CATEGORY_ID, $product->category_ids),
             'categoryIds' => $product->get_data()['category_ids'],
             'imgUrl' => $img_url,
-            'edgeId' => $edge_decor['edgeId'],
-            'edgeName' => $edge_decor['edgeName'],
-            'edgeImgUrl' => $edge_decor['edgeImgUrl']
         );
         
         echo '<tr><td width="25%"><img src="' .$img_url .'" style="max-width: 50%;" /></td>' .PHP_EOL;

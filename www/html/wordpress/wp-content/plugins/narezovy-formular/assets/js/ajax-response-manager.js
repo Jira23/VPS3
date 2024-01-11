@@ -52,15 +52,41 @@ jQuery(document).ready(function($) {
 // ---- AJAJX for row form start ----        
 
     $('#modal-deska-products-list').on("click", "tr", function(){               // click on product from list
+        $('#mat-modal-overlay').css('display', 'flex');
         var product_data = $(this).find("#selected_product_param").html();      // najde data o produktu v nakliknutem radku tabulky 
-        var obj = JSON.parse(product_data);
+        var deskaProps = JSON.parse(product_data);
+        
+        poulateModalDeskaParams(deskaProps);
 
-        poulateModalDeskaParams(obj);
+        // AJAX request to get props for privzorovana hrana
+        var jsonString = $('#modal-deska-mat-data').val();
+        var deskaProps = JSON.parse(jsonString);
+        var tupl = $('tr[row-id="' + deskaProps.row_id  + '"]').find('.parts-table-selectbox-tupl').val();
+
+        latestRequest = request;                                                                            // used for strategy to show last request if there are multiple
+        var request = {'action': 'get_hrany_props', 'product_id': deskaProps.id, 'dekor': '' ,'tupl' : tupl, 'dims' : false};
+        $.ajax({
+            url: NF_ajaxUrl,
+            type: 'POST',
+            data: request,
+            beforeSend: function() {
+                $('#mat-modal-overlay').css('display', 'flex');
+            },            
+            success: function (response) {
+                var hranaProps = JSON.parse(response);
+                poulateModalDeskaParams(hranaProps);
+                $('#mat-modal-overlay').hide();
+            }            
+        });
+        
+        // disable "odlisna" option and tupl selectbox when is pdk
+        $('.modal-edge-type-wrapper input[type="radio"][value="1"]').prop('disabled', deskaProps.isPDK);
+        $('#modal-input-hrana').hide(deskaProps.isPDK);
+        $('tr[row-id="' + deskaProps.row_id  + '"]').find('.parts-table-selectbox-tupl').attr('readonly', deskaProps.isPDK);
         
         $("#mat-select-button").prop('disabled', false);                        // enable button "ulozit"
         $('#modal-deska-products-list').html('');
-        $("#modal-deska-mat-info").show();
-
+        $("#modal-deska-mat-info").show();                  
         closeTree();
     });
     
@@ -75,13 +101,10 @@ jQuery(document).ready(function($) {
         toDeskaParams.diffEdgeImgUrl = obj.imgUrl;
         
         poulateModalDeskaParams(toDeskaParams);
-        poulateModalHranaParams(obj);
         
-
         $("#mat-select-button").prop('disabled', false);                        // enable button "ulozit"
         $('#modal-hrana-products-list').html('');
-        $("#modal-hrana-mat-info").show();
-
+        $("#modal-hrana-mat-info").show();     
         closeTree();
     });    
 

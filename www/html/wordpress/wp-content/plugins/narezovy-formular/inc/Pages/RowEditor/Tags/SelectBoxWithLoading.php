@@ -4,10 +4,18 @@
  */
 namespace Inc\Pages\RowEditor\Tags;
 
-class SelectBox {
+use \Inc\Base\BaseController;
+
+class SelectBoxWithLoading extends BaseController {
     
     public function render($select_box_id, $options = null, $select = null, $index = null, $readonly = null){
         $props = $this->define_select_box_props($select_box_id);
+        
+        echo '<div class="selectbox-with-loading">' .PHP_EOL;
+        echo '  <div class="linear-loading-icon">' .PHP_EOL;
+        echo '      <img width="200" src="' .$this->plugin_url .'/assets/img/linear_loading_icon.gif" />' .PHP_EOL;
+        echo '  </div>' .PHP_EOL;
+        echo '  <div class="selectbox-wrap">' .PHP_EOL;
         
         if(isset($props['label'])) echo '<label for="' .$props['name'] .'">' .$props['label'] .'</label>' .PHP_EOL;
         echo '<select '; 
@@ -44,34 +52,47 @@ class SelectBox {
         }
         
         echo '</select>' .PHP_EOL;
+        echo '</div>' .PHP_EOL;
+        echo '</div>' .PHP_EOL;
     }
     
     private function define_select_box_props($select_box_id){
         $select_box = [
-            'tupl' => [
-                'name'   => '[tupl]',
-                'options' => [
-                    'NE' => 'NE',
-                    '30mm' => '30mm',
-                    '36mm' => '36mm dek.',
-                    '36mm-bila' => '36mm bílá',                
-                ],
+            'hrana dokola' => [
                 'select' => null,
                 'attrs' => [
-                    'class' => 'parts-table-selectbox-tupl',
+                    'class' => 'parts-table-selectbox-edge',
+                    'id' => 'hrana-dokola'
                 ]
             ],
-            'lepidlo' => [
-                'name'   => '[lepidlo]',
-                'options' => [
-                    '0' => 'Trans.',
-                    '1' => 'Bílá',
-                ],                
+            'hrana predni' => [
+                'name'   => '[hrana_dolni]',
                 'select' => null,
                 'attrs' => [
-                    'class' => 'parts-table-selectbox-lepidlo',
+                    'class' => 'parts-table-selectbox-edge',
                 ]
-            ]         
+            ],
+            'hrana zadni' => [
+                'name'   => '[hrana_horni]',
+                'select' => null,
+                'attrs' => [
+                    'class' => 'parts-table-selectbox-edge',
+                ]
+            ],
+            'hrana prava' => [
+                'name'   => '[hrana_prava]',
+                'select' => null,
+                'attrs' => [
+                    'class' => 'parts-table-selectbox-edge',
+                ]
+            ],
+            'hrana leva' => [
+                'name'   => '[hrana_leva]',
+                'select' => null,
+                'attrs' => [
+                    'class' => 'parts-table-selectbox-edge',
+                ]
+            ]
         ];
 
         return $select_box[$select_box_id];

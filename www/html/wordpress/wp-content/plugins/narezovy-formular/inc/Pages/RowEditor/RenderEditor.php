@@ -40,7 +40,8 @@ class RenderEditor extends PagesController {
     }
     
     private function init_tags(){
-        $this->select_box = new Tags\SelectBox();        
+        $this->select_box = new Tags\SelectBox();
+        $this->select_box_with_loading = new Tags\SelectBoxWithLoading();
         $this->checkbox = new Tags\CheckBox();
         $this->input = new Tags\Input();
         $this->button = new Tags\Button();        

@@ -29,7 +29,7 @@ class RenderParts extends RenderEditor{
     }
   
     private function render_table_head(){
-        $titles = ['č.', 'název', 'materiál desky', 'ks', 'délka', 'šířka', 'orient.', 'materiál<br>hrany', 'hrana<br>dokola', 'hrana<br>přední', 'hrana<br>zadní', 'hrana<br>pravá', 'hrana<br>levá', 'tupl', 'lepidlo', 'figura', 'úpravy'];
+        $titles = ['č.', 'název', 'materiál desky', 'ks', 'délka', 'šířka', 'orient.', 'materiál<br>hrany', 'tupl', 'hrana<br>dokola', 'hrana<br>přední', 'hrana<br>zadní', 'hrana<br>pravá', 'hrana<br>levá', 'lepidlo', 'figura', 'úpravy'];
 
         echo '<thead>';
         echo '  <tr>';
@@ -76,41 +76,54 @@ echo '</pre>';
                     if($part->hrana == '1'){
                         echo '<td>'; echo $this->mat_selector->render($deska_params['diffEdgeName'], $deska_params['diffEdgeImgUrl'], 'material_hrana'); echo'</td>';
                     }
-
+                    
+                    echo '<td>'; 
+                    if($deska_params['isPDK']){
+                        echo $this->select_box->render('tupl', NULL, $part->tupl, 'parts[' .$i .']', true); 
+                    } else {
+                        echo $this->select_box->render('tupl', NULL, $part->tupl, 'parts[' .$i .']'); 
+                    }
+                    echo'</td>';
                     
                     
-                        if($part->hrana === '-1'){
-                            echo '<td>'; echo $this->select_box->render('hrana predni', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
-                            echo '<td>'; echo $this->select_box->render('hrana zadni', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
-                            echo '<td>'; echo $this->select_box->render('hrana prava', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
-                            echo '<td>'; echo $this->select_box->render('hrana leva', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
-                        }
+                    if($part->hrana === '-1'){
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana dokola', [0 => ''], null, null, true); echo'</td>';
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana predni', [0 => ''], null, 'parts[' .$i .']', true); echo'</td>';
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana zadni', [0 => ''], null, 'parts[' .$i .']', true); echo'</td>';
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana prava', [0 => ''], null, 'parts[' .$i .']', true); echo'</td>';
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana leva', [0 => ''], null, 'parts[' .$i .']', true); echo'</td>';
+                    }
 
-                        if($part->hrana === '0'){
-                            $options = ['0' => ''] + $deska_params['edgDims'];
-                            $select = $part->hrana_dolni === '0' ? '' : $part->hrana_dolni;
+                    if($part->hrana === '0'){
 
-                            echo '<td>'; echo $this->select_box->render('hrana dokola', $options); echo'</td>';
-                            echo '<td>'; echo $this->select_box->render('hrana predni', $options, $part->hrana_dolni === '0' ? 0 : $part->hrana_dolni, 'parts[' .$i .']'); echo'</td>';
-                            echo '<td>'; echo $this->select_box->render('hrana zadni', $options, $part->hrana_horni === '0' ? 0 : $part->hrana_horni, 'parts[' .$i .']'); echo'</td>';
-                            echo '<td>'; echo $this->select_box->render('hrana prava', $options, $part->hrana_prava === '0' ? 0 : $part->hrana_prava, 'parts[' .$i .']'); echo'</td>';
-                            echo '<td>'; echo $this->select_box->render('hrana leva', $options, $part->hrana_leva === '0' ? 0 : $part->hrana_leva, 'parts[' .$i .']'); echo'</td>';
-                        }
+                        $options = ['0' => ''] + $deska_params['edgeDims'];
+                        $select = $part->hrana_dolni === '0' ? '' : $part->hrana_dolni;
 
-                        if($part->hrana === '1'){
-                            $options = ['0' => ''] + $deska_params['diffEdgeDims'];
-                            //$select = $part->hrana_dolni === '0' ? '' : $part->hrana_dolni;
-                            echo '<td>'; echo $this->select_box->render('hrana dokola', $options); echo'</td>';
-                            echo '<td>'; echo $this->select_box->render('hrana predni', $options, $part->hrana_dolni === '0' ? '' : $part->hrana_dolni, 'parts[' .$i .']'); echo'</td>';
-                            echo '<td>'; echo $this->select_box->render('hrana zadni', $options, $part->hrana_horni === '0' ? '' : $part->hrana_horni, 'parts[' .$i .']'); echo'</td>';
-                            echo '<td>'; echo $this->select_box->render('hrana prava', $options, $part->hrana_prava === '0' ? '' : $part->hrana_prava, 'parts[' .$i .']'); echo'</td>';
-                            echo '<td>'; echo $this->select_box->render('hrana leva', $options, $part->hrana_leva === '0' ? '' : $part->hrana_leva, 'parts[' .$i .']'); echo'</td>';
-                        }
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana dokola', $options); echo'</td>';
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana predni', $options, $part->hrana_dolni === '0' ? 0 : $part->hrana_dolni, 'parts[' .$i .']'); echo'</td>';
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana zadni', $options, $part->hrana_horni === '0' ? 0 : $part->hrana_horni, 'parts[' .$i .']'); echo'</td>';
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana prava', $options, $part->hrana_prava === '0' ? 0 : $part->hrana_prava, 'parts[' .$i .']'); echo'</td>';
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana leva', $options, $part->hrana_leva === '0' ? 0 : $part->hrana_leva, 'parts[' .$i .']'); echo'</td>';
+                    }
+
+                    if($part->hrana === '1'){
+/*                            
+echo '<pre>';                            
+var_dump($deska_params);                            
+echo '</pre>';                            
+*/
+                        $options = ['0' => ''] + $deska_params['diffEdgeDims'];
+                        //$select = $part->hrana_dolni === '0' ? '' : $part->hrana_dolni;
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana dokola', $options); echo'</td>';
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana predni', $options, $part->hrana_dolni === '0' ? '' : $part->hrana_dolni, 'parts[' .$i .']'); echo'</td>';
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana zadni', $options, $part->hrana_horni === '0' ? '' : $part->hrana_horni, 'parts[' .$i .']'); echo'</td>';
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana prava', $options, $part->hrana_prava === '0' ? '' : $part->hrana_prava, 'parts[' .$i .']'); echo'</td>';
+                        echo '<td>'; echo $this->select_box_with_loading->render('hrana leva', $options, $part->hrana_leva === '0' ? '' : $part->hrana_leva, 'parts[' .$i .']'); echo'</td>';
+                    }
 
                     
 //var_dump($part->hrana_horni);                    
 
-                    echo '<td>'; echo $this->select_box->render('tupl', NULL, $part->tupl, 'parts[' .$i .']'); echo'</td>';
                     echo '<td>'; echo $this->select_box->render('lepidlo', NULL, $part->lepidlo, 'parts[' .$i .']'); echo'</td>';
 
                     echo '<td>'; echo $part->fig_formula; echo '</td>';
@@ -237,7 +250,7 @@ echo '</pre>';
     private function render_empty_row(){
         $i = 'empty';
 
-        echo '<tr deska-params=\'{"row_id":}\' row-id="" style="display: none;" id="empty-row">';
+        echo '<tr row-id="" style="display: none;" id="empty-row">';
         echo '<td>' .$i .'</td>';
         echo '<td>'; echo $this->input->render('název', null, 'parts[' .$i .']'); echo '</td>';
         echo '<td>'; echo $this->mat_selector->render('', '', 'material_deska'); echo'</td>';
@@ -246,12 +259,12 @@ echo '</pre>';
         echo '<td>'; echo $this->input->render('šířka', null, 'parts[' .$i .']'); echo'</td>';
         echo '<td>'; echo $this->checkbox->render('orient', true, 'parts[' .$i .']'); echo'</td>';
         echo '<td>'; echo $this->mat_selector->render('', '', 'material_hrana'); echo'</td>';
-        echo '<td>'; echo $this->select_box->render('hrana dokola', [0 => '']); echo'</td>';
-        echo '<td>'; echo $this->select_box->render('hrana predni', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
-        echo '<td>'; echo $this->select_box->render('hrana zadni', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
-        echo '<td>'; echo $this->select_box->render('hrana prava', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
-        echo '<td>'; echo $this->select_box->render('hrana leva', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
-        echo '<td>'; echo $this->select_box->render('tupl', null, null, 'parts[' .$i .']'); echo'</td>';
+        echo '<td>'; echo $this->select_box->render('tupl', null, null, 'parts[' .$i .']'); echo'</td>';        
+        echo '<td>'; echo $this->select_box_with_loading->render('hrana dokola', [0 => '']); echo'</td>';
+        echo '<td>'; echo $this->select_box_with_loading->render('hrana predni', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
+        echo '<td>'; echo $this->select_box_with_loading->render('hrana zadni', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
+        echo '<td>'; echo $this->select_box_with_loading->render('hrana prava', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
+        echo '<td>'; echo $this->select_box_with_loading->render('hrana leva', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
         echo '<td>'; echo $this->select_box->render('lepidlo', null, null, 'parts[' .$i .']'); echo'</td>';
         echo '<td></td>';
         echo '<td>';

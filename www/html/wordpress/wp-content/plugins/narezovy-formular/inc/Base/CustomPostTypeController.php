@@ -44,4 +44,8 @@ if(get_current_user_id() === 9259){
         return strpos($_SERVER["REQUEST_URI"], 'narezovy-formular-') !== false ? true : false;
     }
     
+    public function is_editor_page(){
+        return strpos($_SERVER["REQUEST_URI"], 'narezovy-formular-editor') !== false ? true : false;
+    }
+    
 }

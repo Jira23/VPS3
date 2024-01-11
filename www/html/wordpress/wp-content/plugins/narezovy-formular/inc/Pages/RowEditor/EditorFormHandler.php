@@ -48,7 +48,9 @@ class EditorFormHandler extends BaseController{
 
     private function save_form(){
         global $wpdb;
-
+        
+        $redirect = false;
+            
         if ($this->query_params['form_id'] == 0) {                                                              // first edit of form - it is not saved yet (not existing in db)
             $user = new User();
             $this->form_data['userId'] = $user->get_id();
@@ -59,27 +61,27 @@ class EditorFormHandler extends BaseController{
             }
             $wpdb->insert(NF_FORMULARE_TABLE, $this->form_data);
             $form_id = $wpdb->insert_id;
+            $redirect = true;
         } else {
             $form_id = $this->query_params['form_id'];
         }
-/*
+/*        
 echo '<pre>';        
 var_dump($_POST);
 echo '</pre>';        
-*/        
-
-        
+*/
+      
         $wpdb->delete(NF_DILY_TABLE, array('form_id' => $form_id));
 
         $values = array();
         $place_holders = array();
-        $query = "INSERT INTO " .NF_DILY_TABLE ." (form_id, orientace, nazev_dilce, ks, delka_dilu, sirka_dilu, hrana_dolni, hrana_horni, hrana_prava, hrana_leva, tupl, lepidlo, lamino_id, hrana, hrana_id, fig_name, fig_part_code, fig_formula, params) VALUES ";
+        $query = "INSERT INTO " .NF_DILY_TABLE ." (form_id, orientace, nazev_dilce, ks, delka_dilu, sirka_dilu, tupl, hrana_dolni, hrana_horni, hrana_prava, hrana_leva, lepidlo, lamino_id, hrana, hrana_id, fig_name, fig_part_code, fig_formula, params) VALUES ";
 
         //var_dump($this->part_data);
         foreach ($this->part_data as $row) {
             $orientace_checkbox = isset($row['orientace']) && $row['orientace'] ? 1 : 0;
             $complete_data = ['form_id' => $form_id, 'orientace' => $orientace_checkbox] + $row;
-            $place_holders[] = '(%d, %s, %s, %d, %d, %d, %d, %d, %d, %d, %s, %s, %d, %s, %d, %s, %s, %s, %s)';
+            $place_holders[] = '(%d, %s, %s, %d, %d, %d, %s, %d, %d, %d, %d, %s, %d, %s, %d, %s, %s, %s, %s)';
             $values = array_merge($values, array_values($complete_data));
         }
 
@@ -92,7 +94,7 @@ echo '</pre>';
 //        var_dump($wpdb->last_error);
 
 
-        //self::jQuery_redirect(get_permalink() .'?form_id=' .$form_id .'&part_id=0');
+        if($redirect) self::jQuery_redirect(get_permalink() .'?form_id=' .$form_id .'&part_id=0');
     }
 
     private function handle_hash($url_hash){                                // unregistered user has unique url to his order form

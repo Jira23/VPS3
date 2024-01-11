@@ -135,7 +135,7 @@ jQuery(document).ready(function($) {
 
     function showWaitingIcon(target, no_tag = false) {
         if(!no_tag) target.html('<h3>Hledám...</h3>');
-        target.append('<img width="200" id="loadingIcon" src="' + NF_wpUrl + '/wp-content/plugins/narezovy-formular/assets/img/Loading_icon.gif" />');        
+        target.append('<img width="200" id="loadingIcon" src="' + NF_wpUrl + '/wp-content/plugins/narezovy-formular/assets/img/Loading_icon.gif" />');
     };
 
     function ajaxRequest (request, target = false) {

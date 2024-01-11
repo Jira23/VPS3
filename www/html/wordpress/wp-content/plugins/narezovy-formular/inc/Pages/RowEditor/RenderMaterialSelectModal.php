@@ -96,10 +96,15 @@ class RenderMaterialSelectModal extends RenderEditor{
                         <h3>Deska nebude mít žádnou hranu.</h3>
                     </div>
                     <div id="same-edge">
-                        <h5>Hrana bude mít stejný dekor jako deska.<br><small>Obrázek dekoru hrany a dekoru desky de může lišit.</small></h5>
-                        <h3 id="modal-hrana-mat-nazev-same"></h3>
-                        <div id="icon-hrana-same">
-                            <img src="">
+                        <div id="same-edge-valid-edge">
+                            <h5>Hrana bude mít stejný dekor jako deska.<br><small>Obrázek dekoru hrany a dekoru desky de může lišit.</small></h5>
+                            <h3 id="modal-hrana-mat-nazev-same"></h3>
+                            <div id="icon-hrana-same">
+                                <img src="">
+                            </div>                            
+                        </div>
+                        <div id="same-edge-no-edge">
+                            <h3>Pro tuto desku přivzorovaná hrana neexistuje.<br>Zvolte "Žádná" nebo "Odlišná"</h3>
                         </div>
                     </div>
                     <div id="different-edge">
@@ -114,7 +119,13 @@ class RenderMaterialSelectModal extends RenderEditor{
                 </table>             
             </div>
             <div style="clear: both;"></div>    
-        </div>    
+        </div>
+        <div id="mat-modal-overlay" class="NF-mat-modal-overlay">
+          <div class="centered-content">
+            <img width="200" id="loadingIcon" src="/wp-content/plugins/narezovy-formular/assets/img/Loading_icon.gif" style="display: block;margin: 0 auto;display: block;margin: 0 auto;">
+          </div>
+        </div>
+         
         <?php
     }      
 }    
