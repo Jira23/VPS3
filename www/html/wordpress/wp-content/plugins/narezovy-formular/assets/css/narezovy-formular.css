@@ -81,10 +81,10 @@
     display: block;
 }
 
-
-
-
-
+.mat-icon img, .mat-icon span {
+    display: inline-block;
+    vertical-align: middle;
+}   
 
 h2 .icon {
     display: inline-block;
@@ -395,6 +395,7 @@ table td {
     /* full width */
     .container {
       width: auto !important;
+        max-width: none !important;
     }
 
     .content-area {
@@ -460,6 +461,26 @@ table td {
     font-size: 16px;
     font-weight: normal;
 }
+
+
+/* ROW EDITOR */
+.NF-section-half {
+    flex: 1;
+}
+.NF-editor-order-detail {
+    text-align: left;
+    display: flex;
+}
+
+.NF-editor-order-detail label{
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.NF-half-image-container {
+    text-align: center;
+}
+
 
 /* ALERTS */
 /* Style for the alert container */
@@ -622,4 +643,77 @@ table td {
 
 .centered-content {
     margin-bottom: 15%;
+}
+
+/*** edge select radio buttons ***/
+div.modal-edge-type-wrapper.custom-radio-wrapper ul {
+  list-style-type: none;
+}
+
+div.modal-edge-type-wrapper.custom-radio-wrapper li {
+  display: inline-block;
+}
+
+div.modal-edge-type-wrapper.custom-radio-wrapper input[type="radio"][id^="cb"] {
+  display: none;
+}
+
+div.modal-edge-type-wrapper.custom-radio-wrapper label {
+  border: 1px solid #fff;
+  padding: 10px;
+  display: block;
+  position: relative;
+  margin: 10px;
+  cursor: pointer;
+}
+
+div.modal-edge-type-wrapper.custom-radio-wrapper label:before {
+  background-color: white;
+  color: white;
+  content: " ";
+  display: block;
+  border-radius: 50%;
+  border: 1px solid grey;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  line-height: 28px;
+  transition-duration: 0.4s;
+  transform: scale(0);
+}
+
+div.modal-edge-type-wrapper.custom-radio-wrapper label img {
+  height: 100px;
+  width: 100px;
+  transition-duration: 0.2s;
+  transform-origin: 50% 50%;
+}
+
+div.modal-edge-type-wrapper.custom-radio-wrapper :checked + label {
+  border-color: #ddd;
+}
+
+div.modal-edge-type-wrapper.custom-radio-wrapper :checked + label:before {
+  content: "✓";
+  background-color: grey;
+  transform: scale(1);
+}
+
+div.modal-edge-type-wrapper.custom-radio-wrapper :checked + label img {
+  transform: scale(0.9);
+  box-shadow: 0 0 5px #333;
+  z-index: -1;
+}
+
+/* Style for the text under the images */
+div.modal-edge-type-wrapper.custom-radio-wrapper label p {
+  text-align: center;
+}
+
+div.modal-edge-type-wrapper.custom-radio-wrapper li.disabled-style {
+  opacity: 0.7;
+  pointer-events: none;
 }

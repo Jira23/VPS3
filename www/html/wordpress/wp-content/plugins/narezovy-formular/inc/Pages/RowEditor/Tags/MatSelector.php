@@ -11,6 +11,7 @@ class MatSelector extends \Inc\Base\BaseController{
             echo '<div class="mat-selector" id="' .$id .'">';
             echo '    <div class="mat-icon">'; 
             echo '        <img src="'.$this->plugin_url .'assets/img/icon_plus.png' .'">';
+            echo '        <span>Klikněte pro přidání/editaci</span>';
             echo '    </div>';
             echo '    <div class="mat-title">' .$product_title .'</div>';
             echo '</div>';

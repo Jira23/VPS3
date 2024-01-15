@@ -167,4 +167,10 @@ class User {
         return $user_meta;
     }
     
+    public function get_sanitized_user_name(){
+        $user_contact = $this->get_contact();
+        $sanitized_user_name = sanitize_file_name($user_contact['jmeno'] .'_' .$user_contact['prijmeni']);
+        return $sanitized_user_name;
+    }    
+    
 }

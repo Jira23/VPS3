@@ -48,6 +48,46 @@ class SelectBox {
     
     private function define_select_box_props($select_box_id){
         $select_box = [
+            'olepeni' => [
+                'name'  => 'formular[olepeni]',
+                'label' => 'Možnosti olepení:',
+                'options' => [
+                    '0' => 'Hranění standard - průmyslová verze',
+                    '1' => 'Hranění s dočištěním - dočištění chemií s kontrolou - s příplatkem'
+                ],
+                'select' => null,
+                'attrs' => [
+                    'style' => 'width:450px;',
+                    'tabindex' => '2'
+                ]
+            ],
+            'stitky' => [
+                'name'  => 'formular[stitky]',
+                'label' => 'Štítky s rozměry:',
+                'options' => [
+                    '1' => 'Ano',
+                    '0' => 'Ne'
+                ],
+                'select' => null,
+                'attrs' => [
+                    'style' => 'width:100px;',
+                    'tabindex' => '3'
+                ]
+            ],
+            'doprava' => [
+                'name'  => 'formular[doprava]',
+                'label' => 'Doprava:',
+                'options' => [
+                    '0' => 'Osobně Ml. Boleslav',
+                    '1' => 'Osobně Jiz. Vtelno',
+                    '2' => 'Rozvoz',
+                ],
+                'select' => null,
+                'attrs' => [
+                    'style' => 'width:180px;',
+                    'tabindex' => '4'
+                ]
+            ],            
             'tupl' => [
                 'name'   => '[tupl]',
                 'options' => [

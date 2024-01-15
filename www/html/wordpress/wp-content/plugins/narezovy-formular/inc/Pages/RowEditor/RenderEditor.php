@@ -30,7 +30,7 @@ class RenderEditor extends PagesController {
 
         $this->parts = $this->get_parts();
         $this->form = $this->get_form();
-        
+
         $user = new User();
         $this->max_unfinished_orders_reached = !$user->has_unlimited_opt() && count($user->get_opts()) >= NF_MAX_UNFINISHED_ORDERS;    // check if user reached max. nubmer of optimalization withou placed order, not used with admin rights users
       
@@ -45,8 +45,8 @@ class RenderEditor extends PagesController {
         $this->checkbox = new Tags\CheckBox();
         $this->input = new Tags\Input();
         $this->button = new Tags\Button();        
-        $this->radio = new Tags\Radio();
         $this->mat_selector = new Tags\MatSelector();        
+        $this->textarea = new Tags\Textarea();        
     }
     
     public function render(){
@@ -56,8 +56,9 @@ class RenderEditor extends PagesController {
         } else {                                                                // render editor form
             $this->render_header();
             $this->renderButtons();
+            $this->render_order_details();
+            $this->render_figures();
             (new RenderParts())->render_parts($this->parts);
-            
             $this->render_footer();
             $this->render_modals();
         }
@@ -66,8 +67,80 @@ class RenderEditor extends PagesController {
     private function render_header(){
         echo '<form method="post" id="mainForm">' .PHP_EOL;
     }
-  
     
+    private function render_order_details(){
+    ?>
+        <h3>Detail zakázky</h3>
+        <div class="NF-editor-order-detail">
+            <div class="NF-section-half">
+                <div class="form-section">    
+                    <?php 
+                        $this->input->render('form nazev', $this->form['nazev'] ?? null);
+                    ?>
+                </div>
+                <div class="form-section">
+                    <?php $this->select_box->render('olepeni', null, $this->form['olepeni'] ?? null) ?>
+                </div>
+                <div style="display: table;">
+                    <div class="form-section" style="display: table-cell;">
+                        <?php 
+                            $this->select_box->render('stitky', null, $this->form['stitky'] ?? null);
+                        ?>
+                    </div>
+                    <div class="form-section" style="display: table-cell;">
+                        <?php 
+                            $this->select_box->render('doprava', null, $this->form['doprava'] ?? null);
+                        ?>
+                    </div>        
+                </div>
+                <div style="margin-top: 30px;">
+                <?php $this->textarea->render('poznamka', $this->form['poznamka'] ?? null); ?>
+                </div>
+            </div>
+            <div class="NF-section-half">
+                <div class="NF-half-image-container">
+                    <h2>Označení hran desky</h2>
+                    <img src="<?php echo $this->plugin_url; ?>assets/img/napoveda_hrany.png"/>    
+                </div>
+            </div>
+        </div>
+        <hr>        
+    <?php    
+    }  
+    
+    private function render_figures(){
+    ?>
+    <h2 style="margin-top: 20px;">Figury 
+        <span class="icon">
+            <i class="show-icon fas fa-eye"></i>
+            <i class="hide-icon fas fa-eye-slash" style="display: none;"></i>
+        </span>
+    </h2>
+    
+    <div class="toggle-vis" style="display: none;">
+        <div id="figures-inputs-section">
+            <?php
+                $all_fig_ormulas = array_column(
+                    array_filter($this->parts, function($subarray) {
+                        return $subarray->fig_formula !== '';
+                    }),
+                    'fig_formula'
+                );
+
+                $unique_fig_formulas = array_unique($all_fig_ormulas);
+
+                foreach ($unique_fig_formulas as $formula) {
+                    echo '<div class="form-section figures-section"><input type="text" class="figure-input input-small" value="' .$formula .'"><span class="dashicons dashicons-trash figure-delete-button"></span></div>';
+                }
+            ?>
+        </div>
+        <span class="dashicons dashicons-plus-alt" id="figures-add-button"></span><br>
+        <?php $this->button->render_button('aplikovat_zmeny'); ?>
+    </div>
+
+
+    <?php
+    }    
     private function render_footer(){
         echo '</form>' .PHP_EOL;
     }

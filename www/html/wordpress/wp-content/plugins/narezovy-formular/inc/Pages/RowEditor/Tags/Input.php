@@ -29,6 +29,17 @@ class Input {
     
     private function define_input_props($input_id){
         $input = [
+            'form nazev' => [
+                'name'   => 'formular[nazev]',
+                'label' => 'Název formuláře:',
+                'value' => NULL,
+                'attrs' => [
+                    'type' => 'text',
+                    'style' => 'width:450px;',
+                    'tabindex' => '1',
+                    'required' => ''
+                ]
+            ],            
             'název' => [
                 'name'   => '[nazev_dilce]',
                 'value' => NULL,
@@ -98,7 +109,7 @@ class Input {
                 'value' => NULL,
                 'attrs' => [
                     'type' => 'hidden',
-                    'id' => 'fig_name'
+                    'class' => 'fig_name'
                 ]
             ],
             'fig_part_code_hidden' => [
@@ -106,7 +117,7 @@ class Input {
                 'value' => NULL,
                 'attrs' => [
                     'type' => 'hidden',
-                    'id' => 'fig_part_code'
+                    'class' => 'fig_part_code'
                 ]
             ],
             'fig_formula_hidden' => [
@@ -114,7 +125,7 @@ class Input {
                 'value' => NULL,
                 'attrs' => [
                     'type' => 'hidden',
-                    'id' => 'fig_formula'
+                    'class' => 'fig_formula'
                 ]
             ],
             'params_hidden' => [

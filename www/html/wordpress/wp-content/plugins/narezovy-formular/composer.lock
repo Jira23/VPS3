@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4c2504786d339377cea06ed2d90f1533",
+    "content-hash": "9920ef5ae072e0cdb0088e606d6a0da8",
     "packages": [
         {
             "name": "dompdf/dompdf",
@@ -137,6 +137,48 @@
                 "source": "https://github.com/Masterminds/html5-php/tree/2.8.1"
             },
             "time": "2023-05-10T11:58:31+00:00"
+        },
+        {
+            "name": "pclzip/pclzip",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ivanlanin/pclzip.git",
+                "reference": "19dd1de9d3f5fc4d7d70175b4c344dee329f45fd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ivanlanin/pclzip/zipball/19dd1de9d3f5fc4d7d70175b4c344dee329f45fd",
+                "reference": "19dd1de9d3f5fc4d7d70175b4c344dee329f45fd",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "pclzip.lib.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1"
+            ],
+            "authors": [
+                {
+                    "name": "Vincent Blavet"
+                }
+            ],
+            "description": "A PHP library that offers compression and extraction functions for Zip formatted archives",
+            "homepage": "http://www.phpconcept.net/pclzip",
+            "keywords": [
+                "php",
+                "zip"
+            ],
+            "support": {
+                "issues": "https://github.com/ivanlanin/pclzip/issues",
+                "source": "https://github.com/ivanlanin/pclzip/tree/2.8.2"
+            },
+            "time": "2014-06-05T11:42:24+00:00"
         },
         {
             "name": "phenx/php-font-lib",
@@ -285,7 +327,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "dompdf/dompdf": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

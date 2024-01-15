@@ -13,7 +13,7 @@ class PrepareRequest  {
         global  $wpdb;
         
         $parts = $this->get_parts($form_id);
-        $form = $wpdb->get_results("SELECT * FROM `" .NF_FORMULARE_TABLE ."` WHERE `id` LIKE '" .$form_id ."'")[0];
+        $form = $this->get_form($form_id);
         $plotny = $this->get_plotny($parts);        
 
         $request_data = ['form' => $form, 'parts' => $parts, 'plotny' => $plotny];
@@ -42,6 +42,15 @@ class PrepareRequest  {
         unset($part);                                                           // unset the reference after the loop to avoid potential conflicts
 
         return $parts;
+    }
+    
+    private function get_form($form_id){
+        global $wpdb;
+                
+        $form = $wpdb->get_results("SELECT * FROM `" .NF_FORMULARE_TABLE ."` WHERE `id` LIKE '" .$form_id ."'")[0];
+        $form->user_name = (new User())->get_sanitized_user_name();
+        
+        return $form;
     }
     
     private function get_plotny($parts){

@@ -60,6 +60,7 @@ class ComposerStaticInit425e8d1d741db96a53f8c507a558dc0a
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Dompdf\\Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
+        'PclZip' => __DIR__ . '/..' . '/pclzip/pclzip/pclzip.lib.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

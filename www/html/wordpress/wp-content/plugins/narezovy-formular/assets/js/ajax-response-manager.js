@@ -81,7 +81,7 @@ jQuery(document).ready(function($) {
         
         // disable "odlisna" option and tupl selectbox when is pdk
         $('.modal-edge-type-wrapper input[type="radio"][value="1"]').prop('disabled', deskaProps.isPDK);
-        $('#modal-input-hrana').hide(deskaProps.isPDK);
+        $('#modal-input-hrana-wrapper').hide(deskaProps.isPDK);
         $('tr[row-id="' + deskaProps.row_id  + '"]').find('.parts-table-selectbox-tupl').attr('readonly', deskaProps.isPDK);
         
         $("#mat-select-button").prop('disabled', false);                        // enable button "ulozit"

@@ -8,4 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Dompdf\\Cpdf' => $vendorDir . '/dompdf/dompdf/lib/Cpdf.php',
+    'PclZip' => $vendorDir . '/pclzip/pclzip/pclzip.lib.php',
 );

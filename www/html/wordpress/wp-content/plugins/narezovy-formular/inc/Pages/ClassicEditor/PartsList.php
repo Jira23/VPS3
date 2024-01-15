@@ -22,6 +22,13 @@ class PartsList extends RenderEditor {
     }
     
     private function render_title(){
+/*        
+$zip_attachment_path = (new \Inc\OrderHandler\CreateZipAttachment())->create(2886, 7801);
+
+var_dump($zip_attachment_path);
+copy($zip_attachment_path, '/home/drevoobchoddolezal.cz/public_html/wp-content/plugins/narezovy-formular2/' . basename($zip_attachment_path));
+ * 
+ */
         ?>
             <div>
                 <h4 style="margin-top: 40px; display: inline-block;">Výpis zadaných dílů</h4>

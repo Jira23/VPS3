@@ -128,13 +128,16 @@ error_reporting(E_ALL);
     
     public function get_edge_props($product_id){
         $product = wc_get_product($product_id);
-        if(in_array(MDF_LAKOVANE_CATEGORY_ID, $product->get_category_ids()) && $product->get_attribute('pa_sila') == '3') {       // if is in category "MDF Lakovane" and has sila = "3", deska will be without edges
+        $product_category_ids = $product->get_category_ids();
+        if(in_array(MDF_LAKOVANE_CATEGORY_ID, $product_category_ids) && $product->get_attribute('pa_sila') == '3') {       // if is in category "MDF Lakovane" and has sila = "3", deska will be without edges
             return [];
         }
         
         $hrany = wc_get_products(array('include' => (new HranyDimensions())->getRelatedProducts($product_id),'status' => 'publish'));
         if(empty($hrany) || !isset($hrany[0])) return [];
 
+        $isPDK = in_array(PDK_CATEGORY_ID, $product_category_ids);
+        
         $hrana_dims = [];
         foreach ($hrany as $key => $hrana) {
             $hrana_dims[$hrana->get_id()] = (new self())->shorten_hrana_title($hrana)['rozmer'];
@@ -145,7 +148,7 @@ error_reporting(E_ALL);
             }
         }
         
-        return ['edgeId' => $hrana_id, 'edgeName' => $hrana_title, 'edgeImgUrl' => $image_url, 'edgeDims' => $hrana_dims];
+        return ['edgeId' => $hrana_id, 'edgeName' => $hrana_title, 'edgeImgUrl' => $image_url, 'edgeDims' => $hrana_dims, 'isPDK' => $isPDK];
     }    
     
     public static function assembleResponse($sirka, $delka, $sila, $product){

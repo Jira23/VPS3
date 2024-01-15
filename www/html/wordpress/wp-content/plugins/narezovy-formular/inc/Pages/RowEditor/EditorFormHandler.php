@@ -50,7 +50,12 @@ class EditorFormHandler extends BaseController{
         global $wpdb;
         
         $redirect = false;
-            
+/*
+echo '<pre>';        
+var_dump($_POST);
+echo '</pre>';                
+*/        
+        
         if ($this->query_params['form_id'] == 0) {                                                              // first edit of form - it is not saved yet (not existing in db)
             $user = new User();
             $this->form_data['userId'] = $user->get_id();
@@ -64,12 +69,8 @@ class EditorFormHandler extends BaseController{
             $redirect = true;
         } else {
             $form_id = $this->query_params['form_id'];
+            $wpdb->update(NF_FORMULARE_TABLE, $this->form_data, ['id' => $form_id]);
         }
-/*        
-echo '<pre>';        
-var_dump($_POST);
-echo '</pre>';        
-*/
       
         $wpdb->delete(NF_DILY_TABLE, array('form_id' => $form_id));
 

@@ -219,7 +219,9 @@ if($_SERVER['SERVER_ADDR'] == '194.182.64.183') $related_items = array(0 => arra
             if($dims){
                 $hrana_dims = [];
                 foreach ($hrany as $key => $hrana) {
-                    $hrana_dims[$hrana->get_id()] = (new self())->shorten_hrana_title($hrana)['rozmer'];
+                    //$hrana_dims[$hrana->get_id()] = (new self())->shorten_hrana_title($hrana)['rozmer'];
+                    $dims_title = (new self())->shorten_hrana_title($hrana);
+                    $hrana_dims[$hrana->get_id()] = $dims_title['rozmer'] .' ' .$dims_title['decor'];
                 }
                 $to_return = $hrana_dims;
             } else { 

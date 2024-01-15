@@ -8,6 +8,7 @@ namespace Inc\Pages\RowEditor;
 use Inc\Pages\PagesController;
 use Inc\AJAX\AjaxUtils;
 
+
 class RenderParts extends RenderEditor{
 
     public $materials_props;
@@ -24,6 +25,7 @@ class RenderParts extends RenderEditor{
     private function render_table_header(){
     ?>
         <div class="parts-table-container">
+            <h3>Rozpis dílů</h3>
             <table class="parts-table">
     <?php
     }
@@ -126,7 +128,7 @@ echo '</pre>';
 
                     echo '<td>'; echo $this->select_box->render('lepidlo', NULL, $part->lepidlo, 'parts[' .$i .']'); echo'</td>';
 
-                    echo '<td>'; echo $part->fig_formula; echo '</td>';
+                    echo '<td class="fig-formula-visible">'; echo $part->fig_formula; echo '</td>';
                     echo '<td>';
                         $this->button->render_button('duplikovat_radek', null); 
                         $this->button->render_button('smazat_radek', null); 
@@ -137,7 +139,6 @@ echo '</pre>';
                     echo $this->input->render('fig_name_hidden', $part->fig_name, 'parts[' .$i .']');
                     echo $this->input->render('fig_part_code_hidden', $part->fig_part_code, 'parts[' .$i .']');
                     echo $this->input->render('fig_formula_hidden', $part->fig_formula, 'parts[' .$i .']');
-                    //echo $this->input->render('params_hidden', htmlspecialchars(json_encode($deska_params)), 'parts[' .$i .']');
                     echo $this->input->render('params_hidden', htmlspecialchars(json_encode($deska_params), ENT_QUOTES, 'UTF-8'), 'parts[' .$i .']');
                     echo '</tr>';
                     $i++;
@@ -195,13 +196,13 @@ echo '</pre>';
     }
     
     private function set_deska_params($product_id, $name, $img_url, $typ_hrany, $diff_edge_id, $row_id){    // sets params used by jQuery functions
-        
+
         if(isset($this->materials_props[$product_id]) && $diff_edge_id === '0') {                        // if mat props are already loaded, change index and return it. Avoids multiple loadin properties of same material
             $to_return = $this->materials_props[$product_id];
             $to_return['row_id'] = $row_id;
             return $to_return;
         }
-        
+
         if(!isset($this->count)) $this->count = 0;
         $this->count ++;
         var_dump($this->count);
@@ -223,14 +224,15 @@ echo '</pre>';
             'sirka' => $sirka,
             'delka' => $delka,
             'sila' => $sila,
+            'isPDK' => $edge['isPDK'],
             'imgUrl' => $img_url,
             'edgeType' => $typ_hrany,
             'edgeId' => $edge['edgeId'],
             'edgeName' => $edge['edgeName'],
             'edgeImgUrl' => $edge['edgeImgUrl'],
-            'edgDims' => $edge['edgeDims']
+            'edgeDims' => $edge['edgeDims']
         ];
-        
+
         if($diff_edge_id !== '0') {
             $diff_edge = (new \Inc\AJAX\Desky())->get_edge_props($diff_edge_id);
             $diff_edge_params =[

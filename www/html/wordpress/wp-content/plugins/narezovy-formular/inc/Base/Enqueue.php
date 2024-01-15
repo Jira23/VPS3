@@ -26,6 +26,8 @@ class Enqueue extends BaseController {
         wp_enqueue_script('nf-ajax-calls', $this->plugin_url .'assets/js/ajax-calls.js');
         wp_enqueue_script('nf-pickletree-helpers', $this->plugin_url .'assets/js/pickletree-helpers.js');
         wp_enqueue_script('nf-ajax-response-manager', $this->plugin_url .'assets/js/ajax-response-manager.js');                
+        wp_enqueue_script('nf-form-helpers', $this->plugin_url .'assets/js/form-helpers.js');
+        wp_enqueue_script('nf-form-utils', $this->plugin_url .'assets/js/form-utils.js');        
         wp_enqueue_script('nf-formsList-utils', $this->plugin_url .'assets/js/formsList-utils.js');
         wp_enqueue_script('nf-jquery-ui', $this->plugin_url .'assets/js/jquery-ui.js');
         wp_enqueue_script('nf-import', $this->plugin_url . 'assets/js/import.js');
@@ -37,8 +39,6 @@ class Enqueue extends BaseController {
     public function enque_for_editor(){
         wp_enqueue_script('nf-pickletree', $this->plugin_url .'assets/js/pickletree.js');
         wp_enqueue_script('nf-row-form-mat-select', $this->plugin_url . 'assets/js/row-form-mat-select.js');        
-        wp_enqueue_script('nf-form-helpers', $this->plugin_url .'assets/js/form-helpers.js');
-        wp_enqueue_script('nf-form-utils', $this->plugin_url .'assets/js/form-utils.js');
         wp_enqueue_script('nf-form-figures', $this->plugin_url .'assets/js/form-figures.js');        
     }
 }

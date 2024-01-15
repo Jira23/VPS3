@@ -17,6 +17,7 @@
         "psr-4": {"Inc\\": "./inc"}
     },
     "require": {
-        "dompdf/dompdf": "dev-master"
+        "dompdf/dompdf": "dev-master",
+        "pclzip/pclzip": "dev-master"
     }
 }

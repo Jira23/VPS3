@@ -9,19 +9,17 @@ jQuery(document).ready(function($) {
         displayEdgeType();
 
         // disable "odlisna" when is pdk
-        $('.modal-edge-type-wrapper input[type="radio"][value="1"]').prop('disabled', productData.isPDK);
-        $('#modal-input-hrana').hide(productData.isPDK);
+           if(productData.isPDK) {
+               $('div.modal-edge-type-wrapper li:eq(1)').addClass('disabled-style'); 
+           } else {
+               $('div.modal-edge-type-wrapper li:eq(1)').removeClass('disabled-style');
+           }
 
         $("#mod_material_desky").css("display", "block");
     });
 
     $(".close").on("click", function () {                                       // Close the modal when the close button is clicked
-        $("#mod_material_desky").css("display", "none");
-        $('#modal-deska-products-list').html('');
-        $("#modal-deska-mat-info").show();
-        $('#modal-hrana-products-list').html('');
-        $("#modal-hrana-mat-info").show();
-        colapseTree();
+        closeMatModal();
     });
 
     $("input[name='modal-edge-type']").on("change", function(){                 // oc mat type selector change
@@ -112,22 +110,21 @@ jQuery(document).ready(function($) {
             $('#no-edge').show();
             $('#same-edge').hide();
             $('#different-edge').hide();
-            $('#modal-input-hrana').hide();
+            $('#modal-input-hrana-wrapper').hide();
         }
 
         if(edgeType === '0') {
             $('#no-edge').hide();
             $('#same-edge').show();
             $('#different-edge').hide();
-            $('#modal-input-hrana').hide();
+            $('#modal-input-hrana-wrapper').hide();
         }
 
         if(edgeType === '1') {
             $('#no-edge').hide();
             $('#same-edge').hide();
             $('#different-edge').show();            
-            $('#modal-input-hrana').show();
-
+            $('#modal-input-hrana-wrapper').show();
         }
 
         var jsonString = $('#modal-deska-mat-data').val();                      // modify hidden mat props
@@ -136,6 +133,15 @@ jQuery(document).ready(function($) {
         $('#modal-deska-mat-data').val(JSON.stringify(productData));        
         
     };
+    
+    function closeMatModal(){
+        $("#mod_material_desky").css("display", "none");
+        $('#modal-deska-products-list').html('');
+        $("#modal-deska-mat-info").show();
+        $('#modal-hrana-products-list').html('');
+        $("#modal-hrana-mat-info").show();
+        colapseTree();
+    }
     
     function setEdgeType(edgeType){
         $('input[name="modal-edge-type"][value="' + edgeType + '"]').prop('checked', true);
@@ -265,7 +271,6 @@ jQuery(document).ready(function($) {
                 loadingSelectboxes(selectBoxes, true);
             },            
             success: function (response) {
-                console.log(response);
                 var selectOptions = JSON.parse(response);
                 
                 selectBoxes.each(function () {
@@ -301,6 +306,19 @@ jQuery(document).ready(function($) {
 
     }    
     
-    addRow();                                                                   // run on every page load
+    
+    /*** run on every page load ***/
+    addRow();                                                                   
+    $(document).on("keydown", function(e) {                                     // prevent form submission on hit enter
+        if (e.key === "Enter") {
+            e.preventDefault(); 
+        }
+    });
+    
+    $(document).on("keydown", function(e) {                                     // close mat modaln on hit Esc
+        if (e.key === "Escape" || e.key === "Esc") {
+            closeMatModal();
+        }
+    });
 
 });

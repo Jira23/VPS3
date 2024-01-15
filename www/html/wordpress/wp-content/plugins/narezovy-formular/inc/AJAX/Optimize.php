@@ -11,7 +11,6 @@ use \Inc\Optimalization\PrepareRequest;
 
 // handles Ardis form optimization and returns results
 
-
 class Optimize {
     
     public $parts;
@@ -25,10 +24,10 @@ class Optimize {
             // prepare data
             $form_id = (int)$_POST['form_id'];
             $request_data = (new PrepareRequest())->prepare($form_id);
-            
+
             // send request
             $response_data = $this->send_request($request_data);
-            
+
             // handle response - convert it for DOD
             (new HandleResponse())->handle($form_id, $response_data['body']);
             (new OptResults($form_id))->render_table();

@@ -84,10 +84,27 @@ class RenderMaterialSelectModal extends RenderEditor{
         <div class="modal-section">
             <div class="modal-half">
                 <h5 style="margin: 0; padding: 5px;">Zvolte typ hrany: &nbsp;</h5>
-                <div class="modal-edge-type-wrapper">
-                    <?php $this->radio->render('modal edge type'); ?>    
+                <div class="modal-edge-type-wrapper custom-radio-wrapper">
+                    <ul>
+                        <li>
+                            <input type="radio" name="modal-edge-type" id="cb1" value="0" checked=""/>
+                            <label for="cb1"><img src="https://drevoobchoddolezal.cz/wp-content/plugins/narezovy-formular2/assets/img/privzorovana.png" /><p>Přivzorovaná</p></label>
+                        </li>
+                        <li>
+                            <input type="radio" name="modal-edge-type" id="cb2" value="1" />
+                            <label for="cb2"><img src="https://drevoobchoddolezal.cz/wp-content/plugins/narezovy-formular2/assets/img/odlisna.png" /><p>Odlišná</p></label>
+                           
+                        </li>
+                        <li>
+                            <input type="radio" name="modal-edge-type" id="cb3" value="-1" />
+                            <label for="cb3"><img src="https://drevoobchoddolezal.cz/wp-content/plugins/narezovy-formular2/assets/img/zadna.png" /><p>Žádná</p></label>
+                        </li>
+                    </ul>
+                    <div id="modal-input-hrana-wrapper" >
+                        <h6>Vyhledávejte nejlépe podle čísla dekoru:</h6>
+                        <input type="text" style="width: 30%; padding: 5px;" autocomplete="off" value="" id="modal-input-hrana">
+                    </div>     
                 </div>
-                <input type="text" style="max-width: 400px; flex: 1; padding: 5px; display: none;" id="modal-input-hrana" autocomplete="off" value="">
             </div>
         
             <div class="modal-half">
