@@ -62,6 +62,8 @@ error_reporting(E_ALL);
                     ),
                 ),
                 'fields' => 'ids',                                              // Retrieve only post IDs
+                'orderby' => 'title',
+                'order' => 'ASC'
             ));
         }
 
@@ -91,13 +93,16 @@ error_reporting(E_ALL);
             WHERE post.post_type = 'product'
             AND tax.term_id = %d
             AND (post.post_title LIKE %s OR meta.meta_key = '_sku' AND meta.meta_value LIKE %s)
-            GROUP BY post.ID",
+            GROUP BY post.ID
+            ORDER BY post.post_title ASC",
+                
             $category_id,
             $partial_input,
             $partial_input
         );
 
         $results = $wpdb->get_results($query);
+        
         return $results;
     }    
     
@@ -122,7 +127,7 @@ error_reporting(E_ALL);
             $delka -= 30;
             $sirka -= 30;
         }                                
-
+        
         return(array('delka' => $delka, 'sirka' => $sirka, 'sila' => $sila, 'product' => $product));
     }    
     

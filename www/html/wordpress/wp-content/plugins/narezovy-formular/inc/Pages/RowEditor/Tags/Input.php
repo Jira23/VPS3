@@ -60,24 +60,27 @@ class Input {
                 'name'   => '[ks]',
                 'value' => NULL,
                 'attrs' => [
-                    'type' => 'text',
+                    'type' => 'number',
                     'class' => 'parts-table-input-pocet',
+                    'min' => '1'
                 ]
             ],
             'délka' => [
                 'name'   => '[delka_dilu]',
                 'value' => NULL,
                 'attrs' => [
-                    'type' => 'text',
+                    'type' => 'number',
                     'class' => 'parts-table-input-size',
+                    'min' => '10'
                 ]
             ],
             'šířka' => [
                 'name'   => '[sirka_dilu]',
                 'value' => NULL,
                 'attrs' => [
-                    'type' => 'text',
+                    'type' => 'number',
                     'class' => 'parts-table-input-size',
+                    'min' => '10'
                 ]
             ],
             'deska_hidden' => [
@@ -128,6 +131,14 @@ class Input {
                     'class' => 'fig_formula'
                 ]
             ],
+            'group_number_hidden' => [
+                'name'   => '[group_number]',
+                'value' => NULL,
+                'attrs' => [
+                    'type' => 'hidden',
+                    'id' => 'group-number'
+                ]
+            ],            
             'params_hidden' => [
                 'name'   => '[params]',
                 'value' => NULL,
@@ -135,7 +146,7 @@ class Input {
                     'type' => 'hidden',
                     'id' => 'params'
                 ]
-            ]              
+            ]
         ];
 
         return $input[$input_id];

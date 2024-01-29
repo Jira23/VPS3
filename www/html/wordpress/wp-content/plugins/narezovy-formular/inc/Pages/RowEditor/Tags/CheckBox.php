@@ -39,7 +39,13 @@ class CheckBox {
                 'name' => '[orientace]',
                 'checked' => NULL,
                 'attrs' => []
-            ]
+            ],
+            'obchodni_podminky' => [
+                'id'   => 'obchodni_podminky',
+                'label' => 'Souhlasím s <a href="/obchodni-a-technicke-podminky-vyroby-rezani/">obchodními podmínkami</a>.',
+                'checked' => false,
+                'attrs' => []
+            ]            
         ];
 
         return $checkbox[$checkbox_id];

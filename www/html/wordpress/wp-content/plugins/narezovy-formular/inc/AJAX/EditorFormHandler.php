@@ -1,62 +1,47 @@
-<?php
+<?php 
+/**
+ *  @package  narezovy-formular
+ */
+namespace Inc\AJAX;
 
-namespace Inc\Pages\RowEditor;
-
-use Inc\Base\User;
-use Inc\Base\EmailText;
-use Inc\Base\BaseController;
-use Inc\OrderHandler\OrderHandler;
-
-class EditorFormHandler extends BaseController{
-
+class EditorFormHandler {
+    
     public $query_params;
     public $form_data;
     public $part_data;
     
+    
     public function __construct() {
-        parent::__construct();
         $this->query_params = [];
         $this->form_data = [];                                              // data from "formular" part of edit page
         $this->part_data = [];                                              // data from "zadani dilu" part of edit page
         $this->sanitize_input();            
+    }    
+    
+    
+    public function handle_editor_form() {
+        
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);         
+        
+        //var_dump($_POST);
+        
+        //(new \Inc\Pages\RowEditor\EditorFormHandler())->handle_edit_form();
+        $this->save_form();
+
+        wp_die();
     }
-
-    public function handle_edit_form(){
-//var_dump($_POST);        
-        if(isset($this->query_params['url_hash'])) $this->handle_hash($this->query_params['url_hash']);
-        if(isset($_POST['btn_ulozit_zadani'])) $this->save_form();
-        if(isset($_POST['btn_delete_opt'])) $this->delete_opt();
-        if(isset($_POST['btn_odeslat'])) $this->handle_order();
-    }
-
-    private function handle_order(){
-        $form_id = $this->query_params['form_id'];
-        $oh = new OrderHandler();
-
-        if($oh->check_prices($form_id)){                                    // check if prices changed since last optimalization
-            $oh->handle_order($form_id);
-            self::jQuery_redirect(get_permalink() .'?form_id=' .$form_id .'&part_id=0&order_sent=1');
-        } else {
-            (new \Inc\Pages\Tags\InfoModal())->render('price_alert');
-        }
-    }
-
-    private function delete_opt(){
-        global $wpdb;
-        $form_id = $this->query_params['form_id'];
-        $wpdb->delete(NF_OPT_RESULTS_TABLE, array('form_id' => $form_id), array('%d'));            
-    }
-
+    
     private function save_form(){
         global $wpdb;
-        
         $redirect = false;
 /*
 echo '<pre>';        
 var_dump($_POST);
 echo '</pre>';                
-  */      
-        
+*/
+var_dump($this->query_params['form_id']);        
         if ($this->query_params['form_id'] == 0) {                                                              // first edit of form - it is not saved yet (not existing in db)
             $user = new User();
             $this->form_data['userId'] = $user->get_id();
@@ -92,44 +77,18 @@ echo '</pre>';
 //        var_dump($wpdb->prepare($query, $values));
 
         $a = $wpdb->query($wpdb->prepare($query, $values));
-//        var_dump($a);
-//        var_dump($wpdb->last_error);
+        var_dump($a);
+        var_dump($wpdb->last_error);
 
 
         if($redirect) self::jQuery_redirect(get_permalink() .'?form_id=' .$form_id .'&part_id=0');
-    }
-
-    private function handle_hash($url_hash){                                // unregistered user has unique url to his order form
-        global $wpdb;
-
-        $form_data = $wpdb->get_results($wpdb->prepare("SELECT * FROM " .NF_FORMULARE_TABLE ." WHERE urlHash = %s", $url_hash));
-        if(empty($form_data) || $form_data[0]->userContact == '') (new \Inc\Pages\Tags\InfoModal())->render('hash_alert');
-
-        // set cookies
-        $to_cookies = json_decode($form_data[0]->userContact);
-        foreach ($to_cookies as $key => $value) {
-            setcookie($key, $value, strtotime('+1day'), '/', $_SERVER['HTTP_HOST']);
-        }
-
-        self::jQuery_redirect(get_permalink() .'?form_id=' .$form_data[0]->id .'&part_id=0');
-    }
-
-    private static function jQuery_redirect($url){
-        echo "<script>window.location.href = '" .$url ."';</script>";
-    }
-
+    }    
+    
     private function sanitize_input(){
 
-        if(isset($_GET['unreg_id'])) {
-            $this->query_params['url_hash'] = sanitize_text_field($_GET['unreg_id']);
-        }
 
-        if((isset($_GET['form_id']) && isset($_GET['part_id']))) {
-            $this->query_params['form_id'] = (int)($_GET['form_id']);
-            $this->query_params['part_id'] = (int)($_GET['part_id']);
-        } else {
-            return;
-        }
+        $this->query_params['form_id'] = (int)($_POST['form_id']);
+
 
         if (isset($_POST['formular']) && is_array($_POST['formular'])) {        // not really necessary, at least setting $_POST to variable
             foreach ($_POST['formular'] as $key => $value) {
@@ -141,17 +100,7 @@ echo '</pre>';
             $this->part_data = $_POST['parts'];
             unset($this->part_data['empty']);                                   // remove hidden row
         }
-    }
-    
-    public function send_hash_email(){                                                      // sends email with link to form to unregistered user
-        $hash_url = $this->editor_page .'/?unreg_id=' .$this->form_data['urlHash'];
-        
-        $to = (new User())->get_contact()['email'];
-        $subject = 'Nářezový formlulář - odkaz';
-        $message = (new EmailText())->hash_email($hash_url);
-        $headers = ['Content-Type: text/html; charset=UTF-8'];
-        
-        wp_mail($to, $subject, $message, $headers);        
-    }
-}
+    }    
 
+    
+}

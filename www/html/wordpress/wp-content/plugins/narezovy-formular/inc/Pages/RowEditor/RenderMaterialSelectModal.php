@@ -9,16 +9,16 @@ use Inc\Pages\PagesController;
 
 class RenderMaterialSelectModal extends RenderEditor{
     
-    public function render(){
+    public function render_deska(){
     ?>
         <div class="modal-container" id="mod_material_desky">
             <div class="modal-content wide-modal">
                 <div class="modal-header">
                     <span class="close">&times;</span>
-                    <h1>Výběr materiálu desky a hrany</h1>
+                    <h1>Výběr materiálu desky</h1>
                 </div>
                 <div class="modal-body">
-                    <?php $this->render_part_upper_section(); ?>
+                    <?php $this->render_deska_section(); ?>
                 </div>
                 <div class="modal-footer">
                     <div style="text-align: center;">
@@ -30,8 +30,30 @@ class RenderMaterialSelectModal extends RenderEditor{
         </div>
     <?php
     }
+
+    public function render_hrana(){
+    ?>
+        <div class="modal-container" id="mod_material_hrany">
+            <div class="modal-content wide-modal">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h1>Výběr materiálu hrany</h1>
+                </div>
+                <div class="modal-body">
+                    <?php $this->render_hrana_section(); ?>
+                </div>
+                <div class="modal-footer">
+                    <div style="text-align: center;">
+                        <?php $this->button->render_button('edge_select'); ?>
+                    </div>               
+                </div>
+            </div>
+
+        </div>
+    <?php
+    }
     
-    private function render_part_upper_section(){
+    private function render_deska_section(){
     ?>    
         <h2>Materiál desky</h2>
         <div class="modal-section">                
@@ -77,8 +99,21 @@ class RenderMaterialSelectModal extends RenderEditor{
                 <table id="modal-deska-products-list" class="lamino-list" style="margin-bottom: 0px;"></table>
              </div>
             <div style="clear: both;"></div>
+            <div style="display: flex; justify-content: center;">
+                <?php $this->alert->render_alert('Materiál je již ve formuláři!', 'error', true, 'alert-mat-in-form'); ?>
+            </div>
         </div>
-
+        <div id="mat-modal-overlay" class="NF-mat-modal-overlay">
+          <div class="centered-content">
+            <img width="200" id="loadingIcon" src="/wp-content/plugins/narezovy-formular/assets/img/Loading_icon.gif" style="display: block;margin: 0 auto;display: block;margin: 0 auto;">
+          </div>
+        </div>
+         
+        <?php
+    }
+    
+    private function render_hrana_section(){
+    ?>    
         <hr>    
          <h2>Materiál hrany</h2>
         <div class="modal-section">
@@ -130,7 +165,9 @@ class RenderMaterialSelectModal extends RenderEditor{
                             <img src="">
                         </div>
                     </div>                    
-                    <input id="modal-hrana-mat-id" value="" style="display: none;"/>
+                    <input id="modal-hrana-mat-id-same" value="" style="display: none;"/>
+                    <input id="modal-hrana-mat-id-different" value="" style="display: none;"/>
+                    <input id="modal-hrana-mat-has-same-edge" value="" style="display: none;"/>
                 </div>
                 <table id="modal-hrana-products-list" class="lamino-list" style="margin-bottom: 0px;">
                 </table>             

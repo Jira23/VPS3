@@ -6,6 +6,8 @@ namespace Inc\Pages\RowEditor\Tags;
 
 use \Inc\Base\BaseController;
 
+
+
 class SelectBoxWithLoading extends BaseController {
     
     public function render($select_box_id, $options = null, $select = null, $index = null, $readonly = null){
@@ -53,7 +55,9 @@ class SelectBoxWithLoading extends BaseController {
         
         echo '</select>' .PHP_EOL;
         echo '</div>' .PHP_EOL;
+        echo '<span class="dashicons dashicons-warning edge-warning"></span>' .PHP_EOL;
         echo '</div>' .PHP_EOL;
+        
     }
     
     private function define_select_box_props($select_box_id){

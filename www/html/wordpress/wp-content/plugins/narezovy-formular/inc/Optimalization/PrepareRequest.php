@@ -6,6 +6,7 @@
 namespace Inc\Optimalization;
 
 use \Inc\Base\User;
+use \Inc\Exceptions\NFOptException;
 
 class PrepareRequest  {
     
@@ -54,7 +55,7 @@ class PrepareRequest  {
     }
     
     private function get_plotny($parts){
-        
+
         foreach ($parts as $part) {
             $parts_ids[] = $part->lamino_id;
             if ($part->hrana_horni != 0) $parts_ids[] = $part->hrana_horni;
@@ -67,11 +68,12 @@ class PrepareRequest  {
         
         $unique_ids = array_unique($parts_ids);
         $plotny = [];
-        
+var_dump($unique_ids);
+exit;
         foreach ($unique_ids as $product_id) {
             $product = wc_get_product($product_id);
-            if(!$product) throw new NFOptException('Product doesn`t exist!', 'Produkt nenalezen! Zkontrolujte prosím zadání.');
-            
+            if(!$product) throw new NFOptException('Product doesn`t exist! Id: ' .$product_id, 'Produkt nenalezen! Zkontrolujte prosím zadání.');
+
             $plotny[$product_id]['id'] = $product_id;
             $plotny[$product_id]['name'] = $product->get_name();
             $plotny[$product_id]['price'] = $product->get_price();
@@ -80,6 +82,7 @@ class PrepareRequest  {
             $plotny[$product_id]['sila'] = $product->get_attribute('pa_sila');            
             $plotny[$product_id]['orientace'] = $this->get_complex_meta($product_id, 'Orientace dekoru (léta)') == 'Ano' ? 1 : 0;
             $plotny[$product_id]['kategorie'] = $this->set_category($product_id);
+            $plotny[$product_id]['sku'] = $product->get_sku();
         }
        
        return $plotny;

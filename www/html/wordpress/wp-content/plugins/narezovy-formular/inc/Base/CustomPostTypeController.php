@@ -18,13 +18,15 @@ class CustomPostTypeController extends BaseController {
     public function render_editor_content() {
         
         
-if(get_current_user_id() === 9259){
+//if(get_current_user_id() === 9259){
     (new \Inc\Pages\RowEditor\EditorFormHandler())->handle_edit_form();
     (new \Inc\Pages\RowEditor\RenderEditor)->render();
+/*    
 } else {
     (new \Inc\Pages\ClassicEditor\EditorFormHandler())->handle_edit_form();
     (new \Inc\Pages\ClassicEditor\RenderEditor)->render_edit_page();
 }
+  */
     }
 
     public function render_forms_list_content(){

@@ -56,11 +56,10 @@
 
             $order_id = $this->get_order_id($form_id);
             $original_file_content = file_get_contents($file_path);
-            
-            $new_file_path = str_replace($order_id .'_', $WC_order_id .'_', $file_path);
+            $new_file_path = preg_replace('/' .$order_id .'/', $WC_order_id, $file_path, 1);
             $first_line = explode(PHP_EOL, $original_file_content)[0];
             $to_replace = explode(' ', $first_line)[4];                                                             // get string wich will be replaced
-            $replace_with = str_replace($order_id .'_', $WC_order_id .'_', $to_replace);                             // change this string
+            $replace_with = preg_replace('/' .$order_id .'/', $WC_order_id , $to_replace);                          // change this string
             $updated_content = str_replace($to_replace, $replace_with, $original_file_content);                     // replace this string with changed strin in whole file
             file_put_contents($new_file_path, $updated_content);
             

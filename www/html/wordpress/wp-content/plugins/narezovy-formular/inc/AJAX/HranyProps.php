@@ -14,15 +14,14 @@ namespace Inc\AJAX;
     class HranyProps extends AjaxUtils {
         
         public function get_hrany_props() {
-            
+     
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);     
-    
+
             if(isset($_POST['product_id'])) $product_id = (int)sanitize_text_field($_POST['product_id']);
             if(isset($_POST['tupl'])) $tupl = sanitize_text_field($_POST['tupl']);
             if(isset($_POST['dekor'])) $dekor = sanitize_text_field($_POST['dekor']);                           // this method can be called 2 ways. Edge is to be found by deska id (privzorovana) or by decor name (odlisna). When odlisna, variable decor is defined in call
-            if(isset($_POST['dims'])) $dims = sanitize_text_field($_POST['dims']);                              // can return edge props, or edge dimensions
             if(isset($_POST['dims'])) $dims = filter_var($_POST['dims'], FILTER_VALIDATE_BOOLEAN);;                              // can return edge props, or edge dimensions
             
             
@@ -32,9 +31,14 @@ error_reporting(E_ALL);
             $product = wc_get_product($product_id);
             
             if(in_array(MDF_LAKOVANE_CATEGORY_ID, $product->category_ids) && $product->get_attribute('pa_sila') == '3') {       // if is in category "MDF Lakovane" and has sila = "3", deska will be without edges
-                self::assembleResponse(array());
+                self::assembleResponse(array(), false);
                 wp_die();
             }    
+
+            if(in_array(HOBRA_CATEGORY_ID, $product->category_ids)) {       // if is in category "hobra" , deska will be without edges
+                self::assembleResponse(array(), false);
+                wp_die();
+            }  
             
             $hrany = [];
             if($dekor == ''){
@@ -50,9 +54,14 @@ error_reporting(E_ALL);
         }
         
         public function getRelatedProducts($product_id) {
-            $toReturn = $this->getRelatedProductsByUID($product_id);
-            if(empty($toReturn)) $toReturn = $this->getRelatedProductsByTitle(get_the_title($product_id));      // pokud nema deska related products, najdu je podle nazvu
-            return ($toReturn);
+//            $toReturn = $this->getRelatedProductsByUID($product_id);
+//            if(empty($toReturn)) $toReturn = $this->getRelatedProductsByTitle(get_the_title($product_id));      // pokud nema deska related products, najdu je podle nazvu
+
+            $by_UID = $this->getRelatedProductsByUID($product_id);
+            $by_tile = $this->getRelatedProductsByTitle(get_the_title($product_id));
+                      
+            $to_return = array_merge($by_UID, $by_tile);
+            return ($to_return);
         }        
         
         // najde related products na zaklade id desky. Prima title desky (podle nej najde jeji id)
@@ -204,31 +213,39 @@ if($_SERVER['SERVER_ADDR'] == '194.182.64.183') $related_items = array(0 => arra
                     }
                 }
             }
+            $to_return = array_values($hrany);                                  // reset array keys so they will start from 0,1,2...
 
-            $sorted = wc_products_array_orderby( $hrany, 'title', 'DESC' );                                       // srovnam podle abecedy
-            return $sorted;
+            return $to_return;
         }
         
         public static function assembleResponse($hrany, $dims){
-//var_dump($hrany);
+
             if(!isset($hrany[0])) {
-                echo json_encode(['edgeId' => false, 'edgeName' => false, 'edgeImgUrl' => false]);
+                if($dims){
+                    echo json_encode([0 => '']);
+                } else {
+                    echo json_encode(['edgeId' => false, 'edgeName' => false, 'edgeImgUrl' => false]);    
+                }
+                
                 wp_die();
             }
-            
+//
+            $hrana_dims = [0 => ''];
+            foreach ($hrany as $key => $hrana) {
+                //$hrana_dims[$hrana->get_id()] = (new self())->shorten_hrana_title($hrana)['rozmer'];
+                $dims_title = (new self())->shorten_hrana_title($hrana);
+                $hrana_dims[$hrana->get_id()] = $dims_title['rozmer'] .' ' .$dims_title['decor'];
+            }
+
+            asort($hrana_dims);                                                  // sort in alphabetical order
+
             if($dims){
-                $hrana_dims = [];
-                foreach ($hrany as $key => $hrana) {
-                    //$hrana_dims[$hrana->get_id()] = (new self())->shorten_hrana_title($hrana)['rozmer'];
-                    $dims_title = (new self())->shorten_hrana_title($hrana);
-                    $hrana_dims[$hrana->get_id()] = $dims_title['rozmer'] .' ' .$dims_title['decor'];
-                }
                 $to_return = $hrana_dims;
             } else { 
                 $hrana_id = $hrany[0]->get_id();
                 $hrana_title = (new self())->shorten_hrana_title($hrany[0])['decor'];
                 $image_url = wp_get_attachment_image_src($hrany[0]->get_image_id())[0];                                
-                $to_return = ['edgeId' => $hrana_id, 'edgeName' => $hrana_title, 'edgeImgUrl' => $image_url];
+                $to_return = ['edgeId' => $hrana_id, 'edgeName' => $hrana_title, 'edgeImgUrl' => $image_url, 'edgeDims' => $hrana_dims];
             }
 
             echo json_encode($to_return);

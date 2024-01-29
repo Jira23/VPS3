@@ -110,6 +110,17 @@ class Button {
                     'style' => 'margin-top: 10px;'
                 ]
             ],
+            'edge_select' => [
+                'text' => 'Uložit',
+                'disabled' => null,
+                'attrs' => [
+                    'id'   => 'edge-select-button',
+                    'class' => 'button button-main',
+                    'type' => 'button',
+                    'title' => 'Uložit',
+                    'style' => 'margin-top: 10px;'
+                ]
+            ],            
             'smazat_radek' => [
                 'text' => '<span class="dashicons dashicons-small dashicons-trash"></span>',
                 'disabled' => null,

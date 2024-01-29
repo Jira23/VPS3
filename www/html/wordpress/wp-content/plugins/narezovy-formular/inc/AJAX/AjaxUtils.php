@@ -23,7 +23,9 @@ class AjaxUtils extends BaseController {
         add_action( 'wp_ajax_set_user_cookies', array((new CookiesHandler()), 'set_user_cookies'));
         add_action( 'wp_ajax_nopriv_set_user_cookies', array((new CookiesHandler()), 'set_user_cookies'));        
         add_action( 'wp_ajax_unset_user_cookies', array((new CookiesHandler()), 'unset_user_cookies'));
-        add_action( 'wp_ajax_nopriv_unset_user_cookies', array((new CookiesHandler()), 'unset_user_cookies'));                
+        add_action( 'wp_ajax_nopriv_unset_user_cookies', array((new CookiesHandler()), 'unset_user_cookies'));
+        add_action( 'wp_ajax_handle_editor_form', array((new EditorFormHandler()), 'handle_editor_form'));
+        add_action( 'wp_ajax_nopriv_handle_editor_form', array((new EditorFormHandler()), 'handle_editor_form'));        
         add_action('wp_footer', array($this, 'inject_global_urls'));
     }
     

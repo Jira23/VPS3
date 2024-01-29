@@ -33,12 +33,17 @@ class Enqueue extends BaseController {
         wp_enqueue_script('nf-import', $this->plugin_url . 'assets/js/import.js');
         wp_enqueue_script('nf-lightbox-js', $this->plugin_url .'assets/js/simple-lightbox.jquery.js');        
         wp_enqueue_script('nf-lightbox-js-helpers', $this->plugin_url .'assets/js/simple-lightbox-helpers.js');        
-        
     }
     
     public function enque_for_editor(){
         wp_enqueue_script('nf-pickletree', $this->plugin_url .'assets/js/pickletree.js');
-        wp_enqueue_script('nf-row-form-mat-select', $this->plugin_url . 'assets/js/row-form-mat-select.js');        
-        wp_enqueue_script('nf-form-figures', $this->plugin_url .'assets/js/form-figures.js');        
+        wp_enqueue_script('nf-row-editor-figures', $this->plugin_url .'assets/js/rowEditor/figures.js');
+        wp_enqueue_script('nf-row-editor-listeners', $this->plugin_url . 'assets/js/rowEditor/listeners.js');
+        wp_enqueue_script('nf-row-editor-utils', $this->plugin_url . 'assets/js/rowEditor/utils.js');
+        wp_enqueue_script('nf-row-editor-mat-modal-utils', $this->plugin_url . 'assets/js/rowEditor/mat-modal-utils.js');
+        wp_enqueue_script('nf-row-editor-mat-modal-listeners', $this->plugin_url . 'assets/js/rowEditor/mat-modal-listeners.js');
+        wp_enqueue_script('nf-row-editor-input-utils', $this->plugin_url . 'assets/js/rowEditor/input-utils.js');
+        wp_enqueue_script('nf-row-editor-warnings', $this->plugin_url . 'assets/js/rowEditor/warnings.js');
+        wp_enqueue_script('nf-row-ajax-response-manager', $this->plugin_url . 'assets/js/rowEditor/ajax-response-manager.js');
     }
 }

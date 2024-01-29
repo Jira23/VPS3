@@ -93,6 +93,7 @@ jQuery(document).ready(function($) {
     
     
     // AJAX dotaz, nacte vysledek optimalizace
+/*    
     $("button[name='btn_optimalizovat']").click(function() {
         $('#optimized-block').show();
         $('#optimized-results-table').html('');
@@ -105,7 +106,7 @@ jQuery(document).ready(function($) {
         var request = {'action': 'optimize', 'form_id' : formId};                                           // pripravim parametry pro AJAX volani
         ajaxRequest(request, $("#optimized-results-table"));                                                // zavolam AJAX a vykreslim vysledek
     });    
-    
+*/  
     // AJAX call, sets user cookkies
     $('.register-form').submit(function(event) {
         event.preventDefault();

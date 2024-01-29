@@ -69,6 +69,7 @@ $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PDK_CATEGORY_ID', 44) : de
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('MDF_LAKOVANE_CATEGORY_ID', 154) : define('MDF_LAKOVANE_CATEGORY_ID', 2405);
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_30', 15567) : define('PLOTNA_TUPL_30', 575645);                   // L 0110 SM  HL Bílá 2800*2070*12  !!! POZOR pri zmene je potreba zmenit i na ardis serveru
 $_SERVER['SERVER_ADDR'] == '194.182.64.183' ? define('PLOTNA_TUPL_36', 12896) : define('PLOTNA_TUPL_36', 522250);                   // L 0110 SM  HL Bílá 2800*2070*18  !!! POZOR pri zmene je potreba zmenit i na ardis serveru
+define('HOBRA_CATEGORY_ID', 2347);
 
 // define optimalization constants
 define('ARDIS_SERVER_URL', 'https://ardis.drevoobchoddolezal.cz/');

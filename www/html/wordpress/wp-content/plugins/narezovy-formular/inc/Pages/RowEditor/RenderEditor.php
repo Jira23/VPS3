@@ -55,10 +55,12 @@ class RenderEditor extends PagesController {
             $this->render_order_summary();
         } else {                                                                // render editor form
             $this->render_header();
-            $this->renderButtons();
+            $this->render_buttons();
             $this->render_order_details();
-            $this->render_figures();
             (new RenderParts())->render_parts($this->parts);
+            (new OptResults($this->form_id))->render_opt_results();
+            $this->render_vop();
+            $this->render_buttons();
             $this->render_footer();
             $this->render_modals();
         }
@@ -108,49 +110,18 @@ class RenderEditor extends PagesController {
     <?php    
     }  
     
-    private function render_figures(){
-    ?>
-    <h2 style="margin-top: 20px;">Figury 
-        <span class="icon">
-            <i class="show-icon fas fa-eye"></i>
-            <i class="hide-icon fas fa-eye-slash" style="display: none;"></i>
-        </span>
-    </h2>
-    
-    <div class="toggle-vis" style="display: none;">
-        <div id="figures-inputs-section">
-            <?php
-                $all_fig_ormulas = array_column(
-                    array_filter($this->parts, function($subarray) {
-                        return $subarray->fig_formula !== '';
-                    }),
-                    'fig_formula'
-                );
-
-                $unique_fig_formulas = array_unique($all_fig_ormulas);
-
-                foreach ($unique_fig_formulas as $formula) {
-                    echo '<div class="form-section figures-section"><input type="text" class="figure-input input-small" value="' .$formula .'"><span class="dashicons dashicons-trash figure-delete-button"></span></div>';
-                }
-            ?>
-        </div>
-        <span class="dashicons dashicons-plus-alt" id="figures-add-button"></span><br>
-        <?php $this->button->render_button('aplikovat_zmeny'); ?>
-    </div>
-
-
-    <?php
-    }    
     private function render_footer(){
         echo '</form>' .PHP_EOL;
+//echo '<button name="btn_save" class="button button-main" type="button">save</button>';
     }
     
     private function render_modals(){
         echo '<!-- MODALS -->';
-        (new RenderMaterialSelectModal())->render();
+        (new RenderMaterialSelectModal())->render_deska();
+        (new RenderMaterialSelectModal())->render_hrana();
     }
     
-    private function renderButtons(){
+    private function render_buttons(){
         $user = new \Inc\Base\User();
         
         echo '<div style="text-align: left; margin-bottom: 30px;">';
@@ -190,6 +161,12 @@ class RenderEditor extends PagesController {
         (new \Inc\Output\Output())->render_customer_summary_html($this->form_id);
     }
 
+    private function render_vop(){
+        echo '<div class="NF-vop">';
+        if(!empty($opt_results)) $this->checkbox->render('obchodni_podminky');
+        echo '</div>';
+    }
+    
     private function render_thankyou(){
         echo '<div style="text-align: center; margin-bottom:100px;"><h1>Děkujeme. Váše objednávka  byla odeslána ke zpracování.</h1>';
         $user = new User();
@@ -203,16 +180,11 @@ class RenderEditor extends PagesController {
     }  
     
     public function get_parts() {
-
         if(!isset($this->parts )){                                              // query will be executed only once per object init
-
             global $wpdb;
-$parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` ASC");
-//$parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY fig_formula ASC, id DESC");
-
+            $parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id` LIKE '" .$this->form_id ."' ORDER BY `id` ASC");
             $this->parts = $parts;
         }
-
         return $this->parts;        
     }
 
@@ -222,7 +194,6 @@ $parts = $wpdb->get_results("SELECT * FROM `" .NF_DILY_TABLE ."` WHERE `form_id`
         $form = $wpdb->get_results("SELECT * FROM `" .NF_FORMULARE_TABLE ."` WHERE `id` LIKE '" .$this->form_id ."'");
         return (empty($form)) ? array() : (array)$form[0];
     }
-
     
     private function get_deska_icon(){
         if($this->part_id != 0) {
