@@ -102,34 +102,20 @@ class Output  {
                     <td colspan="2"><b>Telefon:</b></td>
                     <td colspan="3">' .$user_data['telefon'] .'</td>
                     <td></td>
-                    <td><b>Olepení:</b></td>
-                    <td colspan="3">'; 
-                    ($formular_data->olepeni == 0) ? $table .= 'Standart' : $table .= 'S dočištěním';
-                    $table .=
-                    '</td>                        
-                </tr>
-                <tr>
-                    <td colspan="2"><b>Dodací adresa:</b></td>
-                    <td colspan="3">' .$user_data['ulice'] .' ' .$user_data['mesto']  .'</td>
-                    <td></td>
-                    <td><b>Štítky:</b></td>
-                    <td colspan="3">'; 
-                    ($formular_data->stitky == 0) ? $table .= 'NE' : $table .= 'ANO';
-                    $table .=
-                    '</td>                        
-                </tr>
-                <tr>
-                    <td colspan="2"></td>
-                    <td colspan="3"></td>
-                    <td></td>
                     <td><b>Doprava:</b></td>
                     <td colspan="3">'; 
                     if ($formular_data->doprava == 0) $table .= 'Osobně Ml. Boleslav';
                     if ($formular_data->doprava == 1) $table .= 'Osobně Jiz. Vtelno';
                     if ($formular_data->doprava == 2) $table .= 'Rozvoz';
                     $table .=
-                    '</td>                        
-                </tr>                    
+                    '</td>                                   
+                </tr>
+                <tr>
+                    <td colspan="2"><b>Dodací adresa:</b></td>
+                    <td colspan="3">' .$user_data['ulice'] .' ' .$user_data['mesto']  .'</td>
+                    <td colspan="4"></td>
+                </tr>
+                <tr></tr>                    
                 <tr></tr>
             </table>';
 
@@ -168,12 +154,13 @@ class Output  {
                     <td><b>hrana pravá</b></td>
                     <td><b>hrana levá</b></td>
                     <td><b>tupl</b></td>
-                    <td><b>lepidlo</b></td>
                     <td><b>figura</b></td>
                 </tr>';
 
 
-                $re = new \Inc\Pages\ClassicEditor\RenderEditor();                
+//                $re = new \Inc\Pages\ClassicEditor\RenderEditor();                
+                $rp = new \Inc\Pages\RowEditor\RenderParts();
+                
                 $i = 1;
                 foreach ($dily_data as $row) {                                       // vypis dat
                     $product = wc_get_product($row->lamino_id);
@@ -182,18 +169,17 @@ class Output  {
                     '<tr>'
                     .'<td>' .$i .'</td>'
                     .'<td>' .$sku .'</td>'
-                    .'<td>' .$re->get_deska_name_by_id($row->lamino_id) .'</td>'
+                    .'<td>' .$rp->get_deska_name_by_id($row->lamino_id) .'</td>'
                     .'<td>' .$row->nazev_dilce .'</td>'
                     .'<td>' .$row->ks .'</td>'
                     .'<td>' .$row->delka_dilu .'</td>'
                     .'<td>' .$row->sirka_dilu .'</td>'
                     .'<td>' .($row->orientace == 1 ? 'ANO' : 'NE') .'</td>'
-                    .'<td>' .($row->hrana_dolni != 0 ? $re->get_hrana_name_by_id($row->hrana_dolni, true) : '')  .'</td>'
-                    .'<td>' .($row->hrana_horni != 0 ? $re->get_hrana_name_by_id($row->hrana_horni, true) : '') .'</td>'                                    
-                    .'<td>' .($row->hrana_prava != 0 ? $re->get_hrana_name_by_id($row->hrana_prava, true) : '') .'</td>'
-                    .'<td>' .($row->hrana_leva != 0 ? $re->get_hrana_name_by_id($row->hrana_leva, true) : '') .'</td>'
+                    .'<td>' .($row->hrana_dolni != 0 ? $rp->get_hrana_name_by_id($row, true) : '')  .'</td>'
+                    .'<td>' .($row->hrana_horni != 0 ? $rp->get_hrana_name_by_id($row, true) : '') .'</td>'                                    
+                    .'<td>' .($row->hrana_prava != 0 ? $rp->get_hrana_name_by_id($row, true) : '') .'</td>'
+                    .'<td>' .($row->hrana_leva != 0 ? $rp->get_hrana_name_by_id($row, true) : '') .'</td>'
                     .'<td>' .$row->tupl .'</td>'
-                    .'<td>' .($row->lepidlo === '0' ? 'Trans.' : ($row->lepidlo === '1' ? 'Bílé' : ''))  .'</td>'
                     .'<td>' .(empty($row->fig_name) ? '' : $row->fig_name .'|' .$row->fig_part_code) .'</td>'
                     .'</tr>';
 

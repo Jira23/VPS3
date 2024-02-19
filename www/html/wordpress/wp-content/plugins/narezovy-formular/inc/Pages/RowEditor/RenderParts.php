@@ -15,9 +15,8 @@ class RenderParts extends RenderEditor{
     public $count;
     
     public function render_parts($parts){
-        (new \Inc\Pages\Tags\InfoModal())->render('price_alert');
         $this->render_table_header();
-        $this->render_table_head();
+        //$this->render_table_head();
         $this->render_table_body($parts);
         $this->render_table_footer();
 
@@ -32,16 +31,19 @@ class RenderParts extends RenderEditor{
     <?php
     }
   
-    private function render_table_head(){
-        $titles = ['č.', 'název', 'ks', 'délka', 'šířka', 'orient.', 'materiál<br>hrany', 'tupl', 'hrana<br>dokola', 'hrana<br>přední', 'hrana<br>zadní', 'hrana<br>pravá', 'hrana<br>levá', 'lepidlo', 'figura', 'úpravy'];
-
-        echo '<thead>';
-        echo '  <tr>';
+    private function render_subheader($visible = true){
+        $titles = ['č.', 'název', 'ks', 'délka', 'šířka', 'orient.', 'materiál<br>hrany', 'tupl', 'hrana<br>dokola', 'hrana<br>přední', 'hrana<br>zadní', 'hrana<br>pravá', 'hrana<br>levá&nbsp;&nbsp;', 'figura', 'úpravy'];
+        echo $visible ? '  <tr class="NF-material-group-subheader">' : '  <tr class="NF-material-group-subheader" style="display:none;" id="material-group-subheader-hidden">';
         foreach ($titles as $title) {
-            echo '<th>' .$title .'</th>';
+            echo '<td>' .$title;
+            if($title == 'hrana<br>dokola') echo '<div class="info-icon-wrapper"><span class="dashicons dashicons-info NF-info-icon" style="display: inline;"><span class="tooltip-text">Vloží vybraný rozměr do všech čtyř hran.</span></span></div>';
+            if($title == 'hrana<br>přední') echo '<div class="info-icon-wrapper"><span class="dashicons dashicons-info NF-info-icon" style="display: inline;"><img src="'.$this->plugin_url .'assets/img/hrany_predni.png' .'" class="edge-select-image"></span></div>';
+            if($title == 'hrana<br>zadní') echo '<div class="info-icon-wrapper"><span class="dashicons dashicons-info NF-info-icon" style="display: inline;"><img src="'.$this->plugin_url .'assets/img/hrany_zadni.png' .'" class="edge-select-image"></span></div>';
+            if($title == 'hrana<br>pravá') echo '<div class="info-icon-wrapper"><span class="dashicons dashicons-info NF-info-icon" style="display: inline;"><img src="'.$this->plugin_url .'assets/img/hrany_prava.png' .'" class="edge-select-image"></span></div>';
+            if($title == 'hrana<br>levá&nbsp;&nbsp;') echo '<div class="info-icon-wrapper"><span class="dashicons dashicons-info NF-info-icon" style="display: inline;"><img src="'.$this->plugin_url .'assets/img/hrany_leva.png' .'" class="edge-select-image"></span></div>';
+            echo '</td>';
         }
         echo '</tr>';
-        echo '</thead>';
     }
     
     private function group_parts($parts){
@@ -57,8 +59,8 @@ class RenderParts extends RenderEditor{
     }
     
     private function render_group_row($group){
-
-        echo $group ?  '<tr class="NF-edit-group-material">':'<tr class="NF-edit-group-material-empty" style="display: none;">' ;
+        
+        echo $group ?  '<tr class="NF-edit-group-material">':'<tr class="NF-edit-group-material-empty" style="display: none;" >' ;
         echo '  <td colspan="8">';
         $mat_params = '{}';
         
@@ -81,11 +83,16 @@ class RenderParts extends RenderEditor{
             echo '<div>';
             echo '<input id="mat-group-data" value="' .htmlspecialchars(json_encode($mat_params), ENT_QUOTES, 'UTF-8') .'" style="display: none;"/>';
         echo '  </td>';
-        echo '  <td colspan="8">Vzorec pro figuru: <input type="text" class="parts-table-input-figure" value="'  .$this->get_group_formula($group) .'">'; 
+        echo '  <td colspan="6">';
+        echo '<div class="figure-input-wrapper">';
+        echo '<h5>Vzorec pro figuru: </h5><input type="text" class="parts-table-input-figure" value="'  .$this->get_group_formula($group) .'">'; 
+        echo '<div class="info-icon-wrapper"><a href="' .$this->plugin_url .'assets/pdf/figury_navod_DOD.pdf" target="_blank" class="dashicons-link"><span class="dashicons dashicons-info NF-info-icon" style="display: inline;"></span></a></div>';
+        echo '</div>';
         echo '<div class="figure-alerts">';
         $this->alert->render_alert('Ve vzorci jsou neexistující díly!', 'error', true, 'alert-fig-numbers-check');
         $this->alert->render_alert('Vzorec obsahuje nepovolené znaky!', 'error', true, 'alert-fig-syntax-check');
         echo '</div></td>';
+        echo '<td><button name="btn_smazat_material" class="button button-sm" type="button" title="smazat materiál"><span class="dashicons dashicons-trash"></span></button></td>';
         
         echo '</tr>';
         
@@ -100,12 +107,14 @@ class RenderParts extends RenderEditor{
     }
     
     private function render_add_material(){
-        echo '<div class="new-group-mat-button" id="add-group-material">'; 
+        echo '<div class="NF-new-group-mat-button" id="add-group-material">'; 
+//echo '<div class="button-content">';
         echo '    <div class="mat-icon">'; 
         echo '        <img src="'.$this->plugin_url .'assets/img/icon_plus.png' .'">';
         echo '    </div>';
-        echo '        <h3><b>Přidat nový materiál</b></h3>';        
+        echo '        <h1><b>Přidat nový materiál</b></h1>';        
         echo '</div>';
+//echo '    </div>';        
     }
     
     private function render_table_body($parts){
@@ -113,12 +122,15 @@ class RenderParts extends RenderEditor{
         <tbody>
             <?php
                 $grouped_parts = $this->group_parts($parts);    
+                
                 $i = 1;
                 foreach ($grouped_parts as $group) {
 
                     $group_row_id = 1;
+                    
                     $this->render_group_row($group);
-
+                    $this->render_subheader();
+                    
                     foreach ($group as $part) {
 
                         $name = $this->get_deska_name_by_id($part->lamino_id);
@@ -129,9 +141,9 @@ class RenderParts extends RenderEditor{
                         echo '<tr row-id="' .$i .'">';
                         echo '<td>'; echo $part->group_number == '0' ? $group_row_id : $part->group_number; echo '</td>';
                         echo '<td>'; echo $this->input->render('název', $part->nazev_dilce, 'parts[' .$i .']'); echo '</td>';
-                        echo '<td>'; echo $this->input->render('počet', $part->ks, 'parts[' .$i .']'); echo'</td>';
-                        echo '<td>'; echo $this->input->render('délka', $part->delka_dilu, 'parts[' .$i .']', $deska_params['delka']); echo'</td>';
-                        echo '<td>'; echo $this->input->render('šířka', $part->sirka_dilu, 'parts[' .$i .']', $deska_params['sirka']); echo'</td>';
+                        echo '<td>'; echo $this->input_with_warning->render('počet', $part->ks, 'parts[' .$i .']'); echo'</td>';
+                        echo '<td>'; echo $this->input_with_warning->render('délka', $part->delka_dilu, 'parts[' .$i .']', $deska_params['delka']); echo'</td>';
+                        echo '<td>'; echo $this->input_with_warning->render('šířka', $part->sirka_dilu, 'parts[' .$i .']', $deska_params['sirka']); echo'</td>';
                         echo '<td>'; echo $this->checkbox->render('orient', $part->orientace == 1 ? true : false, 'parts[' .$i .']'); echo'</td>';
 
                         if($part->hrana == '-1'){
@@ -160,7 +172,12 @@ class RenderParts extends RenderEditor{
                             echo '<td>'; echo $this->select_box_with_loading->render('hrana prava', [0 => ''], null, 'parts[' .$i .']', true); echo'</td>';
                             echo '<td>'; echo $this->select_box_with_loading->render('hrana leva', [0 => ''], null, 'parts[' .$i .']', true); echo'</td>';
                         }
-
+/*
+    echo '<pre>';                            
+    var_dump($deska_params);                            
+    echo '</pre>';                            
+*/
+                        
                         if($part->hrana === '0'){
 
                             $options = ['0' => ''] + $deska_params['edgeDims'];
@@ -174,11 +191,9 @@ class RenderParts extends RenderEditor{
                         }
 
                         if($part->hrana === '1'){
-    /*                            
-    echo '<pre>';                            
-    var_dump($deska_params);                            
-    echo '</pre>';                            
-    */
+                                
+
+    
                             $options = ['0' => ''] + $deska_params['diffEdgeDims'];
                             //$select = $part->hrana_dolni === '0' ? '' : $part->hrana_dolni;
                             echo '<td>'; echo $this->select_box_with_loading->render('hrana dokola', $options); echo'</td>';
@@ -188,7 +203,7 @@ class RenderParts extends RenderEditor{
                             echo '<td>'; echo $this->select_box_with_loading->render('hrana leva', $options, $part->hrana_leva === '0' ? '' : $part->hrana_leva, 'parts[' .$i .']'); echo'</td>';
                         }
 
-                        echo '<td>'; echo $this->select_box->render('lepidlo', NULL, $part->lepidlo, 'parts[' .$i .']'); echo'</td>';
+//                        echo '<td>'; echo $this->select_box->render('lepidlo', NULL, $part->lepidlo, 'parts[' .$i .']'); echo'</td>';
 
                         echo '<td class="fig-formula-visible">'; echo $part->fig_formula; echo '</td>';
                         echo '<td>';
@@ -214,7 +229,8 @@ class RenderParts extends RenderEditor{
         </tbody>
     <?php
     echo '<tfoot>';
-    $this->render_group_row(false);    
+    $this->render_group_row(false);
+    $this->render_subheader(false);
     $this->render_empty_row();
     echo '</tfoot>';
     }
@@ -248,7 +264,15 @@ class RenderParts extends RenderEditor{
     }
     
     public function get_hrana_name_by_id($part, $include_dimensions = false){
-        $hrana_id = array_unique([$part->hrana_horni, $part->hrana_dolni, $part->hrana_prava, $part->hrana_leva])[0];
+
+        $hrana_id_array = array_unique([$part->hrana_horni, $part->hrana_dolni, $part->hrana_prava, $part->hrana_leva]);
+        
+        if(isset($hrana_id_array[1]) && $hrana_id_array[0] === '0') {
+            $hrana_id = $hrana_id_array[1];
+        } else {
+            $hrana_id = $hrana_id_array[0];
+        }
+
         if($hrana_id == NULL || $hrana_id == 0) return NULL;
         $hrana = wc_get_product($hrana_id);
         $au = new AjaxUtils();
@@ -332,9 +356,9 @@ class RenderParts extends RenderEditor{
         echo '<tr row-id="" style="display: none;" id="empty-row">';
         echo '<td></td>';
         echo '<td>'; echo $this->input->render('název', null, 'parts[' .$i .']'); echo '</td>';
-        echo '<td>'; echo $this->input->render('počet', null, 'parts[' .$i .']'); echo'</td>';
-        echo '<td>'; echo $this->input->render('délka', null, 'parts[' .$i .']'); echo'</td>';
-        echo '<td>'; echo $this->input->render('šířka', null, 'parts[' .$i .']'); echo'</td>';
+        echo '<td>'; echo $this->input_with_warning->render('počet', null, 'parts[' .$i .']'); echo'</td>';
+        echo '<td>'; echo $this->input_with_warning->render('délka', null, 'parts[' .$i .']'); echo'</td>';
+        echo '<td>'; echo $this->input_with_warning->render('šířka', null, 'parts[' .$i .']'); echo'</td>';
         echo '<td>'; echo $this->checkbox->render('orient', true, 'parts[' .$i .']'); echo'</td>';
         echo '<td>'; echo $this->mat_selector->render('', '', 'material_hrana'); echo'</td>';
         echo '<td>'; echo $this->select_box->render('tupl', null, null, 'parts[' .$i .']'); echo'</td>';        
@@ -343,7 +367,7 @@ class RenderParts extends RenderEditor{
         echo '<td>'; echo $this->select_box_with_loading->render('hrana zadni', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
         echo '<td>'; echo $this->select_box_with_loading->render('hrana prava', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
         echo '<td>'; echo $this->select_box_with_loading->render('hrana leva', [0 => ''], null, 'parts[' .$i .']'); echo'</td>';
-        echo '<td>'; echo $this->select_box->render('lepidlo', null, null, 'parts[' .$i .']'); echo'</td>';
+//        echo '<td>'; echo $this->select_box->render('lepidlo', null, null, 'parts[' .$i .']'); echo'</td>';
         echo '<td></td>';
         echo '<td>';
             $this->button->render_button('duplikovat_radek', null); 

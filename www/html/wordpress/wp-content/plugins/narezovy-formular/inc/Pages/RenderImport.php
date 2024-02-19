@@ -16,7 +16,15 @@ class RenderImport extends PagesController{
     public function render_import(){
     ?>
         <a href="<?php echo $this->forms_list_page ?>">
-            <?php $this->button->render_button('zpet_na_seznam'); ?>
+            <?php 
+// docasne pro p. Cesku.       
+
+if(get_current_user_id() == '7650') {
+    echo '<a href="https://drevoobchoddolezal.cz/narezovy-formular/"><button class="button button-main" type="button">Zpět na seznam</button></a>';
+} else {
+    $this->button->render_button('zpet_na_seznam'); 
+}
+            ?>
         </a>
 
         <div id="file-info-block" hidden>

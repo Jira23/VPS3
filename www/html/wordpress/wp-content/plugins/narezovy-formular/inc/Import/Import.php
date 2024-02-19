@@ -11,6 +11,7 @@ class Import {
         $import_class = 'Inc\Import\Import' .$user_import_type;
         
         $converted = (new $import_class())->import();
+
         $is_error = in_array(false, array_column($converted["errors"], "status"), true);
 
         $new_form_id = false;

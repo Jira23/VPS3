@@ -9,13 +9,22 @@ jQuery(document).ready(function($) {
     });     
   
     // hrana dokola
-    $(document).on('change', '#hrana-dokola', function() {
+    $(document).on('mousedown click', '#hrana-dokola', function() {
+        
         var thisRow = $(this).closest('tr');
-        var selectedOption = $(this).val();
-        var selectBoxes = thisRow.find('.parts-table-selectbox-edge');
-        selectBoxes.each(function () {
-          $(this).val(selectedOption);
-        });        
+        var selectedOptionValue = $(this).val();
+        var selectedOptionText = $(this).find('option:selected').text();
+        var dimension = extractDimension(selectedOptionText);
+
+        var newOption = $('<option>', {value: selectedOptionValue,text: dimension});    
+
+        var selectBoxesVisible = thisRow.find('.parts-table-selectbox-edge:not(#hrana-dokola)');
+        selectBoxesVisible.each(function () {
+            $(this).empty();
+            $(this).append(newOption.clone());       
+            $(this).trigger('change');
+        });                
+
     });   
   
     // tupl
@@ -50,22 +59,47 @@ jQuery(document).ready(function($) {
     // delete row
     $(document).on('click', 'button[name="btn_smazat_radek"]', function() {
         $(this).closest('tr').remove();
+        disableSaveButtons();
     });    
+
+    // delete material group
+    $(document).on('click', 'button[name="btn_smazat_material"]', function() {
+        var betweenTrs = $(this).closest('.NF-edit-group-material').nextUntil($('tr.NF-edit-group-material'));          // remove all part rows of material group 
+        betweenTrs.each(function () {
+            $(this).remove();
+        });        
+        $(this).closest('.NF-edit-group-material').remove();                    // remove material group row
+        
+        disableSaveButtons();
+    });     
     
     // figure formula
     $(document).on('change', '.parts-table-input-figure', function() {
         applyFormula($(this).closest('tr'));
-    });  
-    
-    
-    
-    
-    
-    
-    /** TESTOVACI ULOZENI FORMULARE PRES AJAX **/
-    
-    //$(document).on('click', 'button[name="btn_save"]', function() {
+    });
+
+
+    // edge selectbox handling
+    $(document).on('mousedown', '.parts-table-selectbox-edge', function(event) {
+        if (!$(event.target).is('option')) optionTextAsFullname($(this));       // fill edge selectbox with full text options        
+    });
+
+    // edge selectbox handling
+    $(document).on('change', '.parts-table-selectbox-edge', function(event) {
+        optionTextAsDim($(this));                                               // fill edge selecboxt with dimension only
+    });
+
+    // form not saved alert
+    $(document).on('change', 'input, select, textarea, input[type="checkbox"]', function() {
+        $('.NF-alert-not-saved').show();
+    });
+   
     $("button[name='btn_optimalizovat']").click(function() {
+        checkQuantityInputs();
+        checkDimInputs();
+        if(disableSaveButtons()) return;        
+   
+        var buttonIndex = $(this).index("button[name='btn_optimalizovat']");
         var formData = $('#mainForm').serialize(); // Serialize form data
         var formId = new URLSearchParams(window.location.search).get('form_id');                            // get form id value from page URL        
 
@@ -77,27 +111,25 @@ jQuery(document).ready(function($) {
           data: formData,
           success: function(response) {
 
+            $('.NF-alert-not-saved').hide();
             $('#optimized-block').show();
             $('#optimized-results-table').html('');
             showWaitingIcon($('#optimized-results-table'), true);
             $('#optimized-results-table').append('<h5>Probíhá optimalizace. Při velkém počtu dílů může trvat i několik minut.</h5>');
-
-            if($("button[name='btn_optimalizovat']").index(this) === 0) $(window).scrollTop($('#optimized-results-table').offset().top);       // on top button click, scroll down
+            if (buttonIndex === 0) $(window).scrollTop($('#optimized-results-table').offset().top);             // on top button click, scroll down
             
             var request = {'action': 'optimize', 'form_id' : formId};                                           // pripravim parametry pro AJAX volani
             ajaxRequest(request, $("#optimized-results-table"));                                                // zavolam AJAX a vykreslim vysledek
 
           },
           error: function(error) {
-            alert('Nepodarilo se ulozit formular');
+            alert('Optimalizace se nezdařila. Kontaktujte nás prosím na emailu pavel.zitka@drevoobchoddolezal.cz');
             console.error("Error:", error);
           }
         });
     });
 
-
     function showWaitingIcon(target) {
-        target.html('<h3>Probíhá optimalizace...</h3>');
         target.append('<img width="200" id="loadingIcon" src="' + NF_wpUrl + '/wp-content/plugins/narezovy-formular/assets/img/Loading_icon.gif" />');        
     };
     

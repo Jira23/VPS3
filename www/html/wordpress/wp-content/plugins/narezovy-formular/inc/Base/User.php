@@ -72,12 +72,11 @@ class User {
         } else {
             $contact['jmeno'] = get_user_meta($user_id, 'first_name', true);
             $contact['prijmeni'] = get_user_meta($user_id, 'last_name', true);
-            $contact['email'] = get_userdata($user_id)->data->user_email;
+            $contact['email'] = get_userdata($user_id)?->data->user_email ?? null;
             $contact['telefon'] = get_user_meta($user_id, 'billing_phone', true);
             $contact['ulice'] = get_user_meta($user_id, 'billing_address_1', true);
             $contact['mesto'] = get_user_meta($user_id, 'billing_postcode', true) .', ' .get_user_meta($user_id, 'billing_city', true);; 
-            $contact['ICO'] = get_user_meta($user_id, 'billing_ic', true);;
-            
+            $contact['ICO'] = get_user_meta($user_id, 'billing_ic', true);
         }
         
         return $contact;
@@ -87,7 +86,7 @@ class User {
         foreach (self::USER_COOKIES as $cookie_name) {
             if (isset($_COOKIE[$cookie_name])) {
                 unset($_COOKIE[$cookie_name]); 
-                setcookie($cookie_name, '', -1, '/'); 
+                setcookie($cookie_name, '', -1, '/',  $_SERVER['HTTP_HOST']); 
             }
         }
     }

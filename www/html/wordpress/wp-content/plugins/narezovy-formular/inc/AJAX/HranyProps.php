@@ -22,6 +22,7 @@ error_reporting(E_ALL);
             if(isset($_POST['product_id'])) $product_id = (int)sanitize_text_field($_POST['product_id']);
             if(isset($_POST['tupl'])) $tupl = sanitize_text_field($_POST['tupl']);
             if(isset($_POST['dekor'])) $dekor = sanitize_text_field($_POST['dekor']);                           // this method can be called 2 ways. Edge is to be found by deska id (privzorovana) or by decor name (odlisna). When odlisna, variable decor is defined in call
+
             if(isset($_POST['dims'])) $dims = filter_var($_POST['dims'], FILTER_VALIDATE_BOOLEAN);;                              // can return edge props, or edge dimensions
             
             
@@ -31,21 +32,21 @@ error_reporting(E_ALL);
             $product = wc_get_product($product_id);
             
             if(in_array(MDF_LAKOVANE_CATEGORY_ID, $product->category_ids) && $product->get_attribute('pa_sila') == '3') {       // if is in category "MDF Lakovane" and has sila = "3", deska will be without edges
-                self::assembleResponse(array(), false);
+                self::assembleResponse(array(), $dims);
                 wp_die();
             }    
 
             if(in_array(HOBRA_CATEGORY_ID, $product->category_ids)) {       // if is in category "hobra" , deska will be without edges
-                self::assembleResponse(array(), false);
+                self::assembleResponse(array(), $dims);
                 wp_die();
             }  
             
             $hrany = [];
-            if($dekor == ''){
-                $related_products = $this->getRelatedProducts($product_id);
-                if(!empty($related_products)) $hrany = wc_get_products(array('include' => $related_products,'status' => 'publish'));     // get hrany by id of deska
-            } else {
+            if($dekor !== 'false'){
                 $hrany = $this->getHranyByDekor($dekor);                                                                        // get hrany by keyword in input hrany
+            } else {
+                $related_products = $this->getRelatedProducts($product_id);
+                if(!empty($related_products)) $hrany = wc_get_products(array('include' => $related_products,'status' => 'publish'));     // get hrany by id of deska                
             }
 
             $hrany_filtered = $this->filter_hrany($hrany, in_array(PDK_CATEGORY_ID, $product->category_ids), $tupl);
@@ -221,6 +222,7 @@ if($_SERVER['SERVER_ADDR'] == '194.182.64.183') $related_items = array(0 => arra
         public static function assembleResponse($hrany, $dims){
 
             if(!isset($hrany[0])) {
+
                 if($dims){
                     echo json_encode([0 => '']);
                 } else {
@@ -229,12 +231,13 @@ if($_SERVER['SERVER_ADDR'] == '194.182.64.183') $related_items = array(0 => arra
                 
                 wp_die();
             }
-//
+
             $hrana_dims = [0 => ''];
             foreach ($hrany as $key => $hrana) {
                 //$hrana_dims[$hrana->get_id()] = (new self())->shorten_hrana_title($hrana)['rozmer'];
                 $dims_title = (new self())->shorten_hrana_title($hrana);
-                $hrana_dims[$hrana->get_id()] = $dims_title['rozmer'] .' ' .$dims_title['decor'];
+                //$hrana_dims[$hrana->get_id()] = $dims_title['rozmer'] .' ' .$dims_title['decor'];
+                $hrana_dims[$hrana->get_id()] = $dims_title['decor'] .' ' .$dims_title['rozmer'];
             }
 
             asort($hrana_dims);                                                  // sort in alphabetical order

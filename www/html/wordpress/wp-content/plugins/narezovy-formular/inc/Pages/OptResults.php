@@ -37,7 +37,7 @@ class OptResults {
     ?>
         <div id="optimized-block" style="margin-top: 40px; <?php if(empty($this->opt_results)) echo 'display: none;'; ?>">
             <hr>
-            <h4 class="email-center">Výsledky optimalizace</h4>
+            <h3 class="email-center">Výsledky optimalizace</h3>
             <div id="optimized-results-table">
     <?php                
     }

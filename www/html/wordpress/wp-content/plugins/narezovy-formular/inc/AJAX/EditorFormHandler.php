@@ -41,7 +41,7 @@ echo '<pre>';
 var_dump($_POST);
 echo '</pre>';                
 */
-var_dump($this->query_params['form_id']);        
+
         if ($this->query_params['form_id'] == 0) {                                                              // first edit of form - it is not saved yet (not existing in db)
             $user = new User();
             $this->form_data['userId'] = $user->get_id();
@@ -62,13 +62,13 @@ var_dump($this->query_params['form_id']);
 
         $values = array();
         $place_holders = array();
-        $query = "INSERT INTO " .NF_DILY_TABLE ." (form_id, orientace, nazev_dilce, ks, delka_dilu, sirka_dilu, tupl, hrana_dolni, hrana_horni, hrana_prava, hrana_leva, lepidlo, lamino_id, hrana, hrana_id, fig_name, fig_part_code, fig_formula, group_number, params) VALUES ";
+        $query = "INSERT INTO " .NF_DILY_TABLE ." (form_id, orientace, nazev_dilce, ks, delka_dilu, sirka_dilu, tupl, hrana_dolni, hrana_horni, hrana_prava, hrana_leva, lamino_id, hrana, hrana_id, fig_name, fig_part_code, fig_formula, group_number, params) VALUES ";
 
         //var_dump($this->part_data);
         foreach ($this->part_data as $row) {
             $orientace_checkbox = isset($row['orientace']) && $row['orientace'] ? 1 : 0;
             $complete_data = ['form_id' => $form_id, 'orientace' => $orientace_checkbox] + $row;
-            $place_holders[] = '(%d, %s, %s, %d, %d, %d, %s, %d, %d, %d, %d, %s, %d, %s, %d, %s, %s, %s, %d, %s)';
+            $place_holders[] = '(%d, %s, %s, %d, %d, %d, %s, %d, %d, %d, %d, %d, %s, %d, %s, %s, %s, %d, %s)';
             $values = array_merge($values, array_values($complete_data));
         }
 

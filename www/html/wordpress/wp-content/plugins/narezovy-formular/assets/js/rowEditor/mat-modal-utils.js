@@ -2,10 +2,17 @@ jQuery(document).ready(function($) {
     
     window.poulateModalDeskaParams = function(obj){                             // inserts values for deska
 
+        var delka = obj.delka;
+        var sirka = obj.sirka;
+        if($.inArray(2264, obj.categoryIds) !== -1){                            // increase values for mat. info in modal. Max. values for form remain unchanged (reduced by filter in ajax method). If product is in categry 2264, its dimensions are reduceb by 30 mm
+            delka += 30;
+            sirka += 30;
+        }
+
         $('#modal-deska-mat-sku').html(obj.sku);
         $('#modal-deska-mat-nazev').html(obj.name);
-        $('#modal-deska-mat-delka').html(obj.delka);
-        $('#modal-deska-mat-sirka').html(obj.sirka);
+        $('#modal-deska-mat-delka').html(delka);
+        $('#modal-deska-mat-sirka').html(sirka);
         $('#modal-deska-mat-sila').html(obj.sila);
         $('#icon-deska > img').attr('src', obj.imgUrl);
 

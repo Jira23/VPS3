@@ -44,6 +44,7 @@ class RenderEditor extends PagesController {
         $this->select_box_with_loading = new Tags\SelectBoxWithLoading();
         $this->checkbox = new Tags\CheckBox();
         $this->input = new Tags\Input();
+        $this->input_with_warning = new Tags\InputWithWarning();
         $this->button = new Tags\Button();        
         $this->mat_selector = new Tags\MatSelector();        
         $this->textarea = new Tags\Textarea();        
@@ -80,7 +81,7 @@ class RenderEditor extends PagesController {
                         $this->input->render('form nazev', $this->form['nazev'] ?? null);
                     ?>
                 </div>
-                <div class="form-section">
+                <!--div class="form-section">
                     <?php $this->select_box->render('olepeni', null, $this->form['olepeni'] ?? null) ?>
                 </div>
                 <div style="display: table;">
@@ -89,12 +90,13 @@ class RenderEditor extends PagesController {
                             $this->select_box->render('stitky', null, $this->form['stitky'] ?? null);
                         ?>
                     </div>
-                    <div class="form-section" style="display: table-cell;">
-                        <?php 
-                            $this->select_box->render('doprava', null, $this->form['doprava'] ?? null);
-                        ?>
-                    </div>        
-                </div>
+
+                </div-->
+                <div class="form-section" style="display: table-cell;">
+                    <?php 
+                        $this->select_box->render('doprava', null, $this->form['doprava'] ?? null);
+                    ?>
+                </div>                        
                 <div style="margin-top: 30px;">
                 <?php $this->textarea->render('poznamka', $this->form['poznamka'] ?? null); ?>
                 </div>
@@ -102,7 +104,8 @@ class RenderEditor extends PagesController {
             <div class="NF-section-half">
                 <div class="NF-half-image-container">
                     <h2>Označení hran desky</h2>
-                    <img src="<?php echo $this->plugin_url; ?>assets/img/napoveda_hrany.png"/>    
+                    <h4 style="color: red;">ROZMĚRY UVÁDĚJTE V "mm" VČETNĚ OLEPENÍ (hrany!!!)</h4>
+                    <img src="<?php echo $this->plugin_url; ?>assets/img/napoveda_hrany.png"/>
                 </div>
             </div>
         </div>
@@ -126,8 +129,10 @@ class RenderEditor extends PagesController {
         
         echo '<div style="text-align: left; margin-bottom: 30px;">';
 
-        // buttons will be disabled if there are no records in db
-        if($user->is_registered()) $this->button->render_button('ulozit');
+        $this->alert->render_alert('Formulář není uložen!', 'warning', true, false, 'NF-alert-not-saved');        
+        if(!$user->is_registered() && isset($_GET['first_save'])) $this->alert->render_alert('Na Váš email byl odeslán odkaz, přes který se můžete k formuláři kdykoliv vrátit.', 'success');
+        
+        $this->button->render_button('ulozit');
         
         $opt_results = (new OptResults($this->form_id))->opt_results;
         if(empty($opt_results)){
@@ -153,11 +158,14 @@ class RenderEditor extends PagesController {
         if(isset($_GET['order_sent'])) {                                        // add thank you block for just sent order
             $this->render_thankyou();
         } else {
-            echo '<div><a href="' .$this->forms_list_page .'#tabs-2">';
-            $this->button->render_button('zpet_na_seznam');
-            echo '</a></div>';
+            $user = new \Inc\Base\User();
+            if($user->is_registered()){
+                echo '<div><a href="' .$this->forms_list_page .'#tabs-2">';
+                $this->button->render_button('zpet_na_seznam');
+                echo '</a></div>';
+            }
         }
-        
+
         (new \Inc\Output\Output())->render_customer_summary_html($this->form_id);
     }
 
@@ -213,8 +221,10 @@ class RenderEditor extends PagesController {
 
     private function check_user(){                                              // check if user is allowed to be on this page
         $user = new User();
-        if(!($user->is_registered() || $user->is_logged_with_cookies())) $this->jQuery_redirect($this->register_user_page);                             // redirect unknown user
-        if(!$user->is_form_owner($this->form_id) && $this->form_id != 0) $this->jQuery_redirect($this->forms_list_page);                                // form owner/form exist check
+        if(!isset($_GET['order_sent'])){
+            if(!($user->is_registered() || $user->is_logged_with_cookies())) $this->jQuery_redirect($this->register_user_page);                             // redirect unknown user
+            if(!$user->is_form_owner($this->form_id) && $this->form_id != 0) $this->jQuery_redirect($this->forms_list_page);                                // form owner/form exist check
+        }
         if($this->part_id != 0 && empty($this->current_part)) $this->jQuery_redirect(get_permalink() .'?form_id=' .$this->form_id .'&part_id=0');       // part exist check            
     }
     

@@ -36,7 +36,7 @@ class EditorFormHandler extends BaseController{
             $oh->handle_order($form_id);
             self::jQuery_redirect(get_permalink() .'?form_id=' .$form_id .'&part_id=0&order_sent=1');
         } else {
-            (new \Inc\Pages\Tags\InfoModal())->render('price_alert');
+//            (new \Inc\Pages\Tags\InfoModal())->render('price_alert');
         }
     }
 

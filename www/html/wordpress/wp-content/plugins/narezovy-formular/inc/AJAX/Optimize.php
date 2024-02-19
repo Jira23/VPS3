@@ -69,31 +69,41 @@ var_dump($t);
 echo '<pre>';
 */
         $message = ($t instanceof \Inc\Exceptions\NFOptException && $t->get_user_message()) ? $t->get_user_message() : 'Během optimalizace se vyskytla chyba. Zkuste to prosím později.';
-
-        (new \Inc\Pages\Tags\Alert())->render_alert($message, 'error');
+        
+        $this->render_server_error($form_id);
         
 //$to = get_option('admin_email');
-$to = 'jiri.freelancer@gmail.com';
+$to = ['jiri.freelancer@gmail.com', 'jakub.stabl@salusoft89.cz'];
+//$to = ['jiri.freelancer@gmail.com'];
         $subject = 'Optimization error';
         $body = 'Při optimalizaci formluláře id:' .$form_id .' se vyskytla následující chyba:' .PHP_EOL .$t .PHP_EOL;
         wp_mail($to, $subject, $body);
         wp_die();
     }
+  
     
     // create error message for user based on ardis error message
     private function handle_opt_error($encoded_message){
         $errors = json_decode($encoded_message);
         
         $ardis_errors_alias = [                                                                         // known ardis errors are converted to user friendly message
-            'Byla použita odlišná definice pro stejné schéma' => 'Zkontolujte prosím figury.',
-            'Neplatná hodnota.' => 'Zkontolujte prosím figury.',
+            'Byla použita odlišná definice pro stejné schéma'   => '"Byla použita odlišná definice pro stejné schéma". Zkontolujte prosím zadání figur.',
+            'Neplatná hodnota.'                                 => '"Neplatná hodnota". Zkontolujte prosím zadání figur.',
+            'Parts quantities do not match figure definition'   => '"Počet dílů neodpovídá vzorci figury". Zkontolujte prosím zadání figur.',
         ];
         
         foreach ($errors as $value) {
             $message = end(explode(':', $value->Msg));
-            if(isset($ardis_errors_alias[trim($message)])) throw new NFOptException(print_r($errors, true), 'Během optimalizace se vyskytla chyba. ' .$ardis_errors_alias[trim($message)]);
+            if(isset($ardis_errors_alias[trim($message)])) throw new NFOptException(print_r($errors, true), 'Během optimalizace se vyskytla chyba ' .$ardis_errors_alias[trim($message)]);
         }
         
         throw new NFOptException(print_r($errors, true), 'Během optimalizace se vyskytla chyba. Zkontrolujte prosím díly, zda jsou hodnoty zadány správně.');
+    }
+    
+    private function render_server_error($form_id){
+    ?>
+        <h2>Během optimalizace se vyskytla chyba. Na jejím odstranění intenzivně pracujeme.</h2>
+        <h4>Zkuste to, prosím, znovu později nebo odešlete poptávku ze staré verze formuláře <a href="/narezovy-formular/?form_id=<?php echo $form_id; ?>&part_id=0">zde.</a></h4>
+    <?php
     }
 }

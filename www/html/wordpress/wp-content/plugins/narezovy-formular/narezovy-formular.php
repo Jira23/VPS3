@@ -76,6 +76,7 @@ define('ARDIS_SERVER_URL', 'https://ardis.drevoobchoddolezal.cz/');
 define('ARDIS_SERVER_IMG_PATH', ARDIS_SERVER_URL .'img/');
 define('ARDIS_SERVER_SAW_FILES_PATH', ARDIS_SERVER_URL .'pila/');
 define('NF_KOLEKCE_TAG', 'Formátování odběr jen to co chci bez zbytků');
+define('NF_VIRTUAL_PRODUCT_ID', 624901);                                        // virtual product is used when managing product with "kolekce" tag
 
 // other constants
 define('NF_MAX_UNFINISHED_ORDERS', 5);

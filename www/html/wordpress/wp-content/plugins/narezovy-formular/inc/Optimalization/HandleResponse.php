@@ -31,7 +31,7 @@ class HandleResponse  {
             $converted[$key]['item_id'] = $item['ItemCode'];
             $converted[$key]['item_label'] = $product->get_name();
             $converted[$key]['quantity'] = $item['Quantity'];
-            $converted[$key]['price'] = $product->get_price();
+            $converted[$key]['price'] = $this->set_price($product);
             $converted[$key]['unit_name'] = $this->set_unit($item['ItemCode']);
             $converted[$key]['layouts'] = json_encode($DOD_layouts);
         }
@@ -71,8 +71,20 @@ class HandleResponse  {
         return $result;
     }
     
+    private function set_price($product){
+        if(!(new User())->is_registered() && has_term(NF_KOLEKCE_TAG, 'product_tag', $product->get_id() )){         // change price if part is in "Kolekce" and user is not registered 
+            $product = wc_get_product($product->get_id());
+            $price = (float)$product->get_price() * 1.3;                        // 30% aditional price
+            $delka = (float)$product->get_attribute('pa_delka')/1000;
+            $sirka = (float)$product->get_attribute('pa_sirka')/1000;
+            return ($price / $delka / $sirka);
+        } else {
+            return (float)$product->get_price();
+        }        
+    }    
+    
     private function set_unit($product_id){
-        if(!(new User())->is_registered() && has_term(NF_KOLEKCE_TAG, 'product_tag', $product_id )){          // change unit if part is in "Kolekce" and user is not registered    
+        if(!(new User())->is_registered() && has_term(NF_KOLEKCE_TAG, 'product_tag', $product_id )){                // change unit if part is in "Kolekce" and user is not registered    
             return 'm2';
         } else {
             return get_post_meta($product_id, 'unit_name', true);

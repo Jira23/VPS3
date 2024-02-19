@@ -49,13 +49,19 @@ error_reporting(E_ALL);
     
     private function render_success_report($new_form_id) {
         (new Alert())->render_alert('Import proběhl v pořádku.', 'success');
+// docasne pro p. Cesku.       
+if(get_current_user_id() == '7650') {
+    echo '<h3><a href="https://drevoobchoddolezal.cz/narezovy-formular?form_id=3012&amp;part_id=0">Přejít do editoru.</a></h3>';
+    return;
+}
         ?>
             <h3><a href="<?php echo (new \Inc\Base\BaseController())->editor_page .'?form_id=' .$new_form_id .'&part_id=0' ?>">Přejít do editoru.</a></h3>
         <?php
     }
     
     private function send_email($errors){
-        $to = get_option('admin_email');
+//        $to = get_option('admin_email');
+$to = 'jiri.freelancer@gmail.com';
         $subject = 'Import error';
         $message = $this->assemble_error_report($errors);
         $headers = ['Content-Type: text/html; charset=UTF-8'];

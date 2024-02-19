@@ -134,12 +134,13 @@ error_reporting(E_ALL);
     public function get_edge_props($product_id){
         $product = wc_get_product($product_id);
         $product_category_ids = $product->get_category_ids();
+        $empty_response = ['edgeId' => '', 'edgeName' => '', 'edgeImgUrl' => '', 'edgeDims' => [], 'isPDK' => false];
         if(in_array(MDF_LAKOVANE_CATEGORY_ID, $product_category_ids) && $product->get_attribute('pa_sila') == '3') {       // if is in category "MDF Lakovane" and has sila = "3", deska will be without edges
-            return [];
+            return $empty_response;
         }
         
         $hrany = wc_get_products(array('include' => (new HranyDimensions())->getRelatedProducts($product_id),'status' => 'publish'));
-        if(empty($hrany) || !isset($hrany[0])) return [];
+        if(empty($hrany) || !isset($hrany[0])) return $empty_response;
 
         $isPDK = in_array(PDK_CATEGORY_ID, $product_category_ids);
         

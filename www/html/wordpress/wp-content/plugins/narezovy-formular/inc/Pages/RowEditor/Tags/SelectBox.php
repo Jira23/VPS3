@@ -92,7 +92,6 @@ class SelectBox {
                 'name'   => '[tupl]',
                 'options' => [
                     'NE' => 'NE',
-                    '30mm' => '30mm',
                     '36mm' => '36mm dek.',
                     '36mm-bila' => '36mm bílá',                
                 ],

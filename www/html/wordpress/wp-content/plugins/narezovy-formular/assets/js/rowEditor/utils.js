@@ -13,13 +13,18 @@ jQuery(document).ready(function($) {
 
         populateEditMatRow(newMatRow);                                          // change row look according to mat params
 
+        var clonedSubheader = $('#material-group-subheader-hidden').clone();
+        clonedSubheader.show();
+        clonedSubheader.insertAfter(newMatRow);
+
+
         var clonedRow = $('#empty-row').clone();                                // clone hidden part row
         clonedRow.removeAttr('id');
         clonedRow.show();  
         clonedRow.find('button').hide();
         clonedRow.find('.mat-title').html('');
         clonedRow.find('.mat-icon img').attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');      // transparent image                
-        clonedRow.insertAfter(newMatRow);
+        clonedRow.insertAfter(clonedSubheader);
     };
 
     // edit params in material group row
@@ -28,15 +33,16 @@ jQuery(document).ready(function($) {
         var rowId = button.attr('row-id');                                      // get id of row is being edited
         var matRowInfo = $('#' + rowId);
         matRowInfo.find('#mat-group-data').val(newMatParams);
+console.log(rowId);
 
         populateEditMatRow(matRowInfo);
-        resetPartRows(matRowInfo.closest('.NF-edit-group-material'));
+        resetPartRows(matRowInfo.closest('.NF-edit-group-material').not(':first'));
     };
     
     // used when deska materal was changed - resets all necesary inputs in all material group part rows
     window.resetPartRows = function(matRow){                                        
         var betweenTrs = matRow.nextUntil($('tr.NF-edit-group-material'));          // get all part rows of material group 
-        betweenTrs.not(':last').each(function () {
+        betweenTrs.not(':last').not(':first').each(function () {
             var matGroupProps = JSON.parse(matRow.find('#mat-group-data').val());            
             $(this).find('#params').val(JSON.stringify(matGroupProps));
             $(this).find('.parts-table-selectbox-tupl').val('NE');                              // reset tupl
@@ -46,8 +52,11 @@ jQuery(document).ready(function($) {
     };
 
     populateEditMatRow = function(row){  
+console.log(row);
         var matParams = JSON.parse(row.find('#mat-group-data').val());
+console.log(matParams);        
         row.attr('id', matParams.id);
+console.log(row.attr('id'));        
         row.find('#group-material-icon img').attr('src', matParams.imgUrl);
         row.find('#group-material-nazev').html(matParams.name);
     };
@@ -170,6 +179,10 @@ jQuery(document).ready(function($) {
     /*** run on every page load ***/
     addRows();
     colorRows();
+    
+    $('.parts-table-selectbox-edge').each(function() {                          // Initialize all edge select boxes to have shortened text
+        optionTextAsDim($(this));
+    });      
     
      // Prevent the Enter key submitting the form and make it behive like Tab instead (jump to next input field)
     $(document).ready(function() {

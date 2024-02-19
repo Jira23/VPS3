@@ -15,7 +15,7 @@ class OrderHandler extends BaseController{
     }
 
     public function handle_order($form_id) {
-        
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);           
@@ -78,6 +78,8 @@ error_reporting(E_ALL);
         $order_products = $wpdb->get_results("SELECT * FROM `" .NF_OPT_RESULTS_TABLE ."` WHERE `form_id` LIKE '" .$form_id ."' ORDER BY `id` ASC");
         
         foreach ($order_products as $product) {
+            if (has_term(NF_KOLEKCE_TAG, 'product_tag', $product->item_id )) continue;      // no check for kolekce (price must be recalculate to m2, original is per piece)
+
             $opt_price = round($product->price, 2);
             $product = wc_get_product($product->item_id);
             if(!$product) return false;

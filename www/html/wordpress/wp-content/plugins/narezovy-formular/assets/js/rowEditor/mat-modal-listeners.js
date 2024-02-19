@@ -6,6 +6,8 @@ jQuery(document).ready(function($) {
     // click on "add new deska material" button
     $(document).on("click", "#add-group-material", function() {
         poulateModalDeskaParams({sku: "", name: "", delka: "", sirka: "", sila: "", imgUrl: ""});   // reset modal
+        $('#modal-input-deska').val('');
+        $('#alert-mat-in-form').hide();
         $("#mod_material_desky").css("display", "block");
         $("#mat-select-button").prop('disabled', 'true');
         $("#mat-select-button").attr("row-id", "add");

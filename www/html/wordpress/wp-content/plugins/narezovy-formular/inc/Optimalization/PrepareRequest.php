@@ -14,9 +14,10 @@ class PrepareRequest  {
         global  $wpdb;
         
         $parts = $this->get_parts($form_id);
+
         $form = $this->get_form($form_id);
         $plotny = $this->get_plotny($parts);        
-
+//var_dump($plotny);
         $request_data = ['form' => $form, 'parts' => $parts, 'plotny' => $plotny];
 
         return $request_data;
@@ -65,11 +66,10 @@ class PrepareRequest  {
             if ($part->tupl == '30mm') $parts_ids[] = PLOTNA_TUPL_30;                   
             if ($part->tupl == '36mm-bila') $parts_ids[] = PLOTNA_TUPL_36;         
         }
-        
+
         $unique_ids = array_unique($parts_ids);
         $plotny = [];
-var_dump($unique_ids);
-exit;
+
         foreach ($unique_ids as $product_id) {
             $product = wc_get_product($product_id);
             if(!$product) throw new NFOptException('Product doesn`t exist! Id: ' .$product_id, 'Produkt nenalezen! Zkontrolujte prosím zadání.');
@@ -81,14 +81,14 @@ exit;
             $plotny[$product_id]['sirka'] = $product->get_attribute('pa_sirka');
             $plotny[$product_id]['sila'] = $product->get_attribute('pa_sila');            
             $plotny[$product_id]['orientace'] = $this->get_complex_meta($product_id, 'Orientace dekoru (léta)') == 'Ano' ? 1 : 0;
-            $plotny[$product_id]['kategorie'] = $this->set_category($product_id);
+            $plotny[$product_id]['kategorie'] = $this->get_category($product_id);
             $plotny[$product_id]['sku'] = $product->get_sku();
         }
        
        return $plotny;
     }
     
-    private function set_category($product_id){
+    private function get_category($product_id){
         
         // check if PD - pracovni deska
         $terms = wp_get_post_terms( $product_id, 'product_cat' );

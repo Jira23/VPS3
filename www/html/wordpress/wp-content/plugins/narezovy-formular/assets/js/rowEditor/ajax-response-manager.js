@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
         var deskaProps = JSON.parse(jsonString);
 
         latestRequest = request;                                                                            // used for strategy to show last request if there are multiple
-        var request = {'action': 'get_hrany_props', 'product_id': deskaProps.id, 'dekor': '' ,'tupl' : 'NE', 'dims' : false};
+        var request = {'action': 'get_hrany_props', 'product_id': deskaProps.id, 'dekor': false ,'tupl' : 'NE', 'dims' : false};
 console.log('arm');        
 console.log(request);
         $.ajax({

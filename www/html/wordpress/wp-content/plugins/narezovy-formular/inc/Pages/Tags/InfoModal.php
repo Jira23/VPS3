@@ -12,7 +12,7 @@ class InfoModal extends BaseController {
     public function render($modal_id){
         
         $props = $this->define_modal_props($modal_id);
-        echo '<div class="modal-container" id="' .$props['id'] .'">';
+        echo '<div class="info-modal-container" id="' .$props['id'] .'">';
         echo '  <div class="modal-content">';
         echo '      <div class="modal-header"><span class="dashicons dashicons-warning"></span></div>';
         echo '      <div class="modal-body"><h4>' .$props['message']  .'</h4></div>';

@@ -12,7 +12,7 @@ class SelectBoxWithLoading extends BaseController {
     
     public function render($select_box_id, $options = null, $select = null, $index = null, $readonly = null){
         $props = $this->define_select_box_props($select_box_id);
-        
+
         echo '<div class="selectbox-with-loading">' .PHP_EOL;
         echo '  <div class="linear-loading-icon">' .PHP_EOL;
         echo '      <img width="200" src="' .$this->plugin_url .'/assets/img/linear_loading_icon.gif" />' .PHP_EOL;
@@ -35,7 +35,7 @@ class SelectBoxWithLoading extends BaseController {
         if($readonly) echo ' readonly';
         
         echo '>' .PHP_EOL;
-       
+
         $is_selected = $select ?? $props['select'];
         if($options === NULL) $options = $props['options'];
 
@@ -54,8 +54,17 @@ class SelectBoxWithLoading extends BaseController {
         }
         
         echo '</select>' .PHP_EOL;
+
+        echo '<select class="parts-table-selectbox-edge-hidden">' .PHP_EOL;        
+        foreach ($options as $value => $text) {
+            echo '<option value="' .$value .'">' .$text .'</option>' .PHP_EOL;   
+        }
+        echo '</select>' .PHP_EOL;        
+        
         echo '</div>' .PHP_EOL;
-        echo '<span class="dashicons dashicons-warning edge-warning"></span>' .PHP_EOL;
+        echo '<span class="dashicons dashicons-warning edge-warning">' .PHP_EOL;
+        if($props['tooltip-text']) echo '<span class="tooltip-text">' .$props['tooltip-text'] .'</span>';
+        echo '</span>' .PHP_EOL;
         echo '</div>' .PHP_EOL;
         
     }
@@ -64,6 +73,7 @@ class SelectBoxWithLoading extends BaseController {
         $select_box = [
             'hrana dokola' => [
                 'select' => null,
+                'tooltip-text' => 'Rozměry hran se liší.',
                 'attrs' => [
                     'class' => 'parts-table-selectbox-edge',
                     'id' => 'hrana-dokola'
@@ -72,6 +82,7 @@ class SelectBoxWithLoading extends BaseController {
             'hrana predni' => [
                 'name'   => '[hrana_dolni]',
                 'select' => null,
+                'tooltip-text' => 'Rozměry hran se liší.',
                 'attrs' => [
                     'class' => 'parts-table-selectbox-edge',
                 ]
@@ -79,6 +90,7 @@ class SelectBoxWithLoading extends BaseController {
             'hrana zadni' => [
                 'name'   => '[hrana_horni]',
                 'select' => null,
+                'tooltip-text' => 'Rozměry hran se liší.',
                 'attrs' => [
                     'class' => 'parts-table-selectbox-edge',
                 ]
@@ -86,6 +98,7 @@ class SelectBoxWithLoading extends BaseController {
             'hrana prava' => [
                 'name'   => '[hrana_prava]',
                 'select' => null,
+                'tooltip-text' => 'Rozměry hran se liší.',
                 'attrs' => [
                     'class' => 'parts-table-selectbox-edge',
                 ]
@@ -93,6 +106,7 @@ class SelectBoxWithLoading extends BaseController {
             'hrana leva' => [
                 'name'   => '[hrana_leva]',
                 'select' => null,
+                'tooltip-text' => 'Rozměry hran se liší.',
                 'attrs' => [
                     'class' => 'parts-table-selectbox-edge',
                 ]

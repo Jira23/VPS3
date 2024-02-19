@@ -87,7 +87,7 @@ jQuery(document).ready(function($) {
             type: 'POST',
             data: request,
             success: function(response) {
-                $('#mainForm').off('submit').submit();
+                window.location.href = '/narezovy-formular-registrace/';
             }
         });        
     }); 

@@ -71,7 +71,6 @@ class RenderFormsList extends PagesController{
     private function get_forms_list($odeslano = 0){
         global $wpdb;
         $user_id = (new User())->get_id();
-//$user_id = 6374;
         $prepared_statement = $wpdb->prepare("SELECT * FROM " .NF_FORMULARE_TABLE ." WHERE userId LIKE %d AND odeslano LIKE %d ORDER BY id DESC", $user_id, $odeslano);
         $results = $wpdb->get_results($prepared_statement, ARRAY_A);
         return($results);
@@ -86,8 +85,8 @@ class RenderFormsList extends PagesController{
         ?>
         <thead>
             <th style="width: 55%;">Název formuláře </th>
-            <th style="width: 15%;">Stav</th>
-            <th style="width: 15%;">Datum </th>
+            <?php echo ($odeslano == 1) ? '<th style="width: 15%;">Objednávka č.</th>' : '<th style="width: 15%;">Stav</th>' ; ?>
+            <th style="width: 10%;">Datum </th>
             <th style="width: 5%;">Úpravy</th>
         </thead>
         <tbody>
@@ -95,11 +94,7 @@ class RenderFormsList extends PagesController{
             foreach ($rows as $row) {
                 echo '<tr class="clickable-row" data-href="' .$this->editor_page .'?form_id=' .$row['id'] .'&part_id=0">';
                 echo '<td>' .$row['nazev'] .'</td>';
-                if($this->has_opt_results($row['id'])){                                                                                 // "Poptávka odeslána" for old forms before optimalization functionality added
-                    echo '<td><b>Optimalizováno</b></td>';
-                } else {
-                    echo ($row['poptano'] == 1 && $row['odeslano'] == 0) ? '<td><b>Poptávka odeslána</b></td>' : '<td></td>';
-                }
+                $this->render_second_row($odeslano, $row);
                 echo '<td>' .date('j.n.Y', strtotime($row['datum'])) .'</td>';
                 echo '<td><form id="forms-list-buttons" method="post">';
                 $this->button->render_button('duplikovat_formular', null, ['value' => $row['id']]); 
@@ -128,5 +123,17 @@ class RenderFormsList extends PagesController{
         global $wpdb;
         $opt_results = $wpdb->get_results("SELECT * FROM `" .NF_OPT_RESULTS_TABLE ."` WHERE `form_id` LIKE '" .$form_id ."' LIMIT 1");
         return (!empty($opt_results)) ? true : false;
-    }    
+    }
+    
+    private function render_second_row($odeslano, $row){
+        if($odeslano == 0){
+            if($this->has_opt_results($row['id'])){                                                                                 // "Poptávka odeslána" for old forms before optimalization functionality added
+                echo '<td><b>Optimalizováno</b></td>';
+            } else {
+                echo ($row['poptano'] == 1 && $row['odeslano'] == 0) ? '<td><b>Poptávka odeslána</b></td>' : '<td></td>';
+            }
+        } else {
+            echo '<td>' .$row['WcZakazkaId'] .'</td>';
+        }        
+    }
 }

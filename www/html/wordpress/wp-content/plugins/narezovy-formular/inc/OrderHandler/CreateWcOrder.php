@@ -97,20 +97,12 @@ class CreateWcOrder{
         global $wpdb;
         $order_products = $wpdb->get_results("SELECT * FROM `" .NF_OPT_RESULTS_TABLE ."` WHERE `form_id` LIKE '" .$form_id ."' ORDER BY `id` ASC");
         
-        foreach ($order_products as $product) {
-            $product_id = $product->item_id;
-            $quantity = $product->quantity;
+        foreach ($order_products as $order_product) {
+            $product_id = $order_product->item_id;
+            $quantity = $order_product->quantity;
+            $kolekce_price = $order_product->price;
             $product = wc_get_product($product_id);
-            if($product)  {
-                $item_id = $order->add_product($product, $quantity);
-                if (!empty($item_id)){                                          // add product meta
-                    $order_item = $order->get_item($item_id);
-                    $order_item->add_meta_data('_productuid', $product->get_meta('_productuid'), true);
-                    $order_item->add_meta_data('_unit_name', $product->get_meta('unit_name'), true);
-                    $order_item->add_meta_data('_filled_amount', $product->get_meta('filled_amount'), true);
-                    $order_item->save();
-                }
-            }
+            if($product) $this->add_product_to_order($order, $product, $product_id, $quantity, $kolekce_price);
         }
     }
     
@@ -119,6 +111,25 @@ class CreateWcOrder{
         $customer_note = $wpdb->get_results("SELECT `poznamka` FROM `" .NF_FORMULARE_TABLE ."` WHERE `id` LIKE '" .$form_id ."' LIMIT 1")[0];        
         return $customer_note->poznamka;
     }
+    
+    private function add_product_to_order($order, $product, $product_id, $quantity, $kolekce_price){
+         if (has_term(NF_KOLEKCE_TAG, 'product_tag', $product_id )) {                                   // if product has "kolekce" tag, it will be replaced by virtual product and price will be changed
+            $original_product_name = $product->get_name();
+            $product = wc_get_product(NF_VIRTUAL_PRODUCT_ID);
+            $item_id = $order->add_product($product, $quantity, ['name' => $original_product_name, 'subtotal'=> $kolekce_price * $quantity, 'total'=> $kolekce_price * $quantity]);
+        } else {
+            $item_id = $order->add_product($product, $quantity);
+        }
+
+        if (!empty($item_id)){                                          // add product meta
+            $order_item = $order->get_item($item_id);
+            $order_item->add_meta_data('_productuid', $product->get_meta('_productuid'), true);
+            $order_item->add_meta_data('_unit_name', $product->get_meta('unit_name'), true);
+            $order_item->add_meta_data('_filled_amount', $product->get_meta('filled_amount'), true);
+            $order_item->save();
+        }       
+    }
+
 }
 
 

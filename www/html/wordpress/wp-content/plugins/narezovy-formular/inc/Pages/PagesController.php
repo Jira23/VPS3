@@ -12,6 +12,7 @@ class PagesController extends BaseController {
     public $select_box_with_loading;    
     public $tooltip;
     public $input;
+    public $input_with_warning;
     public $button;
     public $textarea;
     public $checkbox;

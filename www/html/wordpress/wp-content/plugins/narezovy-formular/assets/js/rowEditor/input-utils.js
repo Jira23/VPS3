@@ -45,13 +45,16 @@ jQuery(document).ready(function($) {
         var edgeType = $("input[name='modal-edge-type']:checked").val();
         var rowParams = JSON.parse(row.find('#params').val());
         var tupl = row.find('.parts-table-selectbox-tupl').val();
-        var selectBoxes = row.find('.parts-table-selectbox-edge');
+        var selectBoxes = row.find('.parts-table-selectbox-edge-hidden');
 
         // request edge selectboxes content
-        var request = {'action': 'get_hrany_props', 'product_id': rowParams.id, 'dekor': '', 'tupl' : tupl, 'dims' : true};                                            // pro zadnou a privzorovanou hranu
+        var request = {'action': 'get_hrany_props', 'product_id': rowParams.id, 'dekor': false, 'tupl' : tupl, 'dims' : true};                                            // pro zadnou a privzorovanou hranu
         if(edgeType === '1') var request = {'action': 'get_hrany_props', 'product_id': rowParams.id, 'dekor': rowParams.diffEdgeName ,'tupl' : tupl, 'dims' : true};          // pro pro odlisnou hranu
+
 console.log('i-u');                
+console.log(edgeType);
 console.log(request);
+console.log(rowParams);
         latestRequest = request;                                                                                            // used for strategy to show last request if there are multiple
         $.ajax({
             url: NF_ajaxUrl,
@@ -65,7 +68,10 @@ console.log(request);
                 
                 selectBoxes.each(function () {                                  // populate selectboxes
                     var currentSB = $(this);
-                    currentSB.empty();
+                    currentSB.empty();                                          // clear hidden selectbox
+                    currentSB.prev('select').empty();                           // clear visible selectbox
+                    currentSB.prev('select').append($('<option>', {value: '0',text: ''}));
+                    currentSB.prev('select').trigger('change');
                     $.extend({0 : ''}, selectOptions); 
 //                    selectOptions[0] = "";
 
@@ -95,6 +101,35 @@ console.log(request);
                 $(this).parent().toggle(!state);                
             });
         }
+    };
+   
+   // fill edge selectbox with full text options
+    window.optionTextAsFullname = function(selectBox){
+        var visibleSelector = selectBox;
+        var hiddenSelector = selectBox.next('select');
+        
+        var options = hiddenSelector.find('option').clone();                    // Clone the options
+        var sortedOptions = options.slice(1).sort(function(a, b) {              // Sort the options by alphabetical order (excluding the first one if it's a placeholder)
+            return $(a).text().localeCompare($(b).text());
+        });
+
+        visibleSelector.empty().append(options.first()).append(sortedOptions);    // Clear the select box and append the sorted options
+    };
+
+    // fill edge selecboxt with dimension only
+    window.optionTextAsDim = function(selectBox){
+       var selectedOption = selectBox.find('option:selected');
+       var dimension = extractDimension(selectedOption.text());
+       var newOption = $('<option>', {value: selectedOption.val(),text: dimension});    
+       selectBox.empty();
+       selectBox.append(newOption);       
+    };    
+    
+    window.extractDimension = function(edgeFullName){
+       var regex = /\d+\*\d+([\.,]\d+)?/;                                          // Match a sequence of digits, *, and optional decimal part
+       var dimension = '';
+       if(edgeFullName.match(regex) !== null) dimension = edgeFullName.match(regex)[0];
+       return dimension;
     };
     
 });

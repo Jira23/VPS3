@@ -8,7 +8,7 @@ use Inc\Base\BaseController;
 
 class Alert extends BaseController {
     
-    public function render_alert($text, $type = 'warning', $hidden = false, $id = ''){
+    public function render_alert($text, $type = 'warning', $hidden = false, $id = false, $class = false){
         
         $types = [
             'error' => ['dashicons-dismiss', '#ff2e2e'],
@@ -20,7 +20,7 @@ class Alert extends BaseController {
         if($hidden) $style .= ' display:none;';
         
         ?>
-            <div class="NF-alert" style="<?php echo $style; ?>" <?php if($id) echo ' id = "' .$id .'"'; ?> >
+            <div class="NF-alert <?php if($class) echo ' ' .$class; ?> " style="<?php echo $style; ?>" <?php if($id) echo ' id = "' .$id .'"'; ?> >
               <span class="dashicons <?php echo $types[$type][0]; ?> alert-icon"></span>
               <div class="alert-content">
                 <h4><?php echo $text; ?></h4>

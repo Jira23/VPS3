@@ -56,33 +56,6 @@ class Input {
                     'style' => 'display:none;',
                 ]
             ],
-            'počet' => [
-                'name'   => '[ks]',
-                'value' => NULL,
-                'attrs' => [
-                    'type' => 'number',
-                    'class' => 'parts-table-input-pocet',
-                    'min' => '1'
-                ]
-            ],
-            'délka' => [
-                'name'   => '[delka_dilu]',
-                'value' => NULL,
-                'attrs' => [
-                    'type' => 'number',
-                    'class' => 'parts-table-input-size',
-                    'min' => '10'
-                ]
-            ],
-            'šířka' => [
-                'name'   => '[sirka_dilu]',
-                'value' => NULL,
-                'attrs' => [
-                    'type' => 'number',
-                    'class' => 'parts-table-input-size',
-                    'min' => '10'
-                ]
-            ],
             'deska_hidden' => [
                 'name'   => '[lamino_id]',
                 'value' => NULL,

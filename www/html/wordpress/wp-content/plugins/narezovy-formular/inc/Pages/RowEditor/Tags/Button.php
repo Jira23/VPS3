@@ -36,12 +36,13 @@ class Button {
                 ]
             ],
             'ulozit' => [
-                'text' => 'Uložit zadání',
+                'text' => 'Uložit',
                 'disabled' => null,
                 'attrs' => [
                     'name'   => 'btn_ulozit_zadani',
                     'class' => 'button button-main',
-                    'type' => 'input'
+                    //'type' => 'input'
+                    'type' => 'button'
                 ]
             ],
             'optimalizovat' => [

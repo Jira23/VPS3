@@ -63,9 +63,8 @@ jQuery(document).ready(function($) {
     }
     
     function syntaxCheck(formula, matRow){
-        var pattern = /^[0-9(),/]+$/;
+        var pattern = /^([0-9(),/]+)?$/;
         var containsOnlyAllowedCharacters = pattern.test(formula);        
-        
         matRow.find('#alert-fig-syntax-check').toggle(!containsOnlyAllowedCharacters);          // show/hide warning
     }
     
