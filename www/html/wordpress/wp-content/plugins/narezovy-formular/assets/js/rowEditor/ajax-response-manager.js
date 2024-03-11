@@ -60,8 +60,13 @@ console.log(request);
     
     // zavre tree menu, pokud je otevrene
     function closeTree(){
-        var mainCatId = $('#div_tree').find('ul > li:first').attr('id').match(/\d+/g);
-        if(!tree.getNode(mainCatId).foldedStatus) tree.getNode(mainCatId).toggleNode();       
+        // catgeory tree
+        var mainCatId = $('#div_tree_product_cat').find('ul > li:first').attr('id').match(/\d+/g);
+        if(!tree_category.getNode(mainCatId).foldedStatus) tree_category.getNode(mainCatId).toggleNode();
+        
+        // tags tree
+        var mainCatId = $('#div_tree_product_tag').find('ul > li:first').attr('id').match(/\d+/g);
+        if(!tree_tag.getNode(mainCatId).foldedStatus) tree_tag.getNode(mainCatId).toggleNode();        
     }    
     
 });    

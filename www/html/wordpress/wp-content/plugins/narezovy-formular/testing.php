@@ -1,5 +1,5 @@
 <?php
-
+exit;
     require_once('/home/drevoobchoddolezal.cz/public_html/wp-load.php');
     global $wpdb;
 

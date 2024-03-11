@@ -713,6 +713,27 @@ table td {
     z-index: 1000;
 }
 
+.modal-input-container {
+    border: 2px solid darkgrey;
+    border-radius: 5px;
+    margin: 20px;
+    padding: 10px;    
+    text-align: left;
+    max-width: 500px;    
+}
+
+.modal-input-container table{
+    margin-bottom: 0px;
+}
+
+.modal-input-container table tr {
+    line-height: 0;
+}
+
+.modal-input-container table tr td {
+    border: none;
+}
+
 .modal-container .ptree {
     height: auto;
 }
@@ -824,6 +845,39 @@ table td {
 
 .centered-content {
     margin-bottom: 15%;
+}
+
+#icon-deska img {
+    max-width: 150px;
+}
+
+#icon-hrana-different img {
+    max-width: 150px;
+}
+
+
+.NF-pagination-button {
+    margin: 5px !important;
+}
+
+.NF-pagination-button-current-page {
+    background-color: #9b9b9b !important;
+}
+
+.NF-pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.NF-modal-list-in-stock {
+    font-weight: bold;
+    color:green;
+}
+
+.NF-modal-list-not-in-stock {
+    font-weight: bold;
+    color:red;
 }
 
 /*** edge select radio buttons ***/

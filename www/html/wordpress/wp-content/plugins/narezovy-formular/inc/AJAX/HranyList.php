@@ -27,7 +27,7 @@ error_reporting(E_ALL);
                 )            
         ));
    
-        echo '<thead><th colspan="2"><h3>Klikněte na požadovaný produkt...</h3></th></thead>';        
+        echo '<thead><th colspan="3"><h3>Klikněte na požadovaný produkt...</h3></th></thead>';        
         
         $productCount = 0;
         $decors_to_show = array();
@@ -52,9 +52,14 @@ error_reporting(E_ALL);
     }    
     
     public static function assembleResponse($product){
-        $img_url = wp_get_attachment_image_src( $product->get_image_id())[0];
+        $img_url = (new self())->get_product_image_url($product);
+        
+        $stock_status = get_post_meta($product->get_data()['id'], 'stockstatus', true);
+        $in_stock = (strpos($stock_status, "Není na skladě") === 0) ? '<span class="NF-modal-list-not-in-stock">na dotaz</span>' : '<span class="NF-modal-list-in-stock">skladem</span>';        
+        
         echo '<tr><td width="25%"><img src="' .$img_url .'" style="max-width: 50%;" /></td>' .PHP_EOL;
         echo '<td>' .(new self())->shorten_hrana_title($product)['decor'] .'</td>' .PHP_EOL;
+        echo '<td width="15%">' .$in_stock .'</td>' .PHP_EOL;
         echo '<td hidden id="selected_product_param">' .json_encode(array('id' => $product->get_data()['id'], 'name' => (new self())->shorten_hrana_title($product)['decor'], 'imgUrl' => $img_url)) .'</td>' .PHP_EOL;
         echo '</tr>' .PHP_EOL;
     }

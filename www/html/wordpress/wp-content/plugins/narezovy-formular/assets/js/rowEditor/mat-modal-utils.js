@@ -102,7 +102,7 @@ jQuery(document).ready(function($) {
     
     // colapse treemenu if its expanded
     function colapseTree(){
-        var mainCatId = $('#div_tree').find('ul > li:first').attr('id').match(/\d+/g);
-        if(!tree.getNode(mainCatId).foldedStatus) tree.getNode(mainCatId).toggleNode();       
+        var mainCatId = $('#div_tree_product_cat').find('ul > li:first').attr('id').match(/\d+/g);
+        if(!tree_category.getNode(mainCatId).foldedStatus) tree_category.getNode(mainCatId).toggleNode();       
     }    
 });

@@ -128,6 +128,29 @@ jQuery(document).ready(function($) {
           }
         });
     });
+    
+    // AJAX dotaz, nacte seznam desek z kategorie nebo tagu vybrane ve stome
+    $('[id*=div_g_div_tree_product_catnode_], [id*=div_g_div_tree_product_tagnode_]').click(function(e) {  
+        
+        var isVisible = jQuery(this).find('i').css('display');
+        if(isVisible !== 'none') return;                                                                    // show list for last category only
+
+        $("#mat-select-button").prop('disabled', true);
+        $("#modal-deska-mat-info").hide();        
+        
+        jQuery('.ptree-selected').removeClass('ptree-selected');                                            // vymazu oznaceni vybrane kategorie (predchozi)
+        jQuery(this).addClass('ptree-selected');                                                            // oznacim vybranou kategorii
+        showWaitingIcon(jQuery('#modal-deska-products-list'));
+        
+        var originTree = jQuery(this).attr('id').replace(/div_g_div_tree_|node_\d+$/g, "");                                    // identify source tree
+        var thisId = jQuery(this).attr('id').replace('div_g_div_tree_' + originTree + 'node_', '');                            // id of node where user clicked
+
+        if(originTree == 'product_cat') var request = {'action': 'get_desky','keyword': tree_category.getNode(thisId).addional, 'source':'ptree'};
+        if(originTree == 'product_tag') var request = {'action': 'get_desky','keyword': tree_tag.getNode(thisId).addional, 'source':'ptree-tag'};
+
+        ajaxRequest(request, jQuery("#modal-deska-products-list"));
+
+    });      
 
     function showWaitingIcon(target) {
         target.append('<img width="200" id="loadingIcon" src="' + NF_wpUrl + '/wp-content/plugins/narezovy-formular/assets/img/Loading_icon.gif" />');        

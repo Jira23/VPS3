@@ -95,6 +95,6 @@ jQuery(document).ready(function($) {
     
     function setEdgeType(edgeType){
         $('input[name="modal-edge-type"][value="' + edgeType + '"]').prop('checked', true);
-    }    
+    }
     
 });

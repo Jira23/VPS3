@@ -3,7 +3,7 @@
 namespace Inc\Pages;
 
     // generates init script for pickletree (on category tree based selector)
-    class FormTree {
+    class FormTreeCategory {
         
 	public function register(){
             add_action('wp_footer', array( $this, 'initMenu'));
@@ -15,8 +15,8 @@ namespace Inc\Pages;
             
             echo "
                 <script>
-                    const tree = new PickleTree({
-                        c_target: 'div_tree',
+                    const tree_category = new PickleTree({
+                        c_target: 'div_tree_product_cat',
                         c_config: {
                             //start as folded or unfolded
                             foldedStatus: true,

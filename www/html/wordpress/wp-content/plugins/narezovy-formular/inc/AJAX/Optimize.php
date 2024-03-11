@@ -5,6 +5,7 @@
 namespace Inc\AJAX;
 
 use \Inc\Exceptions\NFOptException;
+use \Inc\Exceptions\NFArdisException;
 use \Inc\Optimalization\HandleResponse;
 use \Inc\Pages\OptResults;
 use \Inc\Optimalization\PrepareRequest;
@@ -54,7 +55,6 @@ class Optimize {
 
         if ($response === FALSE) throw new NFOptException('file_get_content() returned false!');
         $response_data = json_decode($response, true);
-
         if(!isset($response_data['state'])) throw new NFOptException('Unknown Ardis error!');
         if(isset($response_data['state']) && $response_data['state'] === 'opt_error') $this->handle_opt_error ($response_data['body']);
         if($response_data['state'] === 'success' && empty($response_data['body']['ItemsList']))  throw new NFOptException('Ardis returned empty array!');
@@ -68,9 +68,14 @@ echo '<pre>';
 var_dump($t);        
 echo '<pre>';
 */
-        $message = ($t instanceof \Inc\Exceptions\NFOptException && $t->get_user_message()) ? $t->get_user_message() : 'Během optimalizace se vyskytla chyba. Zkuste to prosím později.';
-        
+
+    if($t instanceof \Inc\Exceptions\NFArdisException){
+        $this->render_ardis_error($t->get_user_message());
+    } else {
         $this->render_server_error($form_id);
+    }
+
+        
         
 //$to = get_option('admin_email');
 $to = ['jiri.freelancer@gmail.com', 'jakub.stabl@salusoft89.cz'];
@@ -84,20 +89,22 @@ $to = ['jiri.freelancer@gmail.com', 'jakub.stabl@salusoft89.cz'];
     
     // create error message for user based on ardis error message
     private function handle_opt_error($encoded_message){
+
         $errors = json_decode($encoded_message);
         
         $ardis_errors_alias = [                                                                         // known ardis errors are converted to user friendly message
-            'Byla použita odlišná definice pro stejné schéma'   => '"Byla použita odlišná definice pro stejné schéma". Zkontolujte prosím zadání figur.',
-            'Neplatná hodnota.'                                 => '"Neplatná hodnota". Zkontolujte prosím zadání figur.',
-            'Parts quantities do not match figure definition'   => '"Počet dílů neodpovídá vzorci figury". Zkontolujte prosím zadání figur.',
+            'Byla použita odlišná definice pro stejné schéma'   => '"Byla použita odlišná definice pro stejné schéma".<br>Zkontolujte prosím zadání figur.',
+            'Neplatná hodnota.'                                 => '"Neplatná hodnota".<br>Zkontolujte prosím zadání figur.',
+            'Parts quantities do not match figure definition'   => '"Počet dílů neodpovídá vzorci figury".<br>Zkontolujte prosím zadání figur.',
+            'Optimalizace nekompletní'   => '"Optimalizace nekompletní."<br>Zkontolujte prosím zadání.',
         ];
         
         foreach ($errors as $value) {
             $message = end(explode(':', $value->Msg));
-            if(isset($ardis_errors_alias[trim($message)])) throw new NFOptException(print_r($errors, true), 'Během optimalizace se vyskytla chyba ' .$ardis_errors_alias[trim($message)]);
+            if(isset($ardis_errors_alias[trim($message)])) throw new NFArdisException(print_r($errors, true), 'Během optimalizace se vyskytla chyba ' .$ardis_errors_alias[trim($message)]);
         }
-        
-        throw new NFOptException(print_r($errors, true), 'Během optimalizace se vyskytla chyba. Zkontrolujte prosím díly, zda jsou hodnoty zadány správně.');
+                
+        throw new NFArdisException(print_r($errors, true), 'Během optimalizace se vyskytla chyba. Zkontrolujte prosím díly, zda jsou hodnoty zadány správně.');
     }
     
     private function render_server_error($form_id){
@@ -106,4 +113,8 @@ $to = ['jiri.freelancer@gmail.com', 'jakub.stabl@salusoft89.cz'];
         <h4>Zkuste to, prosím, znovu později nebo odešlete poptávku ze staré verze formuláře <a href="/narezovy-formular/?form_id=<?php echo $form_id; ?>&part_id=0">zde.</a></h4>
     <?php
     }
+    
+    private function render_ardis_error($message){
+        echo '<h2>' . $message .'</h2>';
+    }    
 }

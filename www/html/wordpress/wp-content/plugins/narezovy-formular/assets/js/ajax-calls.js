@@ -14,19 +14,19 @@ jQuery(document).ready(function($) {
     });
     
     // AJAX dotaz, nacte seznam desek z kategorie vybrane ve stome
-    jQuery('[id*=div_g_div_treenode_]').click(function(e) {  
+    jQuery('[id*=div_g_div_tree_product_catnode_]').click(function(e) {  
         if($('#mod_material_desky').is(':visible')) return;                                                // avoid double call
         var isVisible = jQuery(this).find('i').css('display');
         if(isVisible != 'none') return;                                                                     // seznam zobrazuji pouze pro posledni kategorii
-        
         jQuery('.ptree-selected').removeClass('ptree-selected');                                            // vymazu oznaceni vybrane kategorie (predchozi)
         jQuery(this).addClass('ptree-selected');                                                            // oznacim vybranou kategorii
         showWaitingIcon(jQuery('#deska-products-list'));
-        
-        var thisId = jQuery(this).attr('id').replace('div_g_div_treenode_', '');                            // najdu id nodu na ktery uzivatel kliknul
-        var request = {'action': 'get_desky','keyword': tree.getNode(thisId).addional, 'source':'ptree'};   // pripravim parametry pro AJAX volani
+
+        var thisId = jQuery(this).attr('id').replace('div_g_div_tree_product_catnode_', '');                            // najdu id nodu na ktery uzivatel kliknul
+        var request = {'action': 'get_desky','keyword': tree_category.getNode(thisId).addional, 'source':'ptree'};   // pripravim parametry pro AJAX volani
         ajaxRequest(request, jQuery("#deska-products-list"));                                               // zavolam AJAX a vykreslim vysledek
         jQuery("button[name='btn_ulozit']").prop('disabled', true);                                         // disabluju talcitko ulozit dil, aby se nedal ulozit dil dokud uzivatel neklikne na konkretni lamino (ve fci jQuery('#deska-products-list').on("click", "tr", function() ) se zase enabluje
+
     });
     
     // AJAX dotaz, nacte seznam hran, v jejichz nazvu je klicove slovo 
@@ -55,26 +55,6 @@ jQuery(document).ready(function($) {
             }
         }, 300 );                                                                                           // doba zpozdeni po keyup
     });
-    
-    // AJAX dotaz, nacte seznam desek z kategorie vybrane ve stome
-    $('[id*=div_g_div_treenode_]').click(function(e) {  
-        if(!$('#mod_material_desky').is(':visible')) return;                                                // avoid unwanted call
-        
-        var isVisible = jQuery(this).find('i').css('display');
-        if(isVisible !== 'none') return;                                                                    // show list for last category only
-
-        $("#mat-select-button").prop('disabled', true);
-        $("#modal-deska-mat-info").hide();        
-        
-        jQuery('.ptree-selected').removeClass('ptree-selected');                                            // vymazu oznaceni vybrane kategorie (predchozi)
-        jQuery(this).addClass('ptree-selected');                                                            // oznacim vybranou kategorii
-        showWaitingIcon(jQuery('#modal-deska-products-list'));
-        
-        var thisId = jQuery(this).attr('id').replace('div_g_div_treenode_', '');                            // id of node where user clicked
-        var request = {'action': 'get_desky','keyword': tree.getNode(thisId).addional, 'source':'ptree'};
-        ajaxRequest(request, jQuery("#modal-deska-products-list"));
-
-    });    
       
     // AJAX dotaz, nacte seznam hran, v jejichz nazvu je klicove slovo 
     jQuery('#modal-input-hrana').bind('keyup select',function() {                                                 // select znamena, ze spusti event pokud vyberu polozku z naseptavace
@@ -88,6 +68,15 @@ jQuery(document).ready(function($) {
             }
         }, 300 );                                                                                           // doba zpozdeni po keyup
     });        
+
+    // AJAX pagination
+    $(document).on('click', '.NF-pagination-button', function() {
+        showWaitingIcon(jQuery('#modal-deska-products-list'));
+        var request = {'action': 'get_desky','keyword': $(this).attr('keyword'), 'source': $(this).attr('source'), 'page' : $(this).val()};
+        ajaxRequest(request, jQuery("#modal-deska-products-list"));   
+        $('#mod_material_desky').animate({ scrollTop: 0 }, "fast");
+    });    
+  
 
 // ---- AJAJX for row form end ----     
     
@@ -150,7 +139,9 @@ jQuery(document).ready(function($) {
             data: request,
             success: function (response) {
                 if (request === latestRequest && target === latestTarget) {     // Check if this is the response for the latest request
-                    if(target) target.html(response);
+                    if(target) {
+                        target.html(response);
+                    }
                 }
             }
         });

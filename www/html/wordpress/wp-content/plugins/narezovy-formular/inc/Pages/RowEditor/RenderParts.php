@@ -7,6 +7,7 @@ namespace Inc\Pages\RowEditor;
 
 use Inc\Pages\PagesController;
 use Inc\AJAX\AjaxUtils;
+use Inc\AJAX\Desky;
 
 
 class RenderParts extends RenderEditor{
@@ -263,21 +264,22 @@ class RenderParts extends RenderEditor{
         return $deska_name;
     }
     
-    public function get_hrana_name_by_id($part, $include_dimensions = false){
+    public function get_hrana_name_by_id($part, $include_dimensions = false, $include_is_front = false){
 
         $hrana_id_array = array_unique([$part->hrana_horni, $part->hrana_dolni, $part->hrana_prava, $part->hrana_leva]);
-        
-        if(isset($hrana_id_array[1]) && $hrana_id_array[0] === '0') {
-            $hrana_id = $hrana_id_array[1];
-        } else {
-            $hrana_id = $hrana_id_array[0];
-        }
+        $hrana_id = (isset($hrana_id_array[1]) && $hrana_id_array[0] === '0') ? $hrana_id_array[1] : $hrana_id_array[0];
 
         if($hrana_id == NULL || $hrana_id == 0) return NULL;
         $hrana = wc_get_product($hrana_id);
         $au = new AjaxUtils();
         $hrana_title = $au->shorten_hrana_title($hrana)['decor'];
+        
         if($include_dimensions) $hrana_title .= ' ' .$au->shorten_hrana_title($hrana)['rozmer'];
+        
+        if($include_is_front) {                                                                         // adds "Č" at the end of edge title if its in specific category
+            $hrana_categories = wp_list_pluck(get_the_terms($hrana_id, 'product_cat'), 'term_id');
+            if(in_array(ABS_HRANY_CELNI_CATEGORY_ID, $hrana_categories)) $hrana_title .= ' <b>Č</b>';
+        }
         return $hrana_title;
     }    
 
@@ -309,22 +311,20 @@ class RenderParts extends RenderEditor{
 //var_dump($this->count);
         
         $product = wc_get_product($product_id);
-        
         $sku = $product->get_sku();
-        $delka = $product->get_attribute('pa_delka');
-        $sirka = $product->get_attribute('pa_sirka');
-        $sila = $product->get_attribute('pa_sila');
         
-        $edge = (new \Inc\AJAX\Desky())->get_edge_props($product_id);
+        $desky = new Desky();
+        $dimensions = $desky->filterDeska($product_id);
+        $edge = $desky->get_edge_props($product_id);
 
         $to_return = [
             'row_id' => $row_id,
             'id' => $product_id,
             'name' => $name,
             'sku' => $sku,
-            'sirka' => $sirka,
-            'delka' => $delka,
-            'sila' => $sila,
+            'sirka' => $dimensions['sirka'],
+            'delka' => $dimensions['delka'],
+            'sila' => $dimensions['sila'],
             'isPDK' => $edge['isPDK'],
             'imgUrl' => $img_url,
             'edgeType' => $typ_hrany,
@@ -335,7 +335,7 @@ class RenderParts extends RenderEditor{
         ];
 
         if($diff_edge_id !== '0') {
-            $diff_edge = (new \Inc\AJAX\Desky())->get_edge_props($diff_edge_id);
+            $diff_edge = $desky->get_edge_props($diff_edge_id);
             $diff_edge_params =[
                 'diffEdgeId' => $diff_edge['edgeId'],
                 'diffEdgeName' => $diff_edge['edgeName'],

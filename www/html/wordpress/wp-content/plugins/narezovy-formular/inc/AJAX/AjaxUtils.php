@@ -80,5 +80,10 @@ class AjaxUtils extends BaseController {
         $product_decor = trim($product_decor);                              // oriznu pripadne mezery na zacatku a na konci             
 
         return ['decor' => $product_decor, 'rozmer' => $product_rozmer];
-    }    
+    }
+    
+    public function get_product_image_url($product){
+        $image_id = $product->get_image_id();
+        return $image_id ? wp_get_attachment_url($image_id) : '';
+    }
 }

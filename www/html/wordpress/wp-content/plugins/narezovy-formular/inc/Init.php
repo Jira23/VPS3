@@ -14,7 +14,8 @@ final class Init{
                 Base\Enqueue::class, 
                 Base\CustomPostTypeController::class,
                 AJAX\AjaxUtils::class,
-                Pages\FormTree::class,
+                Pages\FormTreeCategory::class,
+                Pages\FormTreeKolekce::class,
                 Pages\RenderFormsList::class,
                 Import\UserPageEdit::class
             );

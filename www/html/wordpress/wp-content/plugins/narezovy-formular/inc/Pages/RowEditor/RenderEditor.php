@@ -68,6 +68,36 @@ class RenderEditor extends PagesController {
     }
     
     private function render_header(){
+        
+/*
+$args = array(
+    'post_type'      => 'product',
+    'posts_per_page' => -1,
+    'tax_query'      => array(
+        array(
+            'taxonomy' => 'product_tag',
+            'field'    => 'name',
+            'terms'    => 'Formátování odběr jen to co chci bez zbytků',
+        ),
+    ),
+);
+
+$products = get_posts( $args );
+
+foreach ($products as $product) {
+    var_dump($product->ID);
+    $tags = wp_get_post_terms($product->ID, 'product_tag');
+    foreach ($tags as $tag) {
+        var_dump($tag->term_id);
+        //term_id, term_taxonomy_id
+    }
+    
+    
+    echo '<br>';
+    
+}
+*/
+        
         echo '<form method="post" id="mainForm">' .PHP_EOL;
     }
     

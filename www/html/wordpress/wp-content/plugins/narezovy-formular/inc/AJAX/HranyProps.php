@@ -48,8 +48,10 @@ error_reporting(E_ALL);
                 $related_products = $this->getRelatedProducts($product_id);
                 if(!empty($related_products)) $hrany = wc_get_products(array('include' => $related_products,'status' => 'publish'));     // get hrany by id of deska                
             }
-
-            $hrany_filtered = $this->filter_hrany($hrany, in_array(PDK_CATEGORY_ID, $product->category_ids), $tupl);
+            
+            $sila_desky = $product->get_attribute('pa_sila');
+            
+            $hrany_filtered = $this->filter_hrany($hrany, in_array(PDK_CATEGORY_ID, $product->category_ids), $tupl, $sila_desky);
 
             self::assembleResponse($hrany_filtered, $dims);
         }
@@ -197,7 +199,7 @@ if($_SERVER['SERVER_ADDR'] == '194.182.64.183') $related_items = array(0 => arra
             return $products;
         }
         
-        public function filter_hrany($hrany, $is_PDK, $tupl){
+        public function filter_hrany($hrany, $is_PDK, $tupl, $sila_desky = NULL){
             foreach ($hrany as $key => $hrana ) {
 
                 if($hrana->get_attribute('pa_provedeni') == 'S lepidlem') unset($hrany[$key]);      // vyrazuju produkty, ktere maji parametr "Provedeni" = "S lepidlem"
@@ -213,6 +215,9 @@ if($_SERVER['SERVER_ADDR'] == '194.182.64.183') $related_items = array(0 => arra
                         if(!in_array($sirka, array(22, 23, 24, 28))) unset($hrany[$key]);
                     }
                 }
+                
+                if ($sila_desky && $sila_desky == '25' && $sirka == 22) unset($hrany[$key]);        // remove edges with sirka 22 when deska has sila 25mm
+                
             }
             $to_return = array_values($hrany);                                  // reset array keys so they will start from 0,1,2...
 
@@ -247,7 +252,7 @@ if($_SERVER['SERVER_ADDR'] == '194.182.64.183') $related_items = array(0 => arra
             } else { 
                 $hrana_id = $hrany[0]->get_id();
                 $hrana_title = (new self())->shorten_hrana_title($hrany[0])['decor'];
-                $image_url = wp_get_attachment_image_src($hrany[0]->get_image_id())[0];                                
+                $image_url = (new self())->get_product_image_url($hrany[0]);
                 $to_return = ['edgeId' => $hrana_id, 'edgeName' => $hrana_title, 'edgeImgUrl' => $image_url, 'edgeDims' => $hrana_dims];
             }
 

@@ -98,7 +98,7 @@
   text-decoration: none;
 }
 .ptree ul {
-  padding-left: 15px;
+ /*padding-left: 15px;*/
   
 }
 .ptree_order_div {
@@ -193,9 +193,8 @@
 }
 
 .ptree {
-  
-  border: 2px solid darkgrey;
-  border-radius: 5px;
+  /*border: 2px solid darkgrey;
+  border-radius: 5px;*/
   height: 100%;
   overflow-y: auto;
   padding-right: 15px;

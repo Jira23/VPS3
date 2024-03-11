@@ -8,6 +8,8 @@ namespace Inc\AJAX;
 
 class Desky extends AjaxUtils {
     
+    const MAX_ITEMS_ON_PAGE = 25;
+    
     public function get_desky() {
         
 ini_set('display_errors', 1);
@@ -17,32 +19,93 @@ error_reporting(E_ALL);
         
         $keyword = sanitize_text_field($_POST['keyword']);
         $source = sanitize_text_field($_POST['source']);
+        $page = isset($_POST['page']) ? intval($_POST['page']) - 1 : 0;
 
         // keyword can be category slug (from pickletree) or name/sku (from input)
         if($source == 'input') $products = $this->do_query_product($keyword);
         if($source == 'ptree') $products = $this->do_query_category($keyword);
+        if($source == 'ptree-tag') $products = $this->do_query_tag($keyword);
+/*     
+echo '<pre>';        
+var_dump($products);
+echo '</pre>';
+ */
         
-        echo '<thead><th colspan="2"><h3>Klikněte na požadovaný produkt...</h3></th></thead>';        
-        
-        $productCount = 0;
-        foreach ($products as $product) {
+        $filtered_products = $this->filter_products($products);
 
-            $filter = $this->filterDeska($product->ID);                                                             // odfiltruje nechtene produkty
-            if($filter == false) continue;
-            
-
-            self::assembleResponse($filter['sirka'], $filter['delka'], $filter['sila'], $filter['product']);       // sestavi html odpoved - udaje o danem produktu
-            $productCount++;
-
-            if($productCount > 50) {                                                                                // pokud je pocet zobrazenych produktu vyssi nez  limit, prerusim vykreslovani
-                echo '<tr><td colspan="2"><h3>Nejsou zobrazeny všechny výsledky. Upřesněte zadání.</h3></td></tr>';
-                break;
-            }
+        if(empty($filtered_products)) {
+            echo '<tr><td colspan="2"><h4 style="color: red;">Nic nenalezeno! Zkuste jiný výraz.</h4></td></tr>';
+            wp_die();        
         }
+        
+        echo '<table><thead><th colspan="3"><h3>Klikněte na požadovaný produkt...</h3></th></thead><tbody>';        
 
-        if($productCount == 0 ) echo '<tr><td colspan="2"><h4 style="color: red;">Nic nenalezeno! Zkuste jiný výraz.</h4></td></tr>';        // pokud nic nenaleznu, vyhodim chybovou hlasku
+        for ($i = (self::MAX_ITEMS_ON_PAGE * $page) + 1 ; $i <= self::MAX_ITEMS_ON_PAGE * ($page + 1) ; $i++) {
+            if($i > count($filtered_products)) break;                                                                       // breaks loop if there is no more products in array
+            $filter = $filtered_products[$i - 1];
+       
+            self::assembleResponse($filter['sirka'], $filter['delka'], $filter['sila'], $filter['product']);
+        }
+        
+        echo '</tbody></table>';
+        
+        if(count($filtered_products) > self::MAX_ITEMS_ON_PAGE) $this->render_pagination($page, count($filtered_products), $source, $keyword);        
+        
+        
+        
         wp_die();
     }    
+    
+    private function render_pagination($page, $products_count, $source, $keyword){
+        $pages_count = ceil($products_count / self::MAX_ITEMS_ON_PAGE);
+        $page++;
+
+        echo '<div class="NF-pagination">';
+        
+        if($page > 1) echo '<button class="button button-main NF-pagination-button" value="' .$page-1 .'" keyword="' .$keyword .'" source="' .$source .'"><<</button>';
+        if($page > 3) echo '<button class="button button-main NF-pagination-button" value="1" keyword="' .$keyword .'" source="' .$source .'">1</button><h1>...</h1>';
+        if($page - 1 > 0) echo '<button class="button button-main NF-pagination-button" value="' .$page-1 .'" keyword="' .$keyword .'" source="' .$source .'">' .$page-1 .'</button>';
+        echo '<button class="button button-main NF-pagination-button NF-pagination-button-current-page" value="' .$page .'" keyword="' .$keyword .'" source="' .$source .'">' .$page .'</button>';
+        if($page + 1 < $pages_count + 1) echo '<button class="button button-main NF-pagination-button" value="' .$page+1 .'" keyword="' .$keyword .'" source="' .$source .'">' .$page+1 .'</button>';
+        if($page < $pages_count - 2) echo '<h1>...</h1><button class="button button-main NF-pagination-button" value="' .$pages_count .'" keyword="' .$keyword .'" source="' .$source .'">' .$pages_count .'</button>';
+        if($page < $pages_count) echo '<button class="button button-main NF-pagination-button" value="' .$page+1 .'" keyword="' .$keyword .'" source="' .$source .'">>></button>';
+
+        echo '</div>';
+    }
+
+    // filter all products
+    private function filter_products($products){
+        $filtered_products = [];
+        foreach ($products as $product) {
+            $filter = $this->filterDeska($product->ID);
+            if($filter !== false) $filtered_products[] = $filter;
+        } 
+        return $filtered_products;
+    }
+    
+    // returns product with tag (for pickletree)
+    public function do_query_tag($tag) {
+
+        $args = array(
+            'post_type'      => 'product',
+            'posts_per_page' => -1,
+            'tax_query'      => array(
+                array(
+                    'taxonomy' => 'product_tag',
+                    'field'    => 'name',
+                    'terms'    => $tag
+                ),
+            ),
+        );
+
+        $products = get_posts($args);     
+        
+        $product_ids = array_map(function($product) {
+            return $product->ID;
+        }, $products);        
+        
+        return $products;
+    }
     
     // returns product in category (for pickletree)
     public function do_query_category($category_slug) {
@@ -123,10 +186,9 @@ error_reporting(E_ALL);
             if(in_array($denided_cat, $product_categories)) return (false);  
         }
 
-        if(in_array('Dřevotřískové desky', $product_categories)){                                       // pokud se jedna o kategorii Dřevotřískové desky, odectu od max delky a sirky 30mm
-            $delka -= 30;
-            $sirka -= 30;
-        }                                
+        // modify dimenisoins
+        $delka -= 30;
+        if(!in_array('Pracovní desky kuchyňské', $product_categories)) $sirka -= 30;                    // no sirka modification for product from category PD
         
         return(array('delka' => $delka, 'sirka' => $sirka, 'sila' => $sila, 'product' => $product));
     }    
@@ -146,6 +208,7 @@ error_reporting(E_ALL);
         
         $hrana_dims = [];
         foreach ($hrany as $key => $hrana) {
+
             $hrana_dims[$hrana->get_id()] = (new self())->shorten_hrana_title($hrana)['rozmer'];
             if($key === 0 ){
                 $hrana_id = $hrany[0]->get_id();
@@ -158,7 +221,8 @@ error_reporting(E_ALL);
     }    
     
     public static function assembleResponse($sirka, $delka, $sila, $product){
-        $img_url = wp_get_attachment_image_src( $product->get_image_id())[0];
+        //$img_url = wp_get_attachment_image_src( $product->get_image_id())[0];
+        $img_url = (new self())->get_product_image_url($product);
         
         $params = array(
             'id' => $product->get_data()['id'],
@@ -171,9 +235,13 @@ error_reporting(E_ALL);
             'categoryIds' => $product->get_data()['category_ids'],
             'imgUrl' => $img_url,
         );
+
+        $stock_status = get_post_meta($params['id'], 'stockstatus', true);
+        $in_stock = (strpos($stock_status, "Není na skladě") === 0) ? '<span class="NF-modal-list-not-in-stock">na dotaz</span>' : '<span class="NF-modal-list-in-stock">skladem</span>';
         
         echo '<tr><td width="25%"><img src="' .$img_url .'" style="max-width: 50%;" /></td>' .PHP_EOL;
         echo '<td>' .$product->get_data()['name'] .'</td>' .PHP_EOL;
+        echo '<td width="15%">' .$in_stock .'</td>' .PHP_EOL;
         echo '<td hidden id="selected_product_param">' .json_encode($params) .'</td>' .PHP_EOL;
         echo '</tr>' .PHP_EOL;
     }
