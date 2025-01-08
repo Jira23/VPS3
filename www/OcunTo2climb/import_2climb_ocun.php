@@ -12,14 +12,9 @@
     
     $tc = new OcunTo2climb();
     $tc->createXMLShoptet();
+
     
     echo 'Done.' .PHP_EOL;
     //$tc->createCSVShoptet();
     //$tc->getImages(1600);
-    
-    
-    
-    
-    
-    
     
